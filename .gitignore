@@ -1,0 +1,44 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+dist/
+build/
+
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# data (never commit real contracts or scanned uploads)
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+backend/uploads/
+backend/tmp/
+
+# legal corpus raw downloads (reproducible via ingestion scripts, not committed as bulk binary)
+legal_corpus/sources/*.html
+legal_corpus/sources/*.pdf
+
+# model artifacts
+training/adapter/
+training/checkpoints/
+*.safetensors
+*.bin
+!**/*.gitkeep
+
+# node / frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# OS
+.DS_Store
