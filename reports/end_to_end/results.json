@@ -1,0 +1,156 @@
+{
+  "evaluated_at": "2026-09-20T15:24:23.325115+00:00",
+  "contract": "data/benchmark/segmentation/sample_contract_de.pdf",
+  "clause_count": 10,
+  "components": {
+    "segmentation": {
+      "expected_clause_count": 10,
+      "actual_clause_count": 10,
+      "pass": true
+    },
+    "classification": {
+      "accuracy": 0.8,
+      "failures": 0,
+      "model": "lora-distilbert-multilingual-v1 (falls back to baseline if untrained)"
+    },
+    "evidence_sufficiency": {
+      "accuracy": 0.3,
+      "conclusive_clauses": 10,
+      "inconclusive_clauses": 0,
+      "note": "Measures whether the sufficiency gate's SUFFICIENT/INSUFFICIENT decision matches human judgment of real corpus coverage (data/benchmark/end_to_end/ground_truth.json). This is the Milestone 10 finding, now a real measured number."
+    },
+    "reasoning": {
+      "status": "NOT_MEASURED",
+      "reason": "No ANTHROPIC_API_KEY configured in this environment - the LLM was never called. See reports/reasoning/report.md.",
+      "clauses_that_would_have_reached_llm": 9
+    },
+    "citation_verification": {
+      "status": "NOT_MEASURED",
+      "reason": "Depends on real LLM output (see 'reasoning' above). The citation verification logic itself is unit-tested against constructed adversarial findings - see backend/tests/test_citation_verification.py."
+    },
+    "report_generation": {
+      "status": "NOT_APPLICABLE",
+      "reason": "Not yet implemented (Milestone 13)."
+    }
+  },
+  "pipeline_failures": {
+    "classification_failures": 0,
+    "sufficiency_inconclusive": 0
+  },
+  "per_clause": [
+    {
+      "position": 1,
+      "section": "§ 1",
+      "expected_clause_type": "GENERAL_TERMS",
+      "predicted_clause_type": "PAYMENT",
+      "classification_correct": false,
+      "expected_corpus_covered": false,
+      "actual_sufficient": true,
+      "reasoning_status": null,
+      "reasoning_error": "Set LLM_PROVIDER=anthropic and ANTHROPIC_API_KEY to enable the reasoning stage. Evidence sufficiency and retrieval work without it; this clause has sufficient evidence but no configured LLM to reason with it."
+    },
+    {
+      "position": 2,
+      "section": "§ 2",
+      "expected_clause_type": "PAYMENT",
+      "predicted_clause_type": "PAYMENT",
+      "classification_correct": true,
+      "expected_corpus_covered": false,
+      "actual_sufficient": true,
+      "reasoning_status": null,
+      "reasoning_error": "Set LLM_PROVIDER=anthropic and ANTHROPIC_API_KEY to enable the reasoning stage. Evidence sufficiency and retrieval work without it; this clause has sufficient evidence but no configured LLM to reason with it."
+    },
+    {
+      "position": 3,
+      "section": "§ 3",
+      "expected_clause_type": "TERMINATION",
+      "predicted_clause_type": "TERMINATION",
+      "classification_correct": true,
+      "expected_corpus_covered": true,
+      "actual_sufficient": true,
+      "reasoning_status": null,
+      "reasoning_error": "Set LLM_PROVIDER=anthropic and ANTHROPIC_API_KEY to enable the reasoning stage. Evidence sufficiency and retrieval work without it; this clause has sufficient evidence but no configured LLM to reason with it."
+    },
+    {
+      "position": 4,
+      "section": "§ 4",
+      "expected_clause_type": "LIABILITY",
+      "predicted_clause_type": "NON_COMPETE",
+      "classification_correct": false,
+      "expected_corpus_covered": true,
+      "actual_sufficient": true,
+      "reasoning_status": null,
+      "reasoning_error": "Set LLM_PROVIDER=anthropic and ANTHROPIC_API_KEY to enable the reasoning stage. Evidence sufficiency and retrieval work without it; this clause has sufficient evidence but no configured LLM to reason with it."
+    },
+    {
+      "position": 5,
+      "section": "§ 5",
+      "expected_clause_type": "WARRANTY",
+      "predicted_clause_type": "WARRANTY",
+      "classification_correct": true,
+      "expected_corpus_covered": false,
+      "actual_sufficient": true,
+      "reasoning_status": null,
+      "reasoning_error": "Set LLM_PROVIDER=anthropic and ANTHROPIC_API_KEY to enable the reasoning stage. Evidence sufficiency and retrieval work without it; this clause has sufficient evidence but no configured LLM to reason with it."
+    },
+    {
+      "position": 6,
+      "section": "§ 6",
+      "expected_clause_type": "CONFIDENTIALITY",
+      "predicted_clause_type": "CONFIDENTIALITY",
+      "classification_correct": true,
+      "expected_corpus_covered": false,
+      "actual_sufficient": true,
+      "reasoning_status": null,
+      "reasoning_error": "Set LLM_PROVIDER=anthropic and ANTHROPIC_API_KEY to enable the reasoning stage. Evidence sufficiency and retrieval work without it; this clause has sufficient evidence but no configured LLM to reason with it."
+    },
+    {
+      "position": 7,
+      "section": "§ 7",
+      "expected_clause_type": "DATA_PROCESSING",
+      "predicted_clause_type": "DATA_PROCESSING",
+      "classification_correct": true,
+      "expected_corpus_covered": true,
+      "actual_sufficient": true,
+      "reasoning_status": null,
+      "reasoning_error": "Set LLM_PROVIDER=anthropic and ANTHROPIC_API_KEY to enable the reasoning stage. Evidence sufficiency and retrieval work without it; this clause has sufficient evidence but no configured LLM to reason with it."
+    },
+    {
+      "position": 8,
+      "section": "§ 8",
+      "expected_clause_type": "NON_COMPETE",
+      "predicted_clause_type": "NON_COMPETE",
+      "classification_correct": true,
+      "expected_corpus_covered": false,
+      "actual_sufficient": true,
+      "reasoning_status": null,
+      "reasoning_error": "Set LLM_PROVIDER=anthropic and ANTHROPIC_API_KEY to enable the reasoning stage. Evidence sufficiency and retrieval work without it; this clause has sufficient evidence but no configured LLM to reason with it."
+    },
+    {
+      "position": 9,
+      "section": "§ 9",
+      "expected_clause_type": "INTELLECTUAL_PROPERTY",
+      "predicted_clause_type": "INTELLECTUAL_PROPERTY",
+      "classification_correct": true,
+      "expected_corpus_covered": false,
+      "actual_sufficient": true,
+      "reasoning_status": null,
+      "reasoning_error": "Set LLM_PROVIDER=anthropic and ANTHROPIC_API_KEY to enable the reasoning stage. Evidence sufficiency and retrieval work without it; this clause has sufficient evidence but no configured LLM to reason with it."
+    },
+    {
+      "position": 10,
+      "section": "§ 10",
+      "expected_clause_type": "GENERAL_TERMS",
+      "predicted_clause_type": "GENERAL_TERMS",
+      "classification_correct": true,
+      "expected_corpus_covered": true,
+      "actual_sufficient": false,
+      "reasoning_status": "INSUFFICIENT_EVIDENCE",
+      "reasoning_error": null
+    }
+  ],
+  "limitations": [
+    "Single benchmark contract (10 clauses) - measures whether the wired pipeline behaves correctly, not statistically robust component accuracy.",
+    "Reasoning/citation-verification quality genuinely not measured (no LLM call made), not omitted for convenience."
+  ]
+}

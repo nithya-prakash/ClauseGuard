@@ -1,0 +1,16 @@
+{
+  "_provenance": "Manually authored ground truth for the end-to-end benchmark, reusing the Milestone 2 synthetic 10-clause contract. clause_type matches data/benchmark/segmentation/ground_truth.json exactly (same contract, same author). corpus_covered is a human judgment call made by the developer, cross-checked against legal_corpus/metadata/corpus.json's actual 15 passages (11 BGB sections, 4 DSGVO articles) - it records whether the corpus has a real, specific legal basis for this clause category, not a guess. This file operationalizes the Milestone 10 finding (README 'End-to-end pipeline' section) into a measurable ground truth for the evidence-sufficiency component.",
+  "contract": "data/benchmark/segmentation/sample_contract_de.pdf",
+  "clauses": [
+    {"position": 1, "section": "§ 1", "expected_clause_type": "GENERAL_TERMS", "corpus_covered": false, "coverage_note": "Subject-matter definition clause - no corpus passage addresses defining contract scope."},
+    {"position": 2, "section": "§ 2", "expected_clause_type": "PAYMENT", "corpus_covered": false, "coverage_note": "No payment-terms-specific BGB section in the corpus (documented gap, README/Milestone 5)."},
+    {"position": 3, "section": "§ 3", "expected_clause_type": "TERMINATION", "corpus_covered": true, "coverage_note": "BGB § 314 (Kündigung von Dauerschuldverhältnissen aus wichtigem Grund) is directly relevant."},
+    {"position": 4, "section": "§ 4", "expected_clause_type": "LIABILITY", "corpus_covered": true, "coverage_note": "BGB § 276 (Verantwortlichkeit des Schuldners) and § 280 (Schadensersatz) are directly relevant."},
+    {"position": 5, "section": "§ 5", "expected_clause_type": "WARRANTY", "corpus_covered": false, "coverage_note": "No Gewährleistungsrecht (BGB §§ 434 ff.) section in the corpus."},
+    {"position": 6, "section": "§ 6", "expected_clause_type": "CONFIDENTIALITY", "corpus_covered": false, "coverage_note": "No confidentiality-specific BGB section in the corpus (documented gap, README/Milestone 5)."},
+    {"position": 7, "section": "§ 7", "expected_clause_type": "DATA_PROCESSING", "corpus_covered": true, "coverage_note": "DSGVO Art. 28 (Auftragsverarbeiter) and Art. 32 (Sicherheit der Verarbeitung) are directly relevant."},
+    {"position": 8, "section": "§ 8", "expected_clause_type": "NON_COMPETE", "corpus_covered": false, "coverage_note": "Would need § 74 HGB or § 138 BGB (Sittenwidrigkeit) - neither is in the corpus."},
+    {"position": 9, "section": "§ 9", "expected_clause_type": "INTELLECTUAL_PROPERTY", "corpus_covered": false, "coverage_note": "No UrhG/IP-specific provision in the corpus."},
+    {"position": 10, "section": "§ 10", "expected_clause_type": "GENERAL_TERMS", "corpus_covered": true, "coverage_note": "Salvatorische Klausel / Rechtswahl / Gerichtsstand - BGB § 306 (Rechtsfolgen bei Unwirksamkeit) and § 307 (Inhaltskontrolle) are directly relevant to this kind of AGB boilerplate."}
+  ]
+}

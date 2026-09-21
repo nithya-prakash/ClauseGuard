@@ -21,7 +21,7 @@ Build in progress. See commit history / project memory for milestone-by-mileston
 - [x] Milestone 8 — Evidence sufficiency + citation verification
 - [x] Milestone 9 — LLM structured reasoning
 - [x] Milestone 10 — End-to-end pipeline
-- [ ] Milestone 11 — Evaluation suite
+- [x] Milestone 11 — Evaluation suite
 - [ ] Milestone 12 — Frontend
 - [ ] Milestone 13 — PDF report
 - [ ] Milestone 14 — Security hardening
@@ -80,6 +80,7 @@ Container-to-container traffic uses the standard ports internally.
   them. The report says this explicitly: this demonstrates the pipeline
   works end-to-end, not that hybrid retrieval beats either method alone —
   that comparison needs a larger corpus.
+
 ### Cross-encoder reranking (Milestone 7)
 
 Full pipeline: Dense + BM25 → RRF → top-10 candidate pool → cross-encoder
@@ -207,6 +208,40 @@ print(analyze_document(Path('data/benchmark/segmentation/sample_contract_de.pdf'
 QdrantClient(url='http://localhost:6339')))"` (run from `backend/` or with
 `PYTHONPATH=backend`).
 
+## Evaluation suite (Milestone 11)
+
+[`eval/end_to_end/evaluate_end_to_end.py`](eval/end_to_end/evaluate_end_to_end.py)
+runs the real `analyze_document()` pipeline on the benchmark contract and
+measures each component independently against real ground truth
+([data/benchmark/end_to_end/ground_truth.json](data/benchmark/end_to_end/ground_truth.json),
+which records — per clause — the expected classification label AND a
+human judgment, cross-checked against the actual 15 corpus passages, of
+whether the corpus genuinely covers that clause category).
+
+Real measured results in
+[reports/end_to_end/report.md](reports/end_to_end/report.md):
+
+| Component | Result |
+|---|---|
+| Segmentation | 10/10 clauses detected (PASS) |
+| Classification accuracy | **0.80** (2/10 wrong — matches the Milestone 10 observation) |
+| Evidence sufficiency accuracy | **0.30** — the Milestone 10 finding, now a real number |
+| Reasoning | `NOT_MEASURED` (no `ANTHROPIC_API_KEY`; 9 clauses would reach the LLM) |
+| Citation verification | `NOT_MEASURED` (depends on reasoning) |
+| Report generation | `NOT_APPLICABLE` (Milestone 13 not yet built) |
+
+The **0.30 evidence-sufficiency accuracy** is the headline finding of this
+milestone: it quantifies, rather than just narrates, that the sufficiency
+gate (calibrated on short queries in Milestone 8) does a poor job on real
+clause-length text for this benchmark — only 3 of 10 clauses got the
+correct SUFFICIENT/INSUFFICIENT call against human-judged corpus coverage.
+`reports/reasoning/report.md` is an explicit `NOT_MEASURED` stub (not a
+guessed number) explaining exactly what's built, tested, and needed to
+measure it for real.
+
+Reproduce: `docker compose up -d qdrant && QDRANT_URL=http://localhost:6339
+python eval/end_to_end/evaluate_end_to_end.py`
+
 ## Clause classification (Milestone 3: baseline)
 
 - 10-label taxonomy: LIABILITY, TERMINATION, PAYMENT, DATA_PROCESSING,
@@ -297,22 +332,25 @@ This section will grow as more milestones land (full structure per spec is
 Milestone 15). Current honest limitations, most actionable first:
 
 1. **Evidence-sufficiency threshold needs a clause-length calibration
-   benchmark.** Documented in detail in "End-to-end pipeline" above: the
-   current threshold (calibrated on short queries) is measurably too
-   permissive on full-paragraph clause text. Next step: build a benchmark
-   of full-length clause examples (covered and deliberately uncovered
-   categories) with a proper held-out split, and recalibrate against that
-   instead of short queries.
+   benchmark.** Now a measured number, not just a narrative: **0.30
+   accuracy** against human-judged corpus coverage on the benchmark
+   contract (Milestone 11). The threshold (calibrated on short queries in
+   Milestone 8) is measurably too permissive on full-paragraph clause text.
+   Next step: build a benchmark of full-length clause examples (covered and
+   deliberately uncovered categories) with a proper held-out split, and
+   recalibrate against that instead of short queries.
 2. **Legal corpus has gaps.** No BGB provisions fetched yet for
    confidentiality or payment-term-specific clauses (Milestone 5). Clauses
    in those categories should mostly hit `INSUFFICIENT_EVIDENCE` today, but
-   see limitation 1 - the threshold gap means some will not.
+   see limitation 1 - the threshold gap means some will not (confirmed:
+   both `§ 6 CONFIDENTIALITY` and `§ 2 PAYMENT` incorrectly passed
+   sufficiency in the Milestone 11 run).
 3. **No `ANTHROPIC_API_KEY` configured in this environment** - the
    reasoning stage is fully built and tested for its gating behavior, but
-   has not produced a single real reasoning result yet. Milestones 11
-   (evaluation suite) and 16 (hallucination/faithfulness testing) cannot
-   produce real reasoning/citation-accuracy numbers without one - they will
-   report `NOT MEASURED` rather than fabricate results.
+   has not produced a single real reasoning result yet. `reports/reasoning/`
+   is an explicit `NOT_MEASURED` stub, not a guessed number. Milestone 16
+   (hallucination/faithfulness testing) also needs a key to produce real
+   numbers.
 4. **LoRA classifier is imperfect** (macro F1 0.59 on a 20-example test
    set) - observed in practice during the Milestone 10 end-to-end run: a
    genuine `§ 4 Haftung` (LIABILITY) clause was misclassified as
