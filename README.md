@@ -15,7 +15,7 @@ Build in progress. See commit history / project memory for milestone-by-mileston
 - [x] Milestone 2 — PDF/DOCX ingestion + clause segmentation
 - [x] Milestone 3 — Clause classification baseline
 - [x] Milestone 4 — LoRA fine-tuning pipeline
-- [ ] Milestone 5 — Legal corpus ingestion
+- [x] Milestone 5 — Legal corpus ingestion
 - [ ] Milestone 6 — Dense + BM25 + RRF retrieval
 - [ ] Milestone 7 — Cross-encoder reranking
 - [ ] Milestone 8 — Evidence sufficiency + citation verification
@@ -115,11 +115,29 @@ Container-to-container traffic uses the standard ports internally.
 - Reproduce: `python training/scripts/train_lora_classifier.py && python
   eval/classification/evaluate_lora.py`
 
-## Legal scope
+## Legal corpus (Milestone 5)
 
-Deliberately constrained. Not yet ingested — will be documented and expanded in Milestone 5.
-Planned initial scope: BGB §§ 305–310 (AGB / standard terms), liability, termination,
-payment terms, confidentiality, data-processing clauses, GDPR/DSGVO-related provisions.
+Deliberately constrained scope — 15 real legal passages, fetched programmatically
+(not hand-typed, not scraped from unofficial sites) from official sources:
+
+- **BGB** (11 sections) from [gesetze-im-internet.de](https://www.gesetze-im-internet.de)
+  (German Federal Ministry of Justice + juris GmbH): §§ 305, 305b, 305c, 306, 307, 308,
+  309, 310 (core AGB/standard-terms law) plus §§ 276, 280, 314 (liability, termination).
+- **DSGVO/GDPR** (4 articles) from [EUR-Lex](https://eur-lex.europa.eu) (CELEX:32016R0679,
+  official EU law portal): Art. 5, 6, 28, 32 (data-processing provisions).
+
+Every passage carries full provenance (source, official URL, section, title, retrieval
+timestamp) — see [legal_corpus/metadata/corpus.json](legal_corpus/metadata/corpus.json)
+(committed) and [legal_corpus/metadata/scope.json](legal_corpus/metadata/scope.json) for
+the machine-readable supported-scope declaration. Raw HTML snapshots are gitignored
+(regenerable, not the deliverable). Reproduce with:
+`python legal_corpus/ingestion/build_corpus.py`
+
+Confidentiality and general payment-term clauses are covered by the classifier's
+taxonomy (Milestone 3) but have no dedicated BGB provisions fetched yet — this is a
+known scope gap, not silently papered over; clauses matched to those categories will
+report `INSUFFICIENT_EVIDENCE` (Milestone 8) rather than being reasoned about without
+a real legal basis, until the corpus is extended.
 
 ## Privacy
 

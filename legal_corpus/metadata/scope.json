@@ -1,0 +1,87 @@
+{
+  "corpus_version": "2026-09-20-v1",
+  "disclaimer": "ClauseGuard performs AI-assisted first-pass compliance/risk analysis and does not constitute legal advice. It does not determine whether a contract is legally valid.",
+  "jurisdiction": "Germany (BGB) and European Union (DSGVO/GDPR, directly applicable in Germany)",
+  "sources": [
+    "BGB",
+    "DSGVO"
+  ],
+  "covered_sections": [
+    {
+      "source": "BGB",
+      "section": "§ 305",
+      "title": "Einbeziehung Allgemeiner Geschäftsbedingungen in den Vertrag"
+    },
+    {
+      "source": "BGB",
+      "section": "§ 305b",
+      "title": "Vorrang der Individualabrede"
+    },
+    {
+      "source": "BGB",
+      "section": "§ 305c",
+      "title": "Überraschende und mehrdeutige Klauseln"
+    },
+    {
+      "source": "BGB",
+      "section": "§ 306",
+      "title": "Rechtsfolgen bei Nichteinbeziehung und Unwirksamkeit"
+    },
+    {
+      "source": "BGB",
+      "section": "§ 307",
+      "title": "Inhaltskontrolle"
+    },
+    {
+      "source": "BGB",
+      "section": "§ 308",
+      "title": "Klauselverbote mit Wertungsmöglichkeit"
+    },
+    {
+      "source": "BGB",
+      "section": "§ 309",
+      "title": "Klauselverbote ohne Wertungsmöglichkeit"
+    },
+    {
+      "source": "BGB",
+      "section": "§ 310",
+      "title": "Anwendungsbereich"
+    },
+    {
+      "source": "BGB",
+      "section": "§ 276",
+      "title": "Verantwortlichkeit des Schuldners"
+    },
+    {
+      "source": "BGB",
+      "section": "§ 280",
+      "title": "Schadensersatz wegen Pflichtverletzung"
+    },
+    {
+      "source": "BGB",
+      "section": "§ 314",
+      "title": "Kündigung von Dauerschuldverhältnissen aus wichtigem Grund"
+    },
+    {
+      "source": "DSGVO",
+      "section": "Art. 5",
+      "title": "Grundsätze für die Verarbeitung personenbezogener Daten"
+    },
+    {
+      "source": "DSGVO",
+      "section": "Art. 6",
+      "title": "Rechtmäßigkeit der Verarbeitung"
+    },
+    {
+      "source": "DSGVO",
+      "section": "Art. 28",
+      "title": "Auftragsverarbeiter"
+    },
+    {
+      "source": "DSGVO",
+      "section": "Art. 32",
+      "title": "Sicherheit der Verarbeitung"
+    }
+  ],
+  "not_covered": "This is a deliberately constrained scope, not comprehensive German contract law: only the sections/articles listed above. Any clause outside this scope will be reported as INSUFFICIENT_EVIDENCE rather than reasoned about without a legal basis."
+}

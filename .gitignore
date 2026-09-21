@@ -25,8 +25,8 @@ backend/uploads/
 backend/tmp/
 
 # legal corpus raw downloads (reproducible via ingestion scripts, not committed as bulk binary)
-legal_corpus/sources/*.html
-legal_corpus/sources/*.pdf
+legal_corpus/sources/**/*.html
+legal_corpus/sources/**/*.pdf
 
 # model artifacts (regenerated deterministically by training scripts)
 training/adapter/
