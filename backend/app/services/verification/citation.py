@@ -3,10 +3,19 @@ checks in order:
   1. Does the cited section exist at all (in the known legal corpus)?
   2. Was it actually retrieved as evidence for this clause (not just
      somewhere in the corpus)?
-  3. Does the finding's claimed "evidence" text genuinely appear in that
+  3. Is the finding's own "legal_basis" text internally consistent with its
+     "citation" field - i.e. if legal_basis mentions a section number, does
+     it match the one actually cited? (Milestone 16 finding: an earlier
+     version of this check compared the matched passage's source against
+     itself, which is unreachable dead code - the passage is only ever
+     found BY filtering on that same source, so it can never mismatch. This
+     replaces it with a check that can actually fail: an LLM restating a
+     different section in its own explanation than the one it formally
+     cited is a real, previously-uncaught inconsistency.)
+  4. Does the finding's claimed "evidence" text genuinely appear in that
      passage (a text-overlap heuristic - not a semantic entailment model;
-     a deeper faithfulness check is Milestone 16's job)?
-  4. Is the citation's source consistent with the matched passage's source?
+     a deeper faithfulness check needs a live model to test against, see
+     reports/reasoning/).
 
 Any failure is reported as CITATION_UNVERIFIED with a specific reason -
 never silently accepted.
@@ -70,11 +79,16 @@ def verify_citation(
             "evidence retrieved for this clause.",
         )
 
-    if matching_evidence.source != source:
+    legal_basis_citation = parse_citation(finding.legal_basis)
+    if legal_basis_citation is not None and legal_basis_citation != (source, section):
         return CitationCheckResult(
             citation=finding.citation,
             status="CITATION_UNVERIFIED",
-            reason="Citation source does not match the retrieved passage's source.",
+            reason=(
+                f"Finding's legal_basis references {legal_basis_citation[0]} "
+                f"{legal_basis_citation[1]}, which does not match its own citation "
+                f"field ({source} {section})."
+            ),
         )
 
     if not _text_is_supported(finding.evidence, matching_evidence.text):

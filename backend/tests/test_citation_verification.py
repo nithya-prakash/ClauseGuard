@@ -92,6 +92,23 @@ def test_verify_citation_hallucinated_evidence_text_is_unverified():
     assert "does not sufficiently match" in result.reason
 
 
+def test_verify_citation_inconsistent_legal_basis_is_unverified():
+    """The finding's own legal_basis references a different section than
+    its citation field - a real internal inconsistency (Milestone 16
+    finding: the original 4th check here compared the matched passage's
+    source against itself, which is unreachable - see citation.py's
+    docstring for why this replaced it)."""
+    finding = Finding(
+        claim="Der Auftragnehmer verarbeitet Daten weisungsgebunden.",
+        legal_basis="Art. 28 DSGVO regelt die Pflichten des Auftragsverarbeiters.",
+        citation="§ 276 BGB",
+        evidence="Der Schuldner hat Vorsatz und Fahrlässigkeit zu vertreten",
+    )
+    result = verify_citation(finding, [_bgb_276_passage()])
+    assert result.status == "CITATION_UNVERIFIED"
+    assert "does not match its own citation field" in result.reason
+
+
 def test_verify_citation_malformed_citation_is_unverified():
     finding = Finding(
         claim="irrelevant",
