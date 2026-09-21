@@ -1,0 +1,20 @@
+{
+  "base_model": "distilbert-base-multilingual-cased",
+  "_base_model_rationale": "Small (~135M params) multilingual encoder, covers German. Chosen over a generative LLM (Qwen/Llama) because this is a 10-way classification task and there is no GPU on this machine - a LoRA-adapted classification head on a small encoder is realistically trainable on CPU/MPS in minutes, whereas fine-tuning a multi-billion-parameter generative model locally would not be.",
+  "task_type": "SEQ_CLS",
+  "num_labels": 10,
+  "max_seq_length": 128,
+  "lora": {
+    "r": 8,
+    "alpha": 16,
+    "dropout": 0.1,
+    "target_modules": ["q_lin", "v_lin"]
+  },
+  "training": {
+    "seed": 42,
+    "epochs": 12,
+    "batch_size": 8,
+    "learning_rate": 0.0003,
+    "weight_decay": 0.01
+  }
+}

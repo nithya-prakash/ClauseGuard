@@ -60,7 +60,7 @@ testpaths = ["backend/tests"]
 pythonpath = ["backend"]
 asyncio_mode = "auto"
 markers = [
-    "integration: requires real Postgres/Qdrant/Redis (docker compose), not mocked",
+    "integration: requires real external resources (docker compose services, or a downloaded base model for LoRA inference) - not mocked, skipped by default CI run",
 ]
 
 [tool.ruff]

@@ -1,0 +1,227 @@
+{
+  "evaluated_at": "2026-09-20T14:16:50.920381+00:00",
+  "model_name": "lora-distilbert-multilingual-v1",
+  "base_model": "distilbert-base-multilingual-cased",
+  "adapter_path": "training/adapter/clause_classifier",
+  "dataset": "training/datasets/clause_classification (synthetic, hand-authored - see dataset.json _provenance)",
+  "test_set_size": 20,
+  "accuracy": 0.6,
+  "macro_precision": 0.65,
+  "macro_recall": 0.6,
+  "macro_f1": 0.59,
+  "per_class_f1": {
+    "LIABILITY": 0.8,
+    "TERMINATION": 0.8,
+    "PAYMENT": 0.4,
+    "DATA_PROCESSING": 0.4,
+    "CONFIDENTIALITY": 0.5,
+    "NON_COMPETE": 0.6667,
+    "INTELLECTUAL_PROPERTY": 0.6667,
+    "WARRANTY": 0.6667,
+    "GENERAL_TERMS": 1.0,
+    "OTHER": 0.0
+  },
+  "confusion_matrix": {
+    "labels": [
+      "LIABILITY",
+      "TERMINATION",
+      "PAYMENT",
+      "DATA_PROCESSING",
+      "CONFIDENTIALITY",
+      "NON_COMPETE",
+      "INTELLECTUAL_PROPERTY",
+      "WARRANTY",
+      "GENERAL_TERMS",
+      "OTHER"
+    ],
+    "matrix": [
+      [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  "training_history": [
+    {
+      "epoch": 1,
+      "train_loss": 2.354,
+      "val_accuracy": 0.15
+    },
+    {
+      "epoch": 2,
+      "train_loss": 2.2655,
+      "val_accuracy": 0.45
+    },
+    {
+      "epoch": 3,
+      "train_loss": 2.1692,
+      "val_accuracy": 0.25
+    },
+    {
+      "epoch": 4,
+      "train_loss": 2.0188,
+      "val_accuracy": 0.4
+    },
+    {
+      "epoch": 5,
+      "train_loss": 1.6477,
+      "val_accuracy": 0.55
+    },
+    {
+      "epoch": 6,
+      "train_loss": 1.149,
+      "val_accuracy": 0.55
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.806,
+      "val_accuracy": 0.55
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.4837,
+      "val_accuracy": 0.6
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.2712,
+      "val_accuracy": 0.65
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.1696,
+      "val_accuracy": 0.65
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.1463,
+      "val_accuracy": 0.65
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.0861,
+      "val_accuracy": 0.6
+    }
+  ],
+  "limitations": [
+    "Test set has only 2 examples per class (20 total) - metrics are high-variance at this N.",
+    "Dataset is synthetic and hand-authored, not sourced from or reviewed against real contracts.",
+    "Trained for 12 epochs on 80 examples - a demonstration of a working LoRA pipeline, not a production-scale fine-tune."
+  ]
+}
