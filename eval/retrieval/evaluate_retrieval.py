@@ -1,12 +1,11 @@
-"""Evaluate dense, BM25, and hybrid (RRF) retrieval against the manually
-curated benchmark in data/benchmark/retrieval/queries.json. Requires Qdrant
-running and the corpus indexed (legal_corpus/ingestion/index_corpus.py).
+"""Evaluate dense, BM25, hybrid (RRF), and hybrid+reranked retrieval against
+the manually curated benchmark in data/benchmark/retrieval/queries.json.
+Requires Qdrant running and the corpus indexed
+(legal_corpus/ingestion/index_corpus.py).
 
 Every number in reports/retrieval/{results.json,report.md} comes from
-actually running the three real retrievers against the real Qdrant/BM25
-index - nothing is hand-typed. Cross-encoder reranking is evaluated
-separately once it exists (Milestone 7); comparing against it here would be
-premature.
+actually running the four real retrievers against the real Qdrant/BM25/
+cross-encoder pipeline - nothing is hand-typed.
 
 Usage:
     QDRANT_URL=http://localhost:6339 python eval/retrieval/evaluate_retrieval.py
@@ -25,6 +24,8 @@ sys.path.insert(0, str(ROOT / "backend"))
 
 from app.core.config import get_settings  # noqa: E402
 from app.schemas.retrieval import RetrievedPassage  # noqa: E402
+from app.services.reranking.config import RERANK_CANDIDATE_POOL  # noqa: E402
+from app.services.reranking.cross_encoder import rerank  # noqa: E402
 from app.services.retrieval import bm25, dense  # noqa: E402
 from app.services.retrieval.config import BM25_TOP_K, DENSE_TOP_K  # noqa: E402
 from app.services.retrieval.corpus_loader import load_corpus  # noqa: E402
@@ -90,22 +91,27 @@ def main() -> None:
     benchmark = json.loads(BENCHMARK_PATH.read_text(encoding="utf-8"))
     queries = benchmark["queries"]
 
-    dense_rankings, bm25_rankings, hybrid_rankings = {}, {}, {}
+    dense_rankings, bm25_rankings, hybrid_rankings, reranked_rankings = {}, {}, {}, {}
     for q in queries:
         dense_results = dense.search(
             client, settings.qdrant_collection, q["query"], top_k=DENSE_TOP_K
         )
         bm25_results = bm25.search(q["query"], passages, bm25_index, top_k=BM25_TOP_K)
         hybrid_results = reciprocal_rank_fusion([dense_results, bm25_results], passages_by_key)
+        # Reranker scores the same RRF candidate pool the live pipeline
+        # would use (RERANK_CANDIDATE_POOL), not the full corpus.
+        reranked_results = rerank(q["query"], hybrid_results[:RERANK_CANDIDATE_POOL])
 
         dense_rankings[q["query_id"]] = [result_key(r) for r in dense_results]
         bm25_rankings[q["query_id"]] = [result_key(r) for r in bm25_results]
         hybrid_rankings[q["query_id"]] = [result_key(r) for r in hybrid_results]
+        reranked_rankings[q["query_id"]] = [result_key(r) for r in reranked_results]
 
     results = [
         evaluate_method("dense", dense_rankings, queries),
         evaluate_method("bm25", bm25_rankings, queries),
         evaluate_method("hybrid_rrf", hybrid_rankings, queries),
+        evaluate_method("hybrid_rrf_reranked", reranked_rankings, queries),
     ]
 
     output = {
@@ -118,12 +124,16 @@ def main() -> None:
         "results": results,
         "limitations": [
             "Corpus has only 15 passages - this benchmark demonstrates the "
-            "retrieval pipeline (dense/BM25/RRF) works correctly end-to-end, "
-            "not that it generalizes to a large real-world legal corpus. "
-            "Near-perfect recall at this corpus size is expected and not "
-            "evidence of strong ranking quality at scale.",
+            "retrieval pipeline (dense/BM25/RRF/reranker) works correctly "
+            "end-to-end, not that it generalizes to a large real-world legal "
+            "corpus. Near-perfect recall at this corpus size is expected and "
+            "not evidence of strong ranking quality at scale.",
             "Queries were authored knowing which passage they target - not "
             "collected from real user behavior.",
+            f"hybrid_rrf_reranked reranks only the top-{RERANK_CANDIDATE_POOL} "
+            "RRF candidates (matching what the live pipeline would feed the "
+            "cross-encoder) - it cannot recover a relevant passage RRF ranked "
+            "outside that pool, so its recall is bounded by hybrid_rrf's.",
         ],
     }
 

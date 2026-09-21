@@ -1,5 +1,5 @@
 {
-  "evaluated_at": "2026-09-20T14:31:39.708105+00:00",
+  "evaluated_at": "2026-09-20T14:39:42.772882+00:00",
   "benchmark": "data/benchmark/retrieval/queries.json (15 hand-authored queries against the 15-passage legal corpus)",
   "corpus_size": 15,
   "results": [
@@ -26,10 +26,19 @@
       "recall_at_5": 0.9333,
       "mrr": 0.8639,
       "ndcg_at_5": 0.8754
+    },
+    {
+      "method": "hybrid_rrf_reranked",
+      "recall_at_1": 0.8667,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 0.9333,
+      "ndcg_at_5": 0.9508
     }
   ],
   "limitations": [
-    "Corpus has only 15 passages - this benchmark demonstrates the retrieval pipeline (dense/BM25/RRF) works correctly end-to-end, not that it generalizes to a large real-world legal corpus. Near-perfect recall at this corpus size is expected and not evidence of strong ranking quality at scale.",
-    "Queries were authored knowing which passage they target - not collected from real user behavior."
+    "Corpus has only 15 passages - this benchmark demonstrates the retrieval pipeline (dense/BM25/RRF/reranker) works correctly end-to-end, not that it generalizes to a large real-world legal corpus. Near-perfect recall at this corpus size is expected and not evidence of strong ranking quality at scale.",
+    "Queries were authored knowing which passage they target - not collected from real user behavior.",
+    "hybrid_rrf_reranked reranks only the top-10 RRF candidates (matching what the live pipeline would feed the cross-encoder) - it cannot recover a relevant passage RRF ranked outside that pool, so its recall is bounded by hybrid_rrf's."
   ]
 }

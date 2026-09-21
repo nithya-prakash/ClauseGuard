@@ -17,7 +17,7 @@ Build in progress. See commit history / project memory for milestone-by-mileston
 - [x] Milestone 4 — LoRA fine-tuning pipeline
 - [x] Milestone 5 — Legal corpus ingestion
 - [x] Milestone 6 — Dense + BM25 + RRF retrieval
-- [ ] Milestone 7 — Cross-encoder reranking
+- [x] Milestone 7 — Cross-encoder reranking
 - [ ] Milestone 8 — Evidence sufficiency + citation verification
 - [ ] Milestone 9 — LLM structured reasoning
 - [ ] Milestone 10 — End-to-end pipeline
@@ -80,12 +80,25 @@ Container-to-container traffic uses the standard ports internally.
   them. The report says this explicitly: this demonstrates the pipeline
   works end-to-end, not that hybrid retrieval beats either method alone —
   that comparison needs a larger corpus.
-- Cross-encoder reranking (Milestone 7) is evaluated separately once built.
-- Reproduce (from the host, outside Docker, hence the port override —
-  `QDRANT_URL` defaults to the in-Docker hostname otherwise):
-  `docker compose up -d qdrant && QDRANT_URL=http://localhost:6339 python
-  legal_corpus/ingestion/index_corpus.py && QDRANT_URL=http://localhost:6339
-  python eval/retrieval/evaluate_retrieval.py`
+### Cross-encoder reranking (Milestone 7)
+
+Full pipeline: Dense + BM25 → RRF → top-10 candidate pool → cross-encoder
+(`cross-encoder/mmarco-mMiniLMv2-L12-H384-v1`, small multilingual MiniLM
+trained on mMARCO, covers German) → top-5 evidence. See
+[backend/app/services/reranking](backend/app/services/reranking).
+
+The same 15-query benchmark, evaluated with the reranker added as a 4th
+method in [reports/retrieval/report.md](reports/retrieval/report.md): a
+real, honest improvement — **Recall@1 0.80→0.867, Recall@3/5 0.933→1.0, MRR
+0.864→0.933, NDCG@5 0.875→0.951**. The report notes the reranker can only
+reorder within the top-10 RRF pool it's given, so its recall is bounded by
+hybrid_rrf's recall at that pool size.
+
+Reproduce (from the host, outside Docker, hence the port override —
+`QDRANT_URL` defaults to the in-Docker hostname otherwise):
+`docker compose up -d qdrant && QDRANT_URL=http://localhost:6339 python
+legal_corpus/ingestion/index_corpus.py && QDRANT_URL=http://localhost:6339
+python eval/retrieval/evaluate_retrieval.py`
 
 ## Clause classification (Milestone 3: baseline)
 
