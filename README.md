@@ -18,7 +18,7 @@ Build in progress. See commit history / project memory for milestone-by-mileston
 - [x] Milestone 5 — Legal corpus ingestion
 - [x] Milestone 6 — Dense + BM25 + RRF retrieval
 - [x] Milestone 7 — Cross-encoder reranking
-- [ ] Milestone 8 — Evidence sufficiency + citation verification
+- [x] Milestone 8 — Evidence sufficiency + citation verification
 - [ ] Milestone 9 — LLM structured reasoning
 - [ ] Milestone 10 — End-to-end pipeline
 - [ ] Milestone 11 — Evaluation suite
@@ -99,6 +99,36 @@ Reproduce (from the host, outside Docker, hence the port override —
 `docker compose up -d qdrant && QDRANT_URL=http://localhost:6339 python
 legal_corpus/ingestion/index_corpus.py && QDRANT_URL=http://localhost:6339
 python eval/retrieval/evaluate_retrieval.py`
+
+## Evidence sufficiency & citation verification (Milestone 8)
+
+Two reliability gates around the reasoning stage (Milestone 9), built and
+tested ahead of it so the reasoning stage has something honest to plug into
+rather than being trusted to police itself:
+
+- **Evidence sufficiency**
+  ([evidence_sufficiency.py](backend/app/services/verification/evidence_sufficiency.py)):
+  runs on the reranked evidence before any LLM call. Threshold
+  (`MIN_RERANK_SCORE = 0.0`) is empirically calibrated, not arbitrary — a
+  genuinely relevant query scored **0.955** on the live corpus; two clearly
+  off-topic queries (bike repair, a cake recipe) scored **-5.05** and
+  **-5.80**; a query for a clause type the corpus deliberately doesn't cover
+  (non-compete) scored **-3.94**. Below 0, reasoning is skipped and the
+  clause is reported `INSUFFICIENT_EVIDENCE` rather than let the model guess.
+- **Citation verification**
+  ([citation.py](backend/app/services/verification/citation.py)): for every
+  LLM-claimed finding, checks (1) the cited section exists in the corpus,
+  (2) it was actually retrieved for this clause (not just anywhere in the
+  corpus), (3) the claimed evidence text genuinely appears in that passage
+  (text-overlap heuristic — a deeper semantic check is Milestone 16's job),
+  (4) the citation's source matches. Any failure → `CITATION_UNVERIFIED`
+  with a specific reason, never silently accepted.
+
+Built and tested against constructed adversarial findings (fabricated
+section numbers, citations to real sections that weren't retrieved,
+hallucinated evidence text, malformed citation strings) since Milestone 9's
+real LLM output doesn't exist yet — see
+[backend/tests/test_citation_verification.py](backend/tests/test_citation_verification.py).
 
 ## Clause classification (Milestone 3: baseline)
 

@@ -21,6 +21,7 @@ from pathlib import Path
 
 import httpx
 from lxml import html
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT / "backend"))
@@ -37,10 +38,33 @@ EFFECTIVE_DATE = "2018-05-25"
 
 RAW_PATH = Path(__file__).resolve().parent.parent / "sources" / "dsgvo" / "full_text.html"
 
+# The full regulation page is normally >800KB; EUR-Lex has been observed
+# (2026-09-20) returning HTTP 202 with an empty body under repeated
+# automated requests instead of the real content - a transient upstream
+# quirk, not a client-side bug. Detecting and retrying on it beats silently
+# feeding lxml zero bytes and getting a confusing parser error.
+MIN_EXPECTED_BYTES = 100_000
 
+
+class IncompleteResponseError(RuntimeError):
+    pass
+
+
+@retry(
+    retry=retry_if_exception_type(IncompleteResponseError),
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=2, min=2, max=20),
+    reraise=True,
+)
 def fetch_raw() -> bytes:
     response = httpx.get(URL, headers={"User-Agent": USER_AGENT}, timeout=60, follow_redirects=True)
     response.raise_for_status()
+    if len(response.content) < MIN_EXPECTED_BYTES:
+        raise IncompleteResponseError(
+            f"EUR-Lex returned only {len(response.content)} bytes (status "
+            f"{response.status_code}), expected >= {MIN_EXPECTED_BYTES}. "
+            "This has been observed as a transient upstream issue - retrying."
+        )
     # Returned as bytes (not .text): the page has an XML encoding
     # declaration, which lxml only accepts on bytes input, not str.
     return response.content
