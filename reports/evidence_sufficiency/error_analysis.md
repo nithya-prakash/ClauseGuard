@@ -1,73 +1,58 @@
-# Evidence-sufficiency error analysis (Milestone 16)
+# Evidence-sufficiency error analysis (Milestone 16, session 2)
 
-Every example below is from the full 35-example conclusive pool (calibration +
-validation + test combined - the held-out test split alone is too small, 10 examples,
-to support a useful error analysis on its own). Scores are real
-`retrieve_and_rerank()` output from `scored_dataset.json`.
+Every example below is from the full 49-example conclusive pool (calibration +
+validation + test combined - the held-out test split alone, 13 examples, is too small
+to support a useful error analysis on its own). Scores are real `retrieve_and_rerank()`
+output from `scored_dataset.json`. See `calibration_report.md` for the aggregate
+numbers this breakdown explains.
 
-## Baseline (original threshold=0.0, no length adjustment) - 10 errors
+## What the score-gap feature fixed (5 cases, all real)
 
-| clause_id | error type | coverage | length | top_score | likely cause |
-|---|---|---|---|---|---|
-| general_terms_scope_medium | false positive | INSUFFICIENT | MEDIUM | 0.060 | Length-driven score inflation on a genuinely-uncovered topic - just barely over 0.0. |
-| general_terms_scope_long | false positive | INSUFFICIENT | LONG | 3.248 | Length-driven score inflation, more severe at greater length. |
-| confidentiality_medium | false positive | INSUFFICIENT | MEDIUM | 1.450 | Length-driven score inflation - no confidentiality-specific passage exists in the corpus at all. |
-| confidentiality_long | false positive | INSUFFICIENT | LONG | 4.765 | Length-driven score inflation, the most severe case in the dataset. |
-| non_compete_long | false positive | INSUFFICIENT | LONG | 0.073 | Length-driven score inflation on a topic with no corpus coverage. |
-| non_compete_lexical_trap | false positive | INSUFFICIENT | MEDIUM | 1.585 | **Overly broad similarity / irrelevant retrieved passage**: heavy reuse of "Kündigung"/"Vertrag" vocabulary pulled a high score from BGB §314 (termination) despite the clause being about a legally distinct question (post-contractual competition restriction) that §314 does not address. |
-| ip_assignment_long | false positive | INSUFFICIENT | LONG | 2.256 | Length-driven score inflation on a topic with no corpus coverage. |
-| payment_deadline_short | false negative | PARTIAL | SHORT | -0.399 | **Threshold problem, not a retrieval failure**: BGB §308 Nr.1a is genuinely relevant to short payment-deadline clauses, but the raw threshold (0.0) sits above what a short, generically-worded PARTIAL-coverage clause can score. |
-| payment_deadline_medium | false negative | PARTIAL | MEDIUM | -0.552 | Same threshold problem as above - PARTIAL coverage produces a real but modest score that a flat threshold under-credits. |
-| penalty_for_confidentiality_breach | false negative | PARTIAL | SHORT | -3.372 | **Retrieval failure, not a threshold problem**: BGB §309 Nr.6 (Vertragsstrafe) is the real legal basis for this clause's penalty mechanism, but the query's confidentiality-breach framing dominates retrieval and the penalty-specific passage never surfaces with a competitive score. A threshold change alone cannot fix this - it needs better retrieval for this case, or a query-rewriting step that isolates the enforcement-mechanism sub-topic from the substantive-obligation topic. |
-
-**Pattern**: 7 of 10 baseline errors are false positives, and all 7 are explained by
-the same length-driven score inflation, confirming the Milestone 10/11 hypothesis
-directly. The 3 false negatives are PARTIAL-coverage cases where a flat threshold
-under-credits real-but-modest evidence - a genuinely different cause from the false
-positives.
-
-## Calibrated (logarithmic length penalty) - 4 errors
-
-| clause_id | error type | coverage | length | top_score | likely cause |
-|---|---|---|---|---|---|
-| confidentiality_long | false positive | INSUFFICIENT | LONG | 4.765 | **Still a threshold problem**: 4.765 is high enough that even the log penalty (which removes roughly `2.0 * log(585) ≈ 12.9` points) doesn't fully compensate. This is the single most length-inflated score in the dataset - the length correction helps but doesn't fully cancel it. |
-| payment_deadline_long | false negative | FULL | LONG | 0.495 | **Regression, threshold problem**: this clause's LONG variant has real, specific coverage (BGB §309 Nr.2/3, not just the generic §308 relevance of the short/medium variants - see dataset.json's coverage_note), but its raw score (0.495) is modest for its length, and the log penalty - tuned to suppress genuinely-uncovered long clauses - also suppresses this genuinely-covered one. A cost of using one length-conditioned rule for both directions. |
-| penalty_for_confidentiality_breach | false negative | PARTIAL | SHORT | -3.372 | Unchanged from baseline - see above, this is a retrieval failure, not something any threshold/length adjustment on the EXISTING score can fix. |
-| payment_deadline_medium | false negative | PARTIAL | MEDIUM | -0.552 | Unchanged from baseline - real PARTIAL evidence, modest score, still below the (length-adjusted) bar for a medium-length clause. |
-
-**What actually got fixed** (7 cases, all real): `confidentiality_medium`,
-`general_terms_scope_long`, `general_terms_scope_medium`, `ip_assignment_long`,
-`non_compete_lexical_trap`, `non_compete_long`, `payment_deadline_short`. Notably this
-includes the lexical-overlap adversarial case (`non_compete_lexical_trap`) - the length
-penalty fixed it as a side effect, not because the penalty specifically targets lexical
-overlap, which is worth being honest about: it worked here, but a differently-worded
-lexical-trap example at a shorter length would likely still fool the gate, since lexical
-overlap and clause length are different problems that happened to co-occur in this one
-example.
-
-**What got worse** (1 case): `payment_deadline_long` - a real, disclosed regression, not
-hidden. The single most useful next step this points to (see README's Future Work) is a
-signal beyond raw score + length, e.g. the score gap to the second-best retrieved
-passage (a large gap plausibly indicates a genuinely dominant, specific match regardless
-of length), which N=35 is too small to calibrate responsibly today.
-
-**What's still wrong** (3 cases, honestly unresolved): `confidentiality_long` (false
-positive - the corpus has no confidentiality coverage at all, but the score is too high
-for any length-only penalty to fully suppress), `payment_deadline_medium` and
-`penalty_for_confidentiality_breach` (false negatives - real PARTIAL evidence that a
-single global threshold under-credits). None of these were silently dropped from the
-dataset or reported around - they are the honest remainder.
-
-## Ambiguous examples (excluded from accuracy, reported here for transparency)
-
-| clause_id | top_score | baseline says | calibrated says | note |
+| clause_id | coverage | length | top / second (gap) | why it's fixed |
 |---|---|---|---|---|
-| data_processing_vague | 1.716 | SUFFICIENT | SUFFICIENT | Both agree; whether that's "right" is genuinely undecidable from the clause text alone - see dataset.json's coverage_note. |
-| hybrid_liability_warranty | 0.284 | SUFFICIENT | INSUFFICIENT_EVIDENCE | The two rules disagree - a real example of the calibration changing an outcome where there was no confident ground truth to begin with. |
-| vague_risk_allocation | -2.574 | INSUFFICIENT_EVIDENCE | INSUFFICIENT_EVIDENCE | Both agree. |
-| jurisdiction_only | -1.371 | INSUFFICIENT_EVIDENCE | SUFFICIENT | The two rules disagree. |
-| schriftform_clause | 0.238 | SUFFICIENT | SUFFICIENT | Both agree. |
+| `general_terms_scope_long` | INSUFFICIENT | LONG | 3.248 / 1.871 (1.38) | Length-inflated score, but no single dominant match - the gap correctly signals weak, diffuse relevance rather than a real hit. |
+| `confidentiality_long` | INSUFFICIENT | LONG | 4.765 / 4.734 (0.03) | Near-zero gap is a strong signal here: the top-2 candidates are essentially tied, meaning neither is a genuinely specific match - exactly what a truly uncovered topic should look like. |
+| `ip_assignment_long` | INSUFFICIENT | LONG | 2.256 / ~1.0 (~1.25) | Same pattern - length-inflated top score, no clean single winner. |
+| `non_compete_lexical_trap` | INSUFFICIENT | MEDIUM | 1.585 / 0.158 (1.43) | The adversarial lexical-overlap case (heavy "Kündigung"/"Vertrag" reuse fooling retrieval into a high top score) - the gap wasn't large enough to sustain a false SUFFICIENT once the length penalty also applied. |
+| `payment_deadline_short` | PARTIAL | SHORT | -0.399 / -3.095 (2.70) | A real PARTIAL-coverage case with a genuinely wide margin over the next-best (irrelevant) candidate - correctly pushed to SUFFICIENT. |
 
-No forced true/false label was invented for these 5 examples - see `dataset.json`'s
-`annotation_criteria` for why. They are included here so the calibration's behavior on
-genuinely hard cases is visible, not swept out of the sample.
+## What the score-gap feature broke (2 cases, real, disclosed - not hidden)
+
+| clause_id | coverage | length | top / second (gap) | why it broke |
+|---|---|---|---|---|
+| `warranty_remedy_long` | FULL | LONG | 3.271 / 2.866 (0.41) | Genuinely covered by BGB §309 Nr. 8b (defect-remedy limitation, specifically the notice-deadline and limitation-period enumerated points) - but the corpus's other warranty-adjacent passages (§309's broader Klauselverbote list) also score respectably against this clause, producing a real but modest gap that the beta=1.2 penalty pushed below threshold. |
+| `purpose_limitation_clause_medium` | FULL | MEDIUM | 2.301 / 2.135 (0.17) | Genuinely covered by DSGVO Art. 5(1)(b) - but Art. 6 (lawful basis) is topically adjacent and scores closely, again producing a small, real gap despite genuine coverage. |
+
+**This is the exact failure mode `hybrid_topic_liability_dataprocessing` was
+deliberately added to probe** (see `calibration_report.md`'s Phase 2 section) - a
+clause genuinely covered by more than one relevant corpus passage can show a small
+gap between its top-2 matches even though it IS covered. That specific example
+survived correctly (SUFFICIENT, gap=1.28 was wide enough); these two did not. The
+honest conclusion: the score-gap feature's assumption - "one dominant match = real
+coverage, close competition = not real coverage" - is a real, useful heuristic on
+average (net -3 errors, see below) but not universally true, and topically adjacent
+*and both genuinely relevant* corpus passages are exactly where it can misfire.
+
+## What's still wrong under both methods (5 cases, unchanged, honestly unresolved)
+
+| clause_id | coverage | length | top / second (gap) | cause |
+|---|---|---|---|---|
+| `penalty_for_confidentiality_breach` | PARTIAL | SHORT | -3.372 / -3.899 (0.53) | **Retrieval failure, not a threshold problem**: BGB §309 Nr. 6 (Vertragsstrafe) is the real basis, but the confidentiality-breach framing dominates retrieval and the penalty-specific passage never scores competitively. No threshold/gap adjustment on the EXISTING top-2 scores can fix a retrieval problem. |
+| `confidentiality_penalty_medium` | PARTIAL | MEDIUM | -2.021 / -2.446 (0.43) | Same retrieval failure as above, at MEDIUM length. |
+| `payment_deadline_medium` | PARTIAL | MEDIUM | -0.552 / -2.027 (1.47) | Real PARTIAL evidence (BGB §308 Nr. 1a is generically relevant) but the raw score is too low for even a decent gap to compensate - a threshold problem. |
+| `payment_deadline_long` | FULL | LONG | 0.495 / -2.162 (2.66) | Real, specific coverage (§309 Nr. 2/3) with a genuinely wide gap (2.66) - but the raw top score (0.495) is still too low after the length penalty for a LONG clause. This is the length penalty over-suppressing a genuinely-covered long clause, a limitation carried over unchanged from session 1. |
+| `confidentiality_extreme_long` | INSUFFICIENT | LONG (865 chars, the longest in the dataset) | 7.785 / 7.444 (0.34) | **The score-gap feature's real ceiling**: the gap here is small (0.34, "should" signal no dominant match), but the raw top score is so extremely length-inflated (7.785, the highest INSUFFICIENT score in the dataset) that it clears the threshold regardless. A sufficiently large raw score can still dominate a small gap penalty - the length penalty alone isn't strong enough at this extreme, and this is the single most severe remaining false positive in the dataset. |
+
+## Net effect
+
+Full population: 10 errors (length-penalty-only) → 7 errors (length + score gap) = **5
+fixed, 2 regressed, 5 unchanged, net -3 errors**. Matches the reported accuracy
+improvement (0.796→0.857 = (49-10)/49 → (49-7)/49) exactly - not a rounding
+coincidence, a direct recount.
+
+## Ambiguous examples (excluded from accuracy, reported for transparency)
+
+See `reports/evidence_sufficiency/results.json`'s
+`ambiguous_examples_not_scored_for_accuracy` for the full list (5 examples) and how
+both the length-only and length+gap methods currently treat each one - no forced
+true/false label was invented for any of them.

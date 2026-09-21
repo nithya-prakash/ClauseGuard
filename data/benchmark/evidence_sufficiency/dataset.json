@@ -1,5 +1,5 @@
 {
-  "_provenance": "Hand-authored by the developer for Milestone 16 (evidence-sufficiency calibration), following the same synthetic-data convention as training/datasets/clause_classification/dataset.json and data/benchmark/segmentation/ground_truth.json - not real contracts, not legally reviewed, clearly labeled as such. Built specifically to test the hypothesis raised in reports/end_to_end/results.json (0.30 evidence-sufficiency accuracy): that the MIN_RERANK_SCORE=0.0 threshold, calibrated on short standalone queries, behaves differently on full-length clause text. Most clauses are authored as SHORT/MEDIUM/LONG variants of the SAME legal content (kernel + elaboration + boilerplate) so clause length is isolated as a variable while legal substance - and therefore true coverage - stays constant within each family, which is a cleaner test of the length hypothesis than unrelated independent examples would be.",
+  "_provenance": "Hand-authored by the developer for Milestone 16 (evidence-sufficiency calibration), following the same synthetic-data convention as training/datasets/clause_classification/dataset.json and data/benchmark/segmentation/ground_truth.json - not real contracts, not legally reviewed, clearly labeled as such. Built specifically to test the hypothesis raised in reports/end_to_end/results.json (0.30 evidence-sufficiency accuracy): that the MIN_RERANK_SCORE=0.0 threshold, calibrated on short standalone queries, behaves differently on full-length clause text. Most clauses are authored as SHORT/MEDIUM/LONG variants of the SAME legal content (kernel + elaboration + boilerplate) so clause length is isolated as a variable while legal substance - and therefore true coverage - stays constant within each family, which is a cleaner test of the length hypothesis than unrelated independent examples would be. GROWN in a follow-up session (Milestone 16, final AI evaluation) from 35 to 49 conclusive examples (54 total) with real, defensible additions grounded in previously-unused corpus text (BGB Sec. 305c, Sec. 310, DSGVO Art. 5, Art. 6) - not random padding. New examples also specifically target the score-gap hypothesis (hybrid_topic_liability_dataprocessing tests whether a genuinely FULL clause can still show a small score gap between its top two matches) and fill previously-thin categories (PARTIAL, TERMINATION, INTELLECTUAL_PROPERTY).",
   "annotation_criteria": {
     "FULL": "A currently-indexed corpus passage (legal_corpus/metadata/corpus.json, 15 passages) directly and specifically addresses this clause's legal content - not just the general topic area.",
     "PARTIAL": "A currently-indexed passage provides real, specific, on-topic legal relevance (e.g., an enumerated Klauselverbot in BGB Sec. 308/309 that names this exact type of restriction) but the corpus lacks a dedicated chapter for the clause's broader subject (e.g., no standalone Gewaehrleistungsrecht or Zahlungsrecht section). This is a real finding, not a hedge: BGB Sec. 309 explicitly enumerates warranty-remedy restrictions (Nr. 8b) and short-term price/payment-deadline restrictions (Nr. 1), which the original Milestone 10 ground truth (corpus_covered=false for PAYMENT and WARRANTY) did not account for.",
@@ -8,57 +8,437 @@
   },
   "expected_sufficient_mapping": "FULL -> true, PARTIAL -> true (real defensible legal basis exists, even if partial), INSUFFICIENT -> false, AMBIGUOUS -> null (excluded from accuracy, reported as its own category)",
   "clauses": [
-    {"clause_id": "general_terms_scope_short", "clause_type": "GENERAL_TERMS", "coverage_type": "INSUFFICIENT", "expected_sufficient": false, "coverage_note": "Subject-matter/scope definition - no corpus passage addresses defining what a contract is about.", "clause_text": "Gegenstand dieses Vertrages ist die Erbringung von Beratungsleistungen im Bereich der Softwareentwicklung durch den Auftragnehmer für den Auftraggeber."},
-    {"clause_id": "general_terms_scope_medium", "clause_type": "GENERAL_TERMS", "coverage_type": "INSUFFICIENT", "expected_sufficient": false, "coverage_note": "Same as short variant, plus scope elaboration - still no corpus coverage.", "clause_text": "Gegenstand dieses Vertrages ist die Erbringung von Beratungsleistungen im Bereich der Softwareentwicklung durch den Auftragnehmer für den Auftraggeber. Der genaue Leistungsumfang ergibt sich aus der als Anlage 1 beigefügten Leistungsbeschreibung, die Bestandteil dieses Vertrages ist."},
-    {"clause_id": "general_terms_scope_long", "clause_type": "GENERAL_TERMS", "coverage_type": "INSUFFICIENT", "expected_sufficient": false, "coverage_note": "Same legal content as short/medium, with boilerplate elaboration added purely to test length effects - coverage does not change.", "clause_text": "Gegenstand dieses Vertrages ist die Erbringung von Beratungsleistungen im Bereich der Softwareentwicklung durch den Auftragnehmer für den Auftraggeber. Der genaue Leistungsumfang ergibt sich aus der als Anlage 1 beigefügten Leistungsbeschreibung, die Bestandteil dieses Vertrages ist. Nebenleistungen, die zur ordnungsgemäßen Erfüllung des Vertragszwecks erforderlich sind, gelten auch dann als vom Vertragsgegenstand umfasst, wenn sie in der Leistungsbeschreibung nicht ausdrücklich genannt sind, sofern sie nach Treu und Glauben unter Berücksichtigung der Verkehrssitte vom Auftragnehmer zu erwarten sind. Änderungen des Leistungsumfangs bedürfen der Schriftform und der vorherigen Zustimmung beider Parteien."},
-
-    {"clause_id": "general_terms_severability_short", "clause_type": "GENERAL_TERMS", "coverage_type": "FULL", "expected_sufficient": true, "coverage_note": "BGB Sec. 306 (Rechtsfolgen bei Unwirksamkeit) directly addresses severability of AGB provisions.", "clause_text": "Sollte eine Bestimmung dieses Vertrages unwirksam sein oder werden, so bleibt die Wirksamkeit der übrigen Bestimmungen hiervon unberührt."},
-    {"clause_id": "general_terms_severability_medium", "clause_type": "GENERAL_TERMS", "coverage_type": "FULL", "expected_sufficient": true, "coverage_note": "Same as short, plus replacement-provision language - still directly BGB Sec. 306.", "clause_text": "Sollte eine Bestimmung dieses Vertrages unwirksam sein oder werden, so bleibt die Wirksamkeit der übrigen Bestimmungen hiervon unberührt. An die Stelle der unwirksamen Bestimmung tritt eine Regelung, die dem wirtschaftlichen Zweck der unwirksamen Bestimmung am nächsten kommt."},
-    {"clause_id": "general_terms_severability_long", "clause_type": "GENERAL_TERMS", "coverage_type": "FULL", "expected_sufficient": true, "coverage_note": "Same core severability content, extended with jurisdiction/governing-law boilerplate - this is the direct analogue of the original Milestone 10 benchmark's Sec. 10, which the un-calibrated system incorrectly scored INSUFFICIENT (a real false negative in the current results.json).", "clause_text": "Sollte eine Bestimmung dieses Vertrages unwirksam sein oder werden, so bleibt die Wirksamkeit der übrigen Bestimmungen hiervon unberührt. An die Stelle der unwirksamen Bestimmung tritt eine Regelung, die dem wirtschaftlichen Zweck der unwirksamen Bestimmung am nächsten kommt. Dies gilt entsprechend für den Fall, dass sich der Vertrag als lückenhaft erweist. Gerichtsstand für alle Streitigkeiten aus oder im Zusammenhang mit diesem Vertrag ist, soweit gesetzlich zulässig, der Sitz des Auftragnehmers. Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts."},
-
-    {"clause_id": "general_terms_agb_incorporation_short", "clause_type": "GENERAL_TERMS", "coverage_type": "FULL", "expected_sufficient": true, "coverage_note": "BGB Sec. 305 directly governs when AGB become part of a contract.", "clause_text": "Diese Allgemeinen Geschäftsbedingungen werden nur dann Vertragsbestandteil, wenn der Auftraggeber bei Vertragsschluss ausdrücklich auf sie hingewiesen wurde und die Möglichkeit hatte, in zumutbarer Weise von ihrem Inhalt Kenntnis zu nehmen."},
-    {"clause_id": "general_terms_agb_incorporation_long", "clause_type": "GENERAL_TERMS", "coverage_type": "FULL", "expected_sufficient": true, "coverage_note": "Same core content, extended with surprising-clause language that maps directly to BGB Sec. 305c.", "clause_text": "Diese Allgemeinen Geschäftsbedingungen werden nur dann Vertragsbestandteil, wenn der Auftraggeber bei Vertragsschluss ausdrücklich auf sie hingewiesen wurde und die Möglichkeit hatte, in zumutbarer Weise von ihrem Inhalt Kenntnis zu nehmen. Bestimmungen in diesen Geschäftsbedingungen, die nach den Umständen, insbesondere nach dem äußeren Erscheinungsbild des Vertrages, so ungewöhnlich sind, dass der Vertragspartner des Verwenders mit ihnen nicht zu rechnen braucht, werden nicht Vertragsbestandteil. Bei Zweifeln über die Auslegung gehen individuelle Vertragsabreden diesen Geschäftsbedingungen stets vor."},
-    {"clause_id": "general_terms_individual_agreement", "clause_type": "GENERAL_TERMS", "coverage_type": "FULL", "expected_sufficient": true, "coverage_note": "BGB Sec. 305b (Vorrang der Individualabrede) directly on point.", "clause_text": "Individuelle Vertragsabreden der Parteien haben stets Vorrang vor den Bestimmungen dieser Allgemeinen Geschäftsbedingungen."},
-
-    {"clause_id": "payment_deadline_short", "clause_type": "PAYMENT", "coverage_type": "PARTIAL", "expected_sufficient": true, "coverage_note": "BGB Sec. 308 Nr. 1a addresses unreasonably long payment-deadline reservations with an explicit 30-day reference point - real, specific relevance, but no dedicated Zahlungsrecht chapter exists in the corpus.", "clause_text": "Rechnungen sind innerhalb von 14 Tagen nach Zugang ohne Abzug zur Zahlung fällig."},
-    {"clause_id": "payment_deadline_medium", "clause_type": "PAYMENT", "coverage_type": "PARTIAL", "expected_sufficient": true, "coverage_note": "Same as short, plus interest-on-arrears language - still generically relevant via Sec. 308, not a specific enumerated match.", "clause_text": "Rechnungen sind innerhalb von 14 Tagen nach Zugang ohne Abzug zur Zahlung fällig. Bei Zahlungsverzug ist der Auftragnehmer berechtigt, Verzugszinsen in gesetzlicher Höhe zu berechnen."},
-    {"clause_id": "payment_deadline_long", "clause_type": "PAYMENT", "coverage_type": "FULL", "expected_sufficient": true, "coverage_note": "The added set-off/retention restriction directly matches BGB Sec. 309 Nr. 2/3 (Leistungsverweigerungsrechte, Aufrechnungsverbot) - a specific enumerated match, stronger than the short/medium variants.", "clause_text": "Rechnungen sind innerhalb von 14 Tagen nach Zugang ohne Abzug zur Zahlung fällig. Bei Zahlungsverzug ist der Auftragnehmer berechtigt, Verzugszinsen in gesetzlicher Höhe zu berechnen. Der Auftraggeber ist nur zur Aufrechnung berechtigt, wenn seine Gegenansprüche rechtskräftig festgestellt, unbestritten oder von dem Auftragnehmer anerkannt sind. Ein Zurückbehaltungsrecht steht dem Auftraggeber nur wegen Gegenansprüchen aus demselben Vertragsverhältnis zu."},
-    {"clause_id": "payment_method_short", "clause_type": "PAYMENT", "coverage_type": "INSUFFICIENT", "expected_sufficient": false, "coverage_note": "Payment method/currency mechanics - no BGB provision in the corpus concerns this.", "clause_text": "Sämtliche Zahlungen erfolgen in Euro per Banküberweisung auf das vom Auftragnehmer benannte Konto."},
-
-    {"clause_id": "termination_cause_short", "clause_type": "TERMINATION", "coverage_type": "FULL", "expected_sufficient": true, "coverage_note": "BGB Sec. 314 (Kündigung von Dauerschuldverhältnissen aus wichtigem Grund) directly on point.", "clause_text": "Jede Partei kann diesen Vertrag aus wichtigem Grund ohne Einhaltung einer Kündigungsfrist kündigen, wenn ihr unter Berücksichtigung aller Umstände des Einzelfalls die Fortsetzung des Vertragsverhältnisses bis zum Ablauf der Kündigungsfrist nicht zugemutet werden kann."},
-    {"clause_id": "termination_cause_medium", "clause_type": "TERMINATION", "coverage_type": "FULL", "expected_sufficient": true, "coverage_note": "Same as short plus a form requirement - still Sec. 314.", "clause_text": "Jede Partei kann diesen Vertrag aus wichtigem Grund ohne Einhaltung einer Kündigungsfrist kündigen, wenn ihr unter Berücksichtigung aller Umstände des Einzelfalls die Fortsetzung des Vertragsverhältnisses bis zum Ablauf der Kündigungsfrist nicht zugemutet werden kann. Die Kündigung bedarf der Schriftform."},
-    {"clause_id": "termination_cause_long", "clause_type": "TERMINATION", "coverage_type": "FULL", "expected_sufficient": true, "coverage_note": "Same core content with examples of what constitutes an important reason - still Sec. 314.", "clause_text": "Jede Partei kann diesen Vertrag aus wichtigem Grund ohne Einhaltung einer Kündigungsfrist kündigen, wenn ihr unter Berücksichtigung aller Umstände des Einzelfalls die Fortsetzung des Vertragsverhältnisses bis zum Ablauf der Kündigungsfrist nicht zugemutet werden kann. Die Kündigung bedarf der Schriftform. Ein wichtiger Grund liegt insbesondere vor, wenn eine Partei gegen wesentliche Pflichten aus diesem Vertrag verstößt und diesen Verstoß trotz schriftlicher Abmahnung mit angemessener Fristsetzung nicht behebt, oder wenn über das Vermögen einer Partei ein Insolvenzverfahren eröffnet oder mangels Masse abgelehnt wird."},
-
-    {"clause_id": "liability_limitation_short", "clause_type": "LIABILITY", "coverage_type": "FULL", "expected_sufficient": true, "coverage_note": "BGB Sec. 276/280 (general fault/damages standard) directly on point.", "clause_text": "Der Auftragnehmer haftet nur für Vorsatz und grobe Fahrlässigkeit."},
-    {"clause_id": "liability_limitation_medium", "clause_type": "LIABILITY", "coverage_type": "FULL", "expected_sufficient": true, "coverage_note": "Same as short plus a foreseeable-damage cap for slight negligence on cardinal duties - still Sec. 276/280.", "clause_text": "Der Auftragnehmer haftet nur für Vorsatz und grobe Fahrlässigkeit. Für leichte Fahrlässigkeit haftet der Auftragnehmer nur bei Verletzung wesentlicher Vertragspflichten, begrenzt auf den vorhersehbaren, vertragstypischen Schaden."},
-    {"clause_id": "liability_limitation_long", "clause_type": "LIABILITY", "coverage_type": "FULL", "expected_sufficient": true, "coverage_note": "The life/health/gross-negligence carve-out almost exactly mirrors BGB Sec. 309 Nr. 7a's enumerated wording - a specific, not just general, match.", "clause_text": "Der Auftragnehmer haftet nur für Vorsatz und grobe Fahrlässigkeit. Für leichte Fahrlässigkeit haftet der Auftragnehmer nur bei Verletzung wesentlicher Vertragspflichten, begrenzt auf den vorhersehbaren, vertragstypischen Schaden. Die vorstehenden Haftungsbeschränkungen gelten nicht für Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit sowie nicht, soweit der Auftragnehmer Mängel arglistig verschwiegen oder eine Garantie für die Beschaffenheit der Leistung übernommen hat. Die Haftung nach dem Produkthaftungsgesetz bleibt unberührt."},
-
-    {"clause_id": "warranty_remedy_short", "clause_type": "WARRANTY", "coverage_type": "PARTIAL", "expected_sufficient": true, "coverage_note": "BGB Sec. 309 Nr. 8b bb restricts limiting defect remedies to repair/Nacherfüllung alone - real relevance, but whether THIS exact wording is compliant or void is not resolvable from the clause text alone, so PARTIAL not FULL.", "clause_text": "Ansprüche des Auftraggebers wegen Mängeln der Leistung sind auf das Recht zur Nacherfüllung beschränkt."},
-    {"clause_id": "warranty_remedy_medium", "clause_type": "WARRANTY", "coverage_type": "FULL", "expected_sufficient": true, "coverage_note": "Adding the fallback Minderung/Rücktritt right after failed Nacherfüllung is exactly the carve-out BGB Sec. 309 Nr. 8b bb requires to remain valid - a specific, not just general, match.", "clause_text": "Ansprüche des Auftraggebers wegen Mängeln der Leistung sind auf das Recht zur Nacherfüllung beschränkt. Schlägt die Nacherfüllung fehl, kann der Auftraggeber die Vergütung mindern oder vom Vertrag zurücktreten."},
-    {"clause_id": "warranty_remedy_long", "clause_type": "WARRANTY", "coverage_type": "FULL", "expected_sufficient": true, "coverage_note": "The short defect-notice deadline and shortened limitation period map directly to BGB Sec. 309 Nr. 8b ee/ff (Ausschlussfrist, Verjährungserleichterung).", "clause_text": "Ansprüche des Auftraggebers wegen Mängeln der Leistung sind auf das Recht zur Nacherfüllung beschränkt. Schlägt die Nacherfüllung fehl, kann der Auftraggeber die Vergütung mindern oder vom Vertrag zurücktreten. Offensichtliche Mängel sind dem Auftragnehmer innerhalb von zwei Wochen nach Ablieferung schriftlich anzuzeigen; verdeckte Mängel unverzüglich nach ihrer Entdeckung. Die Verjährungsfrist für Mängelansprüche beträgt zwölf Monate ab Abnahme, soweit gesetzlich zulässig."},
-    {"clause_id": "warranty_spec_short", "clause_type": "WARRANTY", "coverage_type": "INSUFFICIENT", "expected_sufficient": false, "coverage_note": "Describing agreed specifications (not limiting remedies) is not a Klauselverbot topic - no corpus coverage.", "clause_text": "Die Leistungsbeschreibung in Anlage 1 ist maßgeblich für die vereinbarte Beschaffenheit der Leistung."},
-
-    {"clause_id": "confidentiality_short", "clause_type": "CONFIDENTIALITY", "coverage_type": "INSUFFICIENT", "expected_sufficient": false, "coverage_note": "No BGB/DSGVO passage in the corpus addresses confidentiality/trade-secret obligations (GeschGehG is not in the corpus).", "clause_text": "Die Parteien verpflichten sich, alle im Rahmen dieses Vertrages ausgetauschten vertraulichen Informationen streng vertraulich zu behandeln und nicht an Dritte weiterzugeben."},
-    {"clause_id": "confidentiality_medium", "clause_type": "CONFIDENTIALITY", "coverage_type": "INSUFFICIENT", "expected_sufficient": false, "coverage_note": "Same as short plus a post-contract duration - still no corpus coverage.", "clause_text": "Die Parteien verpflichten sich, alle im Rahmen dieses Vertrages ausgetauschten vertraulichen Informationen streng vertraulich zu behandeln und nicht an Dritte weiterzugeben. Diese Verpflichtung gilt auch für einen Zeitraum von drei Jahren nach Beendigung dieses Vertrages."},
-    {"clause_id": "confidentiality_long", "clause_type": "CONFIDENTIALITY", "coverage_type": "INSUFFICIENT", "expected_sufficient": false, "coverage_note": "Same legal content, extended definition of what counts as confidential and carve-outs - coverage does not change; this is the clearest length-hypothesis test since it is genuinely INSUFFICIENT at every length.", "clause_text": "Die Parteien verpflichten sich, alle im Rahmen dieses Vertrages ausgetauschten vertraulichen Informationen streng vertraulich zu behandeln und nicht an Dritte weiterzugeben. Diese Verpflichtung gilt auch für einen Zeitraum von drei Jahren nach Beendigung dieses Vertrages. Als vertraulich gelten alle Informationen, die als solche gekennzeichnet sind oder deren Vertraulichkeit sich aus den Umständen ergibt, insbesondere technisches Know-how, Geschäftsgeheimnisse und Kundendaten. Ausgenommen sind Informationen, die bereits öffentlich bekannt waren oder unabhängig entwickelt wurden."},
-
-    {"clause_id": "data_processing_short", "clause_type": "DATA_PROCESSING", "coverage_type": "FULL", "expected_sufficient": true, "coverage_note": "DSGVO Art. 28/32 directly on point (processor instructions, technical/organizational measures).", "clause_text": "Der Auftragnehmer verarbeitet personenbezogene Daten ausschließlich auf dokumentierte Weisung des Auftraggebers und trifft geeignete technische und organisatorische Maßnahmen zum Schutz dieser Daten."},
-    {"clause_id": "data_processing_medium", "clause_type": "DATA_PROCESSING", "coverage_type": "FULL", "expected_sufficient": true, "coverage_note": "Same as short plus a confidentiality-of-staff commitment - still Art. 28.", "clause_text": "Der Auftragnehmer verarbeitet personenbezogene Daten ausschließlich auf dokumentierte Weisung des Auftraggebers und trifft geeignete technische und organisatorische Maßnahmen zum Schutz dieser Daten. Der Auftragnehmer gewährleistet, dass sich die zur Verarbeitung befugten Personen zur Vertraulichkeit verpflichtet haben."},
-    {"clause_id": "data_processing_long", "clause_type": "DATA_PROCESSING", "coverage_type": "FULL", "expected_sufficient": true, "coverage_note": "Adds data-subject-rights support and breach notification - directly references DSGVO Art. 33/34, still within the corpus's DSGVO coverage.", "clause_text": "Der Auftragnehmer verarbeitet personenbezogene Daten ausschließlich auf dokumentierte Weisung des Auftraggebers und trifft geeignete technische und organisatorische Maßnahmen zum Schutz dieser Daten. Der Auftragnehmer gewährleistet, dass sich die zur Verarbeitung befugten Personen zur Vertraulichkeit verpflichtet haben. Der Auftragnehmer unterstützt den Auftraggeber bei der Erfüllung von Betroffenenrechten sowie bei der Meldung von Datenschutzverletzungen gemäß Art. 33 und 34 DSGVO und unterzieht sich Kontrollen einschließlich Inspektionen, die vom Auftraggeber durchgeführt werden."},
-    {"clause_id": "data_processing_vague", "clause_type": "DATA_PROCESSING", "coverage_type": "AMBIGUOUS", "expected_sufficient": null, "coverage_note": "Too generic to confidently map to Art. 28/32's specific processor obligations, but topically in the DSGVO domain the corpus does cover - a reasonable annotator could go either way.", "clause_text": "Die Parteien beachten bei der Durchführung dieses Vertrages die geltenden datenschutzrechtlichen Bestimmungen."},
-
-    {"clause_id": "non_compete_short", "clause_type": "NON_COMPETE", "coverage_type": "INSUFFICIENT", "expected_sufficient": false, "coverage_note": "Would need Sec. 74 HGB or Sec. 138 BGB (Sittenwidrigkeit) - neither is in the corpus.", "clause_text": "Der Auftragnehmer verpflichtet sich, für die Dauer von zwei Jahren nach Beendigung dieses Vertrages keine Konkurrenztätigkeit auszuüben."},
-    {"clause_id": "non_compete_long", "clause_type": "NON_COMPETE", "coverage_type": "INSUFFICIENT", "expected_sufficient": false, "coverage_note": "Same legal content, extended with geographic scope and penalty language - still no corpus coverage regardless of length.", "clause_text": "Der Auftragnehmer verpflichtet sich, für die Dauer von zwei Jahren nach Beendigung dieses Vertrages keine Konkurrenztätigkeit auszuüben. Dieses Wettbewerbsverbot gilt räumlich für das Gebiet der Bundesrepublik Deutschland und umfasst insbesondere die Anbahnung von Geschäftsbeziehungen zu Kunden, mit denen der Auftragnehmer während der Vertragslaufzeit in Kontakt stand. Für jeden Verstoß ist eine Vertragsstrafe in Höhe von 25.000 EUR zu zahlen."},
-    {"clause_id": "non_compete_lexical_trap", "clause_type": "NON_COMPETE", "coverage_type": "INSUFFICIENT", "expected_sufficient": false, "coverage_note": "Adversarial case: heavy use of 'Kündigung'/'Vertrag' vocabulary that lexically overlaps with BGB Sec. 314 (termination), even though the actual legal question - post-contractual competition restriction - has no corpus coverage at all. Tests whether retrieval is fooled by lexical overlap into a false SUFFICIENT.", "clause_text": "Nach Kündigung dieses Vertrages ist es dem Auftragnehmer für die Dauer von zwei Jahren untersagt, in Konkurrenz zum Auftraggeber tätig zu werden oder Kunden des Auftraggebers abzuwerben, unabhängig davon, aus welchem Grund die Kündigung dieses Vertrages erfolgt ist."},
-
-    {"clause_id": "ip_assignment_short", "clause_type": "INTELLECTUAL_PROPERTY", "coverage_type": "INSUFFICIENT", "expected_sufficient": false, "coverage_note": "UrhG is not in the corpus - no coverage.", "clause_text": "Sämtliche im Rahmen dieses Vertrages entstehenden Urheberrechte und sonstigen Schutzrechte stehen dem Auftraggeber zu."},
-    {"clause_id": "ip_assignment_long", "clause_type": "INTELLECTUAL_PROPERTY", "coverage_type": "INSUFFICIENT", "expected_sufficient": false, "coverage_note": "Same legal content, extended with usage-rights and pre-existing-IP carve-out language - still no corpus coverage.", "clause_text": "Sämtliche im Rahmen dieses Vertrages entstehenden Urheberrechte und sonstigen Schutzrechte stehen dem Auftraggeber zu. Der Auftragnehmer räumt dem Auftraggeber an bereits vor Vertragsbeginn bestehenden Schutzrechten ein einfaches, zeitlich und räumlich unbeschränktes Nutzungsrecht ein, soweit dies zur Nutzung der Vertragsleistung erforderlich ist. Rechte Dritter bleiben hiervon unberührt."},
-
-    {"clause_id": "hybrid_liability_warranty", "clause_type": "LIABILITY", "coverage_type": "AMBIGUOUS", "expected_sufficient": null, "coverage_note": "Mixes a liability exclusion (clearly covered, Sec. 276/280/309 Nr.7) with a warranty-period shortening (also covered, Sec. 309 Nr.8b ff) in one paragraph - genuinely covered content, but classifying which single corpus passage 'is the' evidence is ambiguous, and the clause also touches on Vertragsstrafe fairness (Sec. 309 Nr.6), making this a defensible edge case rather than a clean FULL/PARTIAL call.", "clause_text": "Die Haftung des Auftragnehmers ist auf Vorsatz und grobe Fahrlässigkeit beschränkt; die Verjährungsfrist für Mängelansprüche beträgt abweichend von der gesetzlichen Regelung sechs Monate ab Ablieferung, und für jeden Fall einer schuldhaften Pflichtverletzung ist eine Vertragsstrafe von 5.000 EUR zu zahlen."},
-    {"clause_id": "vague_risk_allocation", "clause_type": "GENERAL_TERMS", "coverage_type": "AMBIGUOUS", "expected_sufficient": null, "coverage_note": "Extremely generic risk-allocation language - could be read as invoking Sec. 276's fault standard, or as too vague to map to any specific passage. A reasonable annotator could defensibly go either way.", "clause_text": "Jede Partei trägt das Risiko für die von ihr zu vertretenden Umstände."},
-    {"clause_id": "jurisdiction_only", "clause_type": "GENERAL_TERMS", "coverage_type": "AMBIGUOUS", "expected_sufficient": null, "coverage_note": "A bare choice-of-law clause with no severability/incorporation content. Choice-of-law clauses in AGB can in principle be subject to Sec. 307 fairness control, but this single sentence has too little content to confidently say the corpus's AGB-control passages are 'the' relevant evidence versus irrelevant.", "clause_text": "Es gilt das Recht der Bundesrepublik Deutschland."},
-    {"clause_id": "schriftform_clause", "clause_type": "GENERAL_TERMS", "coverage_type": "AMBIGUOUS", "expected_sufficient": null, "coverage_note": "BGB Sec. 309 Nr.13 addresses form requirements for declarations TO the user (Verwender), not general contract-modification form clauses - close enough that a careless read might call it covered, but not actually the same rule. A genuinely close call.", "clause_text": "Änderungen und Ergänzungen dieses Vertrages bedürfen der Schriftform."},
-
-    {"clause_id": "penalty_for_confidentiality_breach", "clause_type": "CONFIDENTIALITY", "coverage_type": "PARTIAL", "expected_sufficient": true, "coverage_note": "The underlying confidentiality obligation itself has no corpus coverage, but the Vertragsstrafe (contractual penalty) mechanism for breaching it is specifically addressed by BGB Sec. 309 Nr. 6 - a real but narrow legal basis that covers the penalty clause, not the confidentiality duty it attaches to. A nuanced case showing topic-label coverage and mechanism coverage can diverge.", "clause_text": "Der Auftragnehmer zahlt eine Vertragsstrafe von 10.000 EUR für jeden Fall der schuldhaften Verletzung der Verschwiegenheitspflicht."}
+    {
+      "clause_id": "general_terms_scope_short",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "Subject-matter/scope definition - no corpus passage addresses defining what a contract is about.",
+      "clause_text": "Gegenstand dieses Vertrages ist die Erbringung von Beratungsleistungen im Bereich der Softwareentwicklung durch den Auftragnehmer für den Auftraggeber."
+    },
+    {
+      "clause_id": "general_terms_scope_medium",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "Same as short variant, plus scope elaboration - still no corpus coverage.",
+      "clause_text": "Gegenstand dieses Vertrages ist die Erbringung von Beratungsleistungen im Bereich der Softwareentwicklung durch den Auftragnehmer für den Auftraggeber. Der genaue Leistungsumfang ergibt sich aus der als Anlage 1 beigefügten Leistungsbeschreibung, die Bestandteil dieses Vertrages ist."
+    },
+    {
+      "clause_id": "general_terms_scope_long",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "Same legal content as short/medium, with boilerplate elaboration added purely to test length effects - coverage does not change.",
+      "clause_text": "Gegenstand dieses Vertrages ist die Erbringung von Beratungsleistungen im Bereich der Softwareentwicklung durch den Auftragnehmer für den Auftraggeber. Der genaue Leistungsumfang ergibt sich aus der als Anlage 1 beigefügten Leistungsbeschreibung, die Bestandteil dieses Vertrages ist. Nebenleistungen, die zur ordnungsgemäßen Erfüllung des Vertragszwecks erforderlich sind, gelten auch dann als vom Vertragsgegenstand umfasst, wenn sie in der Leistungsbeschreibung nicht ausdrücklich genannt sind, sofern sie nach Treu und Glauben unter Berücksichtigung der Verkehrssitte vom Auftragnehmer zu erwarten sind. Änderungen des Leistungsumfangs bedürfen der Schriftform und der vorherigen Zustimmung beider Parteien."
+    },
+    {
+      "clause_id": "general_terms_severability_short",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "BGB Sec. 306 (Rechtsfolgen bei Unwirksamkeit) directly addresses severability of AGB provisions.",
+      "clause_text": "Sollte eine Bestimmung dieses Vertrages unwirksam sein oder werden, so bleibt die Wirksamkeit der übrigen Bestimmungen hiervon unberührt."
+    },
+    {
+      "clause_id": "general_terms_severability_medium",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "Same as short, plus replacement-provision language - still directly BGB Sec. 306.",
+      "clause_text": "Sollte eine Bestimmung dieses Vertrages unwirksam sein oder werden, so bleibt die Wirksamkeit der übrigen Bestimmungen hiervon unberührt. An die Stelle der unwirksamen Bestimmung tritt eine Regelung, die dem wirtschaftlichen Zweck der unwirksamen Bestimmung am nächsten kommt."
+    },
+    {
+      "clause_id": "general_terms_severability_long",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "Same core severability content, extended with jurisdiction/governing-law boilerplate - this is the direct analogue of the original Milestone 10 benchmark's Sec. 10, which the un-calibrated system incorrectly scored INSUFFICIENT (a real false negative in the current results.json).",
+      "clause_text": "Sollte eine Bestimmung dieses Vertrages unwirksam sein oder werden, so bleibt die Wirksamkeit der übrigen Bestimmungen hiervon unberührt. An die Stelle der unwirksamen Bestimmung tritt eine Regelung, die dem wirtschaftlichen Zweck der unwirksamen Bestimmung am nächsten kommt. Dies gilt entsprechend für den Fall, dass sich der Vertrag als lückenhaft erweist. Gerichtsstand für alle Streitigkeiten aus oder im Zusammenhang mit diesem Vertrag ist, soweit gesetzlich zulässig, der Sitz des Auftragnehmers. Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts."
+    },
+    {
+      "clause_id": "general_terms_agb_incorporation_short",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "BGB Sec. 305 directly governs when AGB become part of a contract.",
+      "clause_text": "Diese Allgemeinen Geschäftsbedingungen werden nur dann Vertragsbestandteil, wenn der Auftraggeber bei Vertragsschluss ausdrücklich auf sie hingewiesen wurde und die Möglichkeit hatte, in zumutbarer Weise von ihrem Inhalt Kenntnis zu nehmen."
+    },
+    {
+      "clause_id": "general_terms_agb_incorporation_long",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "Same core content, extended with surprising-clause language that maps directly to BGB Sec. 305c.",
+      "clause_text": "Diese Allgemeinen Geschäftsbedingungen werden nur dann Vertragsbestandteil, wenn der Auftraggeber bei Vertragsschluss ausdrücklich auf sie hingewiesen wurde und die Möglichkeit hatte, in zumutbarer Weise von ihrem Inhalt Kenntnis zu nehmen. Bestimmungen in diesen Geschäftsbedingungen, die nach den Umständen, insbesondere nach dem äußeren Erscheinungsbild des Vertrages, so ungewöhnlich sind, dass der Vertragspartner des Verwenders mit ihnen nicht zu rechnen braucht, werden nicht Vertragsbestandteil. Bei Zweifeln über die Auslegung gehen individuelle Vertragsabreden diesen Geschäftsbedingungen stets vor."
+    },
+    {
+      "clause_id": "general_terms_individual_agreement",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "BGB Sec. 305b (Vorrang der Individualabrede) directly on point.",
+      "clause_text": "Individuelle Vertragsabreden der Parteien haben stets Vorrang vor den Bestimmungen dieser Allgemeinen Geschäftsbedingungen."
+    },
+    {
+      "clause_id": "payment_deadline_short",
+      "clause_type": "PAYMENT",
+      "coverage_type": "PARTIAL",
+      "expected_sufficient": true,
+      "coverage_note": "BGB Sec. 308 Nr. 1a addresses unreasonably long payment-deadline reservations with an explicit 30-day reference point - real, specific relevance, but no dedicated Zahlungsrecht chapter exists in the corpus.",
+      "clause_text": "Rechnungen sind innerhalb von 14 Tagen nach Zugang ohne Abzug zur Zahlung fällig."
+    },
+    {
+      "clause_id": "payment_deadline_medium",
+      "clause_type": "PAYMENT",
+      "coverage_type": "PARTIAL",
+      "expected_sufficient": true,
+      "coverage_note": "Same as short, plus interest-on-arrears language - still generically relevant via Sec. 308, not a specific enumerated match.",
+      "clause_text": "Rechnungen sind innerhalb von 14 Tagen nach Zugang ohne Abzug zur Zahlung fällig. Bei Zahlungsverzug ist der Auftragnehmer berechtigt, Verzugszinsen in gesetzlicher Höhe zu berechnen."
+    },
+    {
+      "clause_id": "payment_deadline_long",
+      "clause_type": "PAYMENT",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "The added set-off/retention restriction directly matches BGB Sec. 309 Nr. 2/3 (Leistungsverweigerungsrechte, Aufrechnungsverbot) - a specific enumerated match, stronger than the short/medium variants.",
+      "clause_text": "Rechnungen sind innerhalb von 14 Tagen nach Zugang ohne Abzug zur Zahlung fällig. Bei Zahlungsverzug ist der Auftragnehmer berechtigt, Verzugszinsen in gesetzlicher Höhe zu berechnen. Der Auftraggeber ist nur zur Aufrechnung berechtigt, wenn seine Gegenansprüche rechtskräftig festgestellt, unbestritten oder von dem Auftragnehmer anerkannt sind. Ein Zurückbehaltungsrecht steht dem Auftraggeber nur wegen Gegenansprüchen aus demselben Vertragsverhältnis zu."
+    },
+    {
+      "clause_id": "payment_method_short",
+      "clause_type": "PAYMENT",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "Payment method/currency mechanics - no BGB provision in the corpus concerns this.",
+      "clause_text": "Sämtliche Zahlungen erfolgen in Euro per Banküberweisung auf das vom Auftragnehmer benannte Konto."
+    },
+    {
+      "clause_id": "termination_cause_short",
+      "clause_type": "TERMINATION",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "BGB Sec. 314 (Kündigung von Dauerschuldverhältnissen aus wichtigem Grund) directly on point.",
+      "clause_text": "Jede Partei kann diesen Vertrag aus wichtigem Grund ohne Einhaltung einer Kündigungsfrist kündigen, wenn ihr unter Berücksichtigung aller Umstände des Einzelfalls die Fortsetzung des Vertragsverhältnisses bis zum Ablauf der Kündigungsfrist nicht zugemutet werden kann."
+    },
+    {
+      "clause_id": "termination_cause_medium",
+      "clause_type": "TERMINATION",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "Same as short plus a form requirement - still Sec. 314.",
+      "clause_text": "Jede Partei kann diesen Vertrag aus wichtigem Grund ohne Einhaltung einer Kündigungsfrist kündigen, wenn ihr unter Berücksichtigung aller Umstände des Einzelfalls die Fortsetzung des Vertragsverhältnisses bis zum Ablauf der Kündigungsfrist nicht zugemutet werden kann. Die Kündigung bedarf der Schriftform."
+    },
+    {
+      "clause_id": "termination_cause_long",
+      "clause_type": "TERMINATION",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "Same core content with examples of what constitutes an important reason - still Sec. 314.",
+      "clause_text": "Jede Partei kann diesen Vertrag aus wichtigem Grund ohne Einhaltung einer Kündigungsfrist kündigen, wenn ihr unter Berücksichtigung aller Umstände des Einzelfalls die Fortsetzung des Vertragsverhältnisses bis zum Ablauf der Kündigungsfrist nicht zugemutet werden kann. Die Kündigung bedarf der Schriftform. Ein wichtiger Grund liegt insbesondere vor, wenn eine Partei gegen wesentliche Pflichten aus diesem Vertrag verstößt und diesen Verstoß trotz schriftlicher Abmahnung mit angemessener Fristsetzung nicht behebt, oder wenn über das Vermögen einer Partei ein Insolvenzverfahren eröffnet oder mangels Masse abgelehnt wird."
+    },
+    {
+      "clause_id": "liability_limitation_short",
+      "clause_type": "LIABILITY",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "BGB Sec. 276/280 (general fault/damages standard) directly on point.",
+      "clause_text": "Der Auftragnehmer haftet nur für Vorsatz und grobe Fahrlässigkeit."
+    },
+    {
+      "clause_id": "liability_limitation_medium",
+      "clause_type": "LIABILITY",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "Same as short plus a foreseeable-damage cap for slight negligence on cardinal duties - still Sec. 276/280.",
+      "clause_text": "Der Auftragnehmer haftet nur für Vorsatz und grobe Fahrlässigkeit. Für leichte Fahrlässigkeit haftet der Auftragnehmer nur bei Verletzung wesentlicher Vertragspflichten, begrenzt auf den vorhersehbaren, vertragstypischen Schaden."
+    },
+    {
+      "clause_id": "liability_limitation_long",
+      "clause_type": "LIABILITY",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "The life/health/gross-negligence carve-out almost exactly mirrors BGB Sec. 309 Nr. 7a's enumerated wording - a specific, not just general, match.",
+      "clause_text": "Der Auftragnehmer haftet nur für Vorsatz und grobe Fahrlässigkeit. Für leichte Fahrlässigkeit haftet der Auftragnehmer nur bei Verletzung wesentlicher Vertragspflichten, begrenzt auf den vorhersehbaren, vertragstypischen Schaden. Die vorstehenden Haftungsbeschränkungen gelten nicht für Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit sowie nicht, soweit der Auftragnehmer Mängel arglistig verschwiegen oder eine Garantie für die Beschaffenheit der Leistung übernommen hat. Die Haftung nach dem Produkthaftungsgesetz bleibt unberührt."
+    },
+    {
+      "clause_id": "warranty_remedy_short",
+      "clause_type": "WARRANTY",
+      "coverage_type": "PARTIAL",
+      "expected_sufficient": true,
+      "coverage_note": "BGB Sec. 309 Nr. 8b bb restricts limiting defect remedies to repair/Nacherfüllung alone - real relevance, but whether THIS exact wording is compliant or void is not resolvable from the clause text alone, so PARTIAL not FULL.",
+      "clause_text": "Ansprüche des Auftraggebers wegen Mängeln der Leistung sind auf das Recht zur Nacherfüllung beschränkt."
+    },
+    {
+      "clause_id": "warranty_remedy_medium",
+      "clause_type": "WARRANTY",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "Adding the fallback Minderung/Rücktritt right after failed Nacherfüllung is exactly the carve-out BGB Sec. 309 Nr. 8b bb requires to remain valid - a specific, not just general, match.",
+      "clause_text": "Ansprüche des Auftraggebers wegen Mängeln der Leistung sind auf das Recht zur Nacherfüllung beschränkt. Schlägt die Nacherfüllung fehl, kann der Auftraggeber die Vergütung mindern oder vom Vertrag zurücktreten."
+    },
+    {
+      "clause_id": "warranty_remedy_long",
+      "clause_type": "WARRANTY",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "The short defect-notice deadline and shortened limitation period map directly to BGB Sec. 309 Nr. 8b ee/ff (Ausschlussfrist, Verjährungserleichterung).",
+      "clause_text": "Ansprüche des Auftraggebers wegen Mängeln der Leistung sind auf das Recht zur Nacherfüllung beschränkt. Schlägt die Nacherfüllung fehl, kann der Auftraggeber die Vergütung mindern oder vom Vertrag zurücktreten. Offensichtliche Mängel sind dem Auftragnehmer innerhalb von zwei Wochen nach Ablieferung schriftlich anzuzeigen; verdeckte Mängel unverzüglich nach ihrer Entdeckung. Die Verjährungsfrist für Mängelansprüche beträgt zwölf Monate ab Abnahme, soweit gesetzlich zulässig."
+    },
+    {
+      "clause_id": "warranty_spec_short",
+      "clause_type": "WARRANTY",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "Describing agreed specifications (not limiting remedies) is not a Klauselverbot topic - no corpus coverage.",
+      "clause_text": "Die Leistungsbeschreibung in Anlage 1 ist maßgeblich für die vereinbarte Beschaffenheit der Leistung."
+    },
+    {
+      "clause_id": "confidentiality_short",
+      "clause_type": "CONFIDENTIALITY",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "No BGB/DSGVO passage in the corpus addresses confidentiality/trade-secret obligations (GeschGehG is not in the corpus).",
+      "clause_text": "Die Parteien verpflichten sich, alle im Rahmen dieses Vertrages ausgetauschten vertraulichen Informationen streng vertraulich zu behandeln und nicht an Dritte weiterzugeben."
+    },
+    {
+      "clause_id": "confidentiality_medium",
+      "clause_type": "CONFIDENTIALITY",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "Same as short plus a post-contract duration - still no corpus coverage.",
+      "clause_text": "Die Parteien verpflichten sich, alle im Rahmen dieses Vertrages ausgetauschten vertraulichen Informationen streng vertraulich zu behandeln und nicht an Dritte weiterzugeben. Diese Verpflichtung gilt auch für einen Zeitraum von drei Jahren nach Beendigung dieses Vertrages."
+    },
+    {
+      "clause_id": "confidentiality_long",
+      "clause_type": "CONFIDENTIALITY",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "Same legal content, extended definition of what counts as confidential and carve-outs - coverage does not change; this is the clearest length-hypothesis test since it is genuinely INSUFFICIENT at every length.",
+      "clause_text": "Die Parteien verpflichten sich, alle im Rahmen dieses Vertrages ausgetauschten vertraulichen Informationen streng vertraulich zu behandeln und nicht an Dritte weiterzugeben. Diese Verpflichtung gilt auch für einen Zeitraum von drei Jahren nach Beendigung dieses Vertrages. Als vertraulich gelten alle Informationen, die als solche gekennzeichnet sind oder deren Vertraulichkeit sich aus den Umständen ergibt, insbesondere technisches Know-how, Geschäftsgeheimnisse und Kundendaten. Ausgenommen sind Informationen, die bereits öffentlich bekannt waren oder unabhängig entwickelt wurden."
+    },
+    {
+      "clause_id": "data_processing_short",
+      "clause_type": "DATA_PROCESSING",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "DSGVO Art. 28/32 directly on point (processor instructions, technical/organizational measures).",
+      "clause_text": "Der Auftragnehmer verarbeitet personenbezogene Daten ausschließlich auf dokumentierte Weisung des Auftraggebers und trifft geeignete technische und organisatorische Maßnahmen zum Schutz dieser Daten."
+    },
+    {
+      "clause_id": "data_processing_medium",
+      "clause_type": "DATA_PROCESSING",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "Same as short plus a confidentiality-of-staff commitment - still Art. 28.",
+      "clause_text": "Der Auftragnehmer verarbeitet personenbezogene Daten ausschließlich auf dokumentierte Weisung des Auftraggebers und trifft geeignete technische und organisatorische Maßnahmen zum Schutz dieser Daten. Der Auftragnehmer gewährleistet, dass sich die zur Verarbeitung befugten Personen zur Vertraulichkeit verpflichtet haben."
+    },
+    {
+      "clause_id": "data_processing_long",
+      "clause_type": "DATA_PROCESSING",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "Adds data-subject-rights support and breach notification - directly references DSGVO Art. 33/34, still within the corpus's DSGVO coverage.",
+      "clause_text": "Der Auftragnehmer verarbeitet personenbezogene Daten ausschließlich auf dokumentierte Weisung des Auftraggebers und trifft geeignete technische und organisatorische Maßnahmen zum Schutz dieser Daten. Der Auftragnehmer gewährleistet, dass sich die zur Verarbeitung befugten Personen zur Vertraulichkeit verpflichtet haben. Der Auftragnehmer unterstützt den Auftraggeber bei der Erfüllung von Betroffenenrechten sowie bei der Meldung von Datenschutzverletzungen gemäß Art. 33 und 34 DSGVO und unterzieht sich Kontrollen einschließlich Inspektionen, die vom Auftraggeber durchgeführt werden."
+    },
+    {
+      "clause_id": "data_processing_vague",
+      "clause_type": "DATA_PROCESSING",
+      "coverage_type": "AMBIGUOUS",
+      "expected_sufficient": null,
+      "coverage_note": "Too generic to confidently map to Art. 28/32's specific processor obligations, but topically in the DSGVO domain the corpus does cover - a reasonable annotator could go either way.",
+      "clause_text": "Die Parteien beachten bei der Durchführung dieses Vertrages die geltenden datenschutzrechtlichen Bestimmungen."
+    },
+    {
+      "clause_id": "non_compete_short",
+      "clause_type": "NON_COMPETE",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "Would need Sec. 74 HGB or Sec. 138 BGB (Sittenwidrigkeit) - neither is in the corpus.",
+      "clause_text": "Der Auftragnehmer verpflichtet sich, für die Dauer von zwei Jahren nach Beendigung dieses Vertrages keine Konkurrenztätigkeit auszuüben."
+    },
+    {
+      "clause_id": "non_compete_long",
+      "clause_type": "NON_COMPETE",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "Same legal content, extended with geographic scope and penalty language - still no corpus coverage regardless of length.",
+      "clause_text": "Der Auftragnehmer verpflichtet sich, für die Dauer von zwei Jahren nach Beendigung dieses Vertrages keine Konkurrenztätigkeit auszuüben. Dieses Wettbewerbsverbot gilt räumlich für das Gebiet der Bundesrepublik Deutschland und umfasst insbesondere die Anbahnung von Geschäftsbeziehungen zu Kunden, mit denen der Auftragnehmer während der Vertragslaufzeit in Kontakt stand. Für jeden Verstoß ist eine Vertragsstrafe in Höhe von 25.000 EUR zu zahlen."
+    },
+    {
+      "clause_id": "non_compete_lexical_trap",
+      "clause_type": "NON_COMPETE",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "Adversarial case: heavy use of 'Kündigung'/'Vertrag' vocabulary that lexically overlaps with BGB Sec. 314 (termination), even though the actual legal question - post-contractual competition restriction - has no corpus coverage at all. Tests whether retrieval is fooled by lexical overlap into a false SUFFICIENT.",
+      "clause_text": "Nach Kündigung dieses Vertrages ist es dem Auftragnehmer für die Dauer von zwei Jahren untersagt, in Konkurrenz zum Auftraggeber tätig zu werden oder Kunden des Auftraggebers abzuwerben, unabhängig davon, aus welchem Grund die Kündigung dieses Vertrages erfolgt ist."
+    },
+    {
+      "clause_id": "ip_assignment_short",
+      "clause_type": "INTELLECTUAL_PROPERTY",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "UrhG is not in the corpus - no coverage.",
+      "clause_text": "Sämtliche im Rahmen dieses Vertrages entstehenden Urheberrechte und sonstigen Schutzrechte stehen dem Auftraggeber zu."
+    },
+    {
+      "clause_id": "ip_assignment_long",
+      "clause_type": "INTELLECTUAL_PROPERTY",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "Same legal content, extended with usage-rights and pre-existing-IP carve-out language - still no corpus coverage.",
+      "clause_text": "Sämtliche im Rahmen dieses Vertrages entstehenden Urheberrechte und sonstigen Schutzrechte stehen dem Auftraggeber zu. Der Auftragnehmer räumt dem Auftraggeber an bereits vor Vertragsbeginn bestehenden Schutzrechten ein einfaches, zeitlich und räumlich unbeschränktes Nutzungsrecht ein, soweit dies zur Nutzung der Vertragsleistung erforderlich ist. Rechte Dritter bleiben hiervon unberührt."
+    },
+    {
+      "clause_id": "hybrid_liability_warranty",
+      "clause_type": "LIABILITY",
+      "coverage_type": "AMBIGUOUS",
+      "expected_sufficient": null,
+      "coverage_note": "Mixes a liability exclusion (clearly covered, Sec. 276/280/309 Nr.7) with a warranty-period shortening (also covered, Sec. 309 Nr.8b ff) in one paragraph - genuinely covered content, but classifying which single corpus passage 'is the' evidence is ambiguous, and the clause also touches on Vertragsstrafe fairness (Sec. 309 Nr.6), making this a defensible edge case rather than a clean FULL/PARTIAL call.",
+      "clause_text": "Die Haftung des Auftragnehmers ist auf Vorsatz und grobe Fahrlässigkeit beschränkt; die Verjährungsfrist für Mängelansprüche beträgt abweichend von der gesetzlichen Regelung sechs Monate ab Ablieferung, und für jeden Fall einer schuldhaften Pflichtverletzung ist eine Vertragsstrafe von 5.000 EUR zu zahlen."
+    },
+    {
+      "clause_id": "vague_risk_allocation",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "AMBIGUOUS",
+      "expected_sufficient": null,
+      "coverage_note": "Extremely generic risk-allocation language - could be read as invoking Sec. 276's fault standard, or as too vague to map to any specific passage. A reasonable annotator could defensibly go either way.",
+      "clause_text": "Jede Partei trägt das Risiko für die von ihr zu vertretenden Umstände."
+    },
+    {
+      "clause_id": "jurisdiction_only",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "AMBIGUOUS",
+      "expected_sufficient": null,
+      "coverage_note": "A bare choice-of-law clause with no severability/incorporation content. Choice-of-law clauses in AGB can in principle be subject to Sec. 307 fairness control, but this single sentence has too little content to confidently say the corpus's AGB-control passages are 'the' relevant evidence versus irrelevant.",
+      "clause_text": "Es gilt das Recht der Bundesrepublik Deutschland."
+    },
+    {
+      "clause_id": "schriftform_clause",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "AMBIGUOUS",
+      "expected_sufficient": null,
+      "coverage_note": "BGB Sec. 309 Nr.13 addresses form requirements for declarations TO the user (Verwender), not general contract-modification form clauses - close enough that a careless read might call it covered, but not actually the same rule. A genuinely close call.",
+      "clause_text": "Änderungen und Ergänzungen dieses Vertrages bedürfen der Schriftform."
+    },
+    {
+      "clause_id": "penalty_for_confidentiality_breach",
+      "clause_type": "CONFIDENTIALITY",
+      "coverage_type": "PARTIAL",
+      "expected_sufficient": true,
+      "coverage_note": "The underlying confidentiality obligation itself has no corpus coverage, but the Vertragsstrafe (contractual penalty) mechanism for breaching it is specifically addressed by BGB Sec. 309 Nr. 6 - a real but narrow legal basis that covers the penalty clause, not the confidentiality duty it attaches to. A nuanced case showing topic-label coverage and mechanism coverage can diverge.",
+      "clause_text": "Der Auftragnehmer zahlt eine Vertragsstrafe von 10.000 EUR für jeden Fall der schuldhaften Verletzung der Verschwiegenheitspflicht."
+    },
+    {
+      "clause_id": "surprising_clause_short",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "BGB Sec. 305c(2) (interpretive doubt is resolved against the drafter) directly on point - the contra-proferentem rule.",
+      "clause_text": "Zweifel bei der Auslegung dieser Allgemeinen Geschäftsbedingungen gehen zu Lasten des Auftragnehmers als Verwender."
+    },
+    {
+      "clause_id": "surprising_clause_long",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "Adds the Sec. 305c(1) 'surprising clause' rule (a clause so unusual in context that the other party need not expect it does not become part of the contract) alongside the interpretive-doubt rule - both directly Sec. 305c.",
+      "clause_text": "Zweifel bei der Auslegung dieser Allgemeinen Geschäftsbedingungen gehen zu Lasten des Auftragnehmers als Verwender. Bestimmungen, die nach dem äußeren Erscheinungsbild dieses Vertrages so ungewöhnlich sind, dass der Auftraggeber mit ihnen nicht zu rechnen brauchte, werden nicht Vertragsbestandteil, selbst wenn der Auftraggeber ihnen durch Unterschrift zugestimmt hat."
+    },
+    {
+      "clause_id": "b2b_scope_clause_short",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "BGB Sec. 310(1) directly states that Sec. 308 and 309 do not apply to AGB used against a business (Unternehmer) - this clause states exactly that disapplication.",
+      "clause_text": "Die Bestimmungen der §§ 308 und 309 BGB finden auf Verträge zwischen Unternehmern keine Anwendung."
+    },
+    {
+      "clause_id": "b2b_scope_definition_partial",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "PARTIAL",
+      "expected_sufficient": true,
+      "coverage_note": "Adjacent to Sec. 310(1) (which is about which BGB sections apply to B2B contracts) but this clause instead defines WHO counts as a business partner, a related but distinct question Sec. 310 does not itself answer (that is BGB Sec. 14, not in the corpus) - real but indirect relevance, not a specific match.",
+      "clause_text": "Diese Allgemeinen Geschäftsbedingungen gelten ausschließlich gegenüber Unternehmern im Sinne des Vertragsrechts."
+    },
+    {
+      "clause_id": "data_minimization_clause_short",
+      "clause_type": "DATA_PROCESSING",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "DSGVO Art. 5(1)(c) (Datenminimierung) directly on point - a different, more specific DSGVO passage than the Art. 28/32 processor-obligation clauses already in this dataset.",
+      "clause_text": "Der Auftragnehmer erhebt und verarbeitet nur die personenbezogenen Daten, die für den jeweiligen Verarbeitungszweck erforderlich sind."
+    },
+    {
+      "clause_id": "consent_basis_clause_short",
+      "clause_type": "DATA_PROCESSING",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "DSGVO Art. 6(1)(a) (Einwilligung als Rechtsgrundlage) directly on point.",
+      "clause_text": "Die Verarbeitung personenbezogener Daten des Kunden erfolgt auf Grundlage seiner Einwilligung gemäß Art. 6 Abs. 1 lit. a DSGVO."
+    },
+    {
+      "clause_id": "purpose_limitation_clause_medium",
+      "clause_type": "DATA_PROCESSING",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "DSGVO Art. 5(1)(b) (Zweckbindung) directly on point.",
+      "clause_text": "Die im Rahmen dieses Vertrages erhobenen personenbezogenen Daten werden ausschließlich für die Durchführung des Vertrages verwendet. Eine Weiterverarbeitung für andere, mit diesem Zweck nicht zu vereinbarende Zwecke findet nicht statt."
+    },
+    {
+      "clause_id": "dominant_single_match_termination_medium",
+      "clause_type": "TERMINATION",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "A second, independently-authored Sec. 314 example (the existing termination_cause_* family already covers this) - added to grow the thin TERMINATION category and give the score-gap experiment a clean single-dominant-match case: this wording closely tracks Sec. 314's own language, so the reranker should find one clearly best match with little competition from any other passage.",
+      "clause_text": "Beiden Vertragsparteien steht das Recht zur außerordentlichen Kündigung aus wichtigem Grund zu, wenn die Fortsetzung des Vertragsverhältnisses bis zum Ablauf der ordentlichen Kündigungsfrist unter Abwägung der beiderseitigen Interessen unzumutbar ist."
+    },
+    {
+      "clause_id": "termination_ordinary_notice_short",
+      "clause_type": "TERMINATION",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "A real, nuanced distinction: BGB Sec. 314 (the corpus's only termination passage) covers termination for GOOD CAUSE (wichtiger Grund) specifically - it does not address ordinary notice-period termination at all, which this clause is purely about. Same TERMINATION topic label as the covered family, genuinely different legal question.",
+      "clause_text": "Die ordentliche Kündigungsfrist beträgt drei Monate zum Ende eines Kalenderquartals."
+    },
+    {
+      "clause_id": "hybrid_topic_liability_dataprocessing",
+      "clause_type": "LIABILITY",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "Genuinely covered by two corpus passages at once (Sec. 276 for the liability standard, Art. 32 for the security-of-processing obligation) - included specifically to test the score-gap hypothesis honestly: a clause with two independently relevant matches may produce a SMALL gap between the top two retrieved passages despite being clearly, fully covered, which would be a real failure mode for a naive 'large gap = sufficient' rule.",
+      "clause_text": "Der Auftragnehmer haftet für Schäden aus der Verletzung des Schutzes personenbezogener Daten nur bei Vorsatz oder grober Fahrlässigkeit und trifft angemessene technische und organisatorische Maßnahmen zur Sicherheit der Verarbeitung."
+    },
+    {
+      "clause_id": "confidentiality_penalty_medium",
+      "clause_type": "CONFIDENTIALITY",
+      "coverage_type": "PARTIAL",
+      "expected_sufficient": true,
+      "coverage_note": "Same PARTIAL mechanism as penalty_for_confidentiality_breach (Sec. 309 Nr. 6 covers the penalty, not the underlying duty), extended to a MEDIUM length for the length-family pattern used elsewhere in this dataset.",
+      "clause_text": "Der Auftragnehmer zahlt eine Vertragsstrafe von 10.000 EUR für jeden Fall der schuldhaften Verletzung der Verschwiegenheitspflicht. Die Geltendmachung eines weitergehenden Schadens durch den Auftraggeber bleibt hiervon unberührt."
+    },
+    {
+      "clause_id": "confidentiality_extreme_long",
+      "clause_type": "CONFIDENTIALITY",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "An even longer variant of the existing confidentiality_* family (same genuinely-uncovered topic at every length) - added to stress-test whether the length penalty continues to behave correctly well beyond the lengths already in the dataset.",
+      "clause_text": "Die Parteien verpflichten sich, alle im Rahmen dieses Vertrages ausgetauschten vertraulichen Informationen streng vertraulich zu behandeln und nicht an Dritte weiterzugeben. Diese Verpflichtung gilt auch für einen Zeitraum von fünf Jahren nach Beendigung dieses Vertrages und unabhängig vom Grund der Beendigung. Als vertraulich gelten insbesondere technisches Know-how, Geschäfts- und Betriebsgeheimnisse, Kundendaten, Preiskalkulationen sowie sämtliche als vertraulich gekennzeichnete Unterlagen. Ausgenommen von dieser Verpflichtung sind Informationen, die zum Zeitpunkt der Offenlegung bereits öffentlich bekannt waren, unabhängig vom Empfänger entwickelt wurden oder aufgrund gesetzlicher Verpflichtung offengelegt werden müssen. Jede Partei stellt sicher, dass ihre Mitarbeiter und Erfüllungsgehilfen in gleicher Weise zur Vertraulichkeit verpflichtet werden."
+    },
+    {
+      "clause_id": "ip_assignment_medium",
+      "clause_type": "INTELLECTUAL_PROPERTY",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "A MEDIUM-length variant filling out the length family for this thin category (previously only short/long existed) - UrhG is not in the corpus at any length.",
+      "clause_text": "Sämtliche im Rahmen dieses Vertrages entstehenden Urheberrechte und sonstigen Schutzrechte stehen dem Auftraggeber zu. Der Auftragnehmer verpflichtet sich, alle hierfür erforderlichen Erklärungen abzugeben und Mitwirkungshandlungen vorzunehmen."
+    },
+    {
+      "clause_id": "payment_currency_medium",
+      "clause_type": "PAYMENT",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "A MEDIUM-length variant of payment_method_short filling out the length family - payment mechanics (currency, transfer method) remain genuinely uncovered at any length.",
+      "clause_text": "Sämtliche Zahlungen erfolgen in Euro per Banküberweisung auf das vom Auftragnehmer benannte Konto. Zahlungen in anderer Währung oder auf andere Weise bedürfen der vorherigen schriftlichen Zustimmung des Auftragnehmers."
+    }
   ]
 }

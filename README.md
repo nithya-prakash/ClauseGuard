@@ -9,9 +9,12 @@ AI-assisted first-pass compliance/risk analysis for German contracts.
 ## Status
 
 All 15 originally-planned milestones complete, plus Milestone 16 (finalization,
-calibration, production readiness). See commit history / project memory
-for milestone-by-milestone progress; the "Failure cases" and "Limitations" sections
-below are the honest summary of what actually works, what's genuinely
+calibration, production readiness) across two sessions. **The project is now frozen**:
+no further features are planned unless a real regression or security issue is found —
+remaining work is additional evaluation/reliability improvement (see
+[§20 Future work](#20-future-work)), not feature count. See commit history / project
+memory for milestone-by-milestone progress; the "Failure cases" and "Limitations"
+sections below are the honest summary of what actually works, what's genuinely
 measured, and what's still open.
 
 - [x] Milestone 1 — Repository architecture, configuration, Docker, FastAPI skeleton
@@ -29,16 +32,18 @@ measured, and what's still open.
 - [x] Milestone 13 — PDF report
 - [x] Milestone 14 — Security hardening
 - [x] Milestone 15 — CI/CD + documentation
-- [x] Milestone 16 — Finalization, calibration & production readiness.
-      Evidence-sufficiency recalibrated and verified (0.30→0.60 on the original
-      benchmark); LLM evaluation harness built (`NOT_MEASURED`, no API key — never
-      fabricated); citation-verification dead-code bug found and fixed; Postgres
-      persistence + an additive, tested Celery async job path (a real bug found and
-      fixed via live container verification); a real frontend test suite (20 tests);
-      rate limiting + decompression-bomb protection; every CI command re-verified
-      locally. **Not done**: pushing to GitHub and running CI on a real runner — asked
-      explicitly, the developer chose to keep this local (see
-      [§15](#15-failure-cases)).
+- [x] Milestone 16 — Finalization, calibration & production readiness. Evidence-
+      sufficiency accuracy improved from 0.30 to 0.60 on the original 10-clause
+      benchmark after a length-penalty recalibration, then to 0.70 after a further,
+      separately-evaluated score-gap feature (see [§15](#15-failure-cases) for the
+      full methodology and what's still wrong); LLM evaluation harness built
+      (`NOT_MEASURED`, no API key — never fabricated); citation-verification dead-code
+      bug found and fixed; Postgres persistence + an additive, tested Celery async job
+      path (a real bug found and fixed via live container verification); a real
+      frontend test suite (20 tests); rate limiting + decompression-bomb protection;
+      every CI command re-verified locally. **Not done**: pushing to GitHub and
+      running CI on a real runner — asked explicitly, the developer chose to keep
+      this local.
 
 ---
 
@@ -57,6 +62,16 @@ and can be exported as a PDF report.
 It is explicitly **not** a legal-validity checker and does not replace a
 lawyer — see [§19 Legal disclaimer](#19-legal-disclaimer).
 
+The German-contracts domain is the application context; the underlying engineering
+story is Applied AI / reliable GenAI systems: LoRA fine-tuning, hybrid retrieval (dense
++ BM25 + RRF), cross-encoder reranking, an evidence-sufficiency reliability gate,
+structured LLM reasoning, citation verification, and — running through all of it —
+evaluation-driven development: every claimed number traces to a committed script, every
+recalibration was tested on a true held-out split, and every negative result (an
+overfit candidate, a feature that helped in aggregate but broke specific cases) is
+documented rather than hidden. See [§15 Failure cases](#15-failure-cases) for what that
+discipline actually caught.
+
 ## 2. Architecture diagram
 
 ```mermaid
@@ -73,7 +88,7 @@ flowchart TD
         F2 --> F3
         F3 --> F4[Cross-encoder rerank<br/>mmarco-mMiniLMv2]
     end
-    F --> G{Evidence sufficiency<br/>length-adjusted score calibrated<br/>Milestone 16}
+    F --> G{Evidence sufficiency<br/>length- and score-gap-adjusted<br/>Milestone 16}
     G -- no --> H[INSUFFICIENT_EVIDENCE<br/>no LLM call]
     G -- yes --> I[LLM structured reasoning<br/>Claude tool-use, schema-constrained]
     I --> J[Citation verification<br/>vs. actually-retrieved evidence]
@@ -162,12 +177,16 @@ than losing everything to one stage's failure.
   [§13 Retrieval benchmark](#13-retrieval-benchmark).
 - **Evidence sufficiency**
   ([evidence_sufficiency.py](backend/app/services/verification/evidence_sufficiency.py)):
-  runs on the reranked evidence *before* any LLM call. Recalibrated in Milestone 16
-  against a 40-example clause-length benchmark (`reports/evidence_sufficiency/`) after
-  the original threshold measured 0.30 accuracy on the real end-to-end benchmark — the
-  gate now length-penalizes the cross-encoder score logarithmically, which doubled
-  measured accuracy to 0.60 on that same benchmark. Still a real, disclosed limitation,
-  not solved — see [§15 Failure cases](#15-failure-cases).
+  runs on the reranked evidence *before* any LLM call. Recalibrated twice in Milestone
+  16 against a now-49-conclusive-example clause-length benchmark
+  (`reports/evidence_sufficiency/`): first a logarithmic clause-length penalty on the
+  cross-encoder score (after the original threshold measured 0.30 accuracy on the real
+  end-to-end benchmark), then a score-gap term (the margin between the best and
+  second-best retrieved passage) evaluated separately against a true held-out split
+  and adopted only after it beat the length-penalty-only method there. Evidence-
+  sufficiency accuracy on the original 10-clause benchmark improved from 0.30 to 0.60
+  to 0.70 across the two recalibrations. Still a real, disclosed limitation, not
+  solved — see [§15 Failure cases](#15-failure-cases).
 - **LLM structured reasoning**
   ([reasoning/service.py](backend/app/services/reasoning/service.py)): uses Claude's
   tool-use (schema-constrained, not "ask nicely for JSON") so `risk_level` can only ever
@@ -453,7 +472,7 @@ used explicitly rather than invented wherever something genuinely hasn't been ru
 | Retrieval — hybrid RRF | Recall@1 / @3 / @5 / MRR / NDCG@5 | 0.80 / 0.93 / 0.93 / 0.864 / 0.875 | [reports/retrieval](reports/retrieval) |
 | Retrieval — hybrid + reranker | Recall@1 / @3 / @5 / MRR / NDCG@5 | **0.867 / 1.0 / 1.0 / 0.933 / 0.951** | [reports/retrieval](reports/retrieval) |
 | End-to-end — classification accuracy | on the real 10-clause benchmark document | 0.80 | [reports/end_to_end](reports/end_to_end) |
-| End-to-end — evidence sufficiency accuracy | vs. human-judged corpus coverage, before/after Milestone 16 recalibration | 0.30 → **0.60** | [reports/end_to_end](reports/end_to_end), [reports/evidence_sufficiency](reports/evidence_sufficiency) |
+| End-to-end — evidence sufficiency accuracy | vs. human-judged corpus coverage, original → length-penalty recalibration → +score-gap recalibration | 0.30 → 0.60 → **0.70** | [reports/end_to_end](reports/end_to_end), [reports/evidence_sufficiency](reports/evidence_sufficiency) |
 | Reasoning quality | accuracy / hallucination rate / citation correctness | `NOT_MEASURED` — no `ANTHROPIC_API_KEY` configured | [reports/reasoning](reports/reasoning) |
 
 Two results are worth reading in full rather than just the number:
@@ -462,9 +481,10 @@ Two results are worth reading in full rather than just the number:
   0.875→0.951) — a real, not-cherry-picked improvement, though the corpus is small
   enough that dense/BM25/hybrid alone are statistically indistinguishable from each
   other.
-- **Evidence-sufficiency accuracy doubled (0.30→0.60) after a dedicated Milestone 16
-  calibration effort** — still the most important reliability caveat in the whole
-  project, and still not solved (full detail: [§15 Failure cases](#15-failure-cases)).
+- **Evidence-sufficiency accuracy improved from 0.30 to 0.60 to 0.70 across two
+  separately-evaluated Milestone 16 recalibrations** — still the most important
+  reliability caveat in the whole project, and still not solved (full detail:
+  [§15 Failure cases](#15-failure-cases)).
 
 ## 15. Failure cases
 
@@ -473,39 +493,52 @@ list, and not silently patched where the honest fix was "document the limitation
 the project's own anti-fabrication policy.
 
 **Evidence-sufficiency threshold was measurably wrong on real clause text — recalibrated
-in Milestone 16, still not solved (the biggest, most worked-on finding).** The original
-threshold (`MIN_RERANK_SCORE = 0.0`) was calibrated on 4 short standalone queries. On
-realistic full-paragraph clause text it was measurably more permissive — 9 of 10
-clauses in the original benchmark contract passed the sufficiency check, even though
-the corpus has direct legal coverage for only 4 of 10 of that contract's clause
+twice in Milestone 16, still not solved (the biggest, most worked-on finding).** The
+original threshold (`MIN_RERANK_SCORE = 0.0`) was calibrated on 4 short standalone
+queries. On realistic full-paragraph clause text it was measurably more permissive — 9
+of 10 clauses in the original benchmark contract passed the sufficiency check, even
+though the corpus has direct legal coverage for only 4 of 10 of that contract's clause
 categories, measuring **0.30 accuracy**.
 
-A dedicated 40-example calibration benchmark
-([data/benchmark/evidence_sufficiency/](data/benchmark/evidence_sufficiency/dataset.json),
-mostly SHORT/MEDIUM/LONG variants of the *same* legal content so length is isolated as
-a variable) confirmed the cause directly: false-positive rate rose from **0% (short
-clauses) to 100% (medium AND long clauses)** before calibration — the gate had become
-almost unable to say `INSUFFICIENT_EVIDENCE` at all once clause text got long. A
-logarithmic length penalty on the cross-encoder score (`score - 2.0 * log(length)`,
-calibrated on a held-out split, selected only after a recall floor was enforced and a
-first candidate was caught and discarded for improving the held-out split without
-improving the full-population confusion matrix — see
-[reports/evidence_sufficiency/calibration_report.md](reports/evidence_sufficiency/calibration_report.md)
-for that full methodology) **doubled measured accuracy on the original, untouched
-10-clause benchmark: 0.30 → 0.60**, and reduced the long-clause false-positive rate
-from 100% to 25% on the calibration benchmark itself.
+*Recalibration 1 — length penalty.* A 40-example calibration benchmark confirmed the
+cause directly: false-positive rate rose from **0% (short clauses) to 100% (medium and
+long clauses)** before calibration. A logarithmic length penalty on the cross-encoder
+score, selected only after a recall floor was enforced and a first (linear) candidate
+was caught and discarded for improving a held-out split without improving the
+full-population confusion matrix, improved the original benchmark to **0.60** and cut
+the long-clause false-positive rate to 25%. One real clause (§3, a genuinely-covered
+termination clause) regressed as a cost of the more conservative rule.
 
-**This is not solved.** The held-out calibration set is small (35 conclusive
-examples), one real clause (§3, a genuinely-covered termination clause) regressed from
-correct to incorrect as a cost of the more conservative rule, and 3 of the 40
-calibration examples remain honestly unresolved false positives/negatives — see
+*Recalibration 2 — score gap.* The dataset was grown to 49 conclusive examples
+(grounded in previously-unused real corpus text — BGB §305c/310, DSGVO Art. 5/6 — not
+random padding), and a **score-gap** feature was tested: how much the best-retrieved
+passage beats the second-best one, on the theory that a large gap indicates one
+genuinely dominant match. Evaluated fairly — both the length-only and length+gap
+methods were refit from scratch on the same new split, and the gap variant had to beat
+the length-only method on the *true held-out test split* **and** not regress the
+full-population check before adoption (the same discipline that caught the discarded
+candidate in recalibration 1). It passed both: full-population accuracy 0.796→0.857,
+false-positive rate 0.294→0.059, and — the number that matters most — **the original
+10-clause benchmark improved further to 0.70, with zero new regressions this time.**
+See
+[reports/evidence_sufficiency/calibration_report.md](reports/evidence_sufficiency/calibration_report.md)
+for the full methodology of both recalibrations.
+
+**This is still not solved.** The score-gap feature has a real, disclosed cost: it
+introduced two new false negatives on genuinely-covered clauses whose top-2 retrieved
+passages were *both* legitimately relevant (a DATA_PROCESSING clause matching both
+DSGVO Art. 5 and Art. 6; a WARRANTY clause matching multiple enumerated points in the
+same BGB section) — exactly the failure mode a deliberately-added test case
+(`hybrid_topic_liability_dataprocessing`) was designed to probe, and while that
+specific example survived correctly, two *other* real examples did not. One clause
+(`confidentiality_extreme_long`, 865 characters) remains a false positive because its
+raw score is so length-inflated that even a small gap can't pull it below threshold —
+the length penalty alone isn't strong enough at that extreme. See
 [reports/evidence_sufficiency/error_analysis.md](reports/evidence_sufficiency/error_analysis.md)
-for the full per-clause breakdown, including the specific adversarial case (a
-non-compete clause reusing "Kündigung"/"Vertrag" vocabulary to fool retrieval via
-lexical overlap) this recalibration happened to fix as a side effect, not by design.
-Still recorded as the top item in [§18 Limitations](#18-limitations), now with a
-concrete, more specific next step (a score-gap-to-second-best-passage signal, which the
-current 35-example sample is too small to calibrate responsibly).
+for the complete per-clause breakdown, including the adversarial lexical-overlap case
+(a non-compete clause reusing "Kündigung"/"Vertrag" vocabulary) both recalibrations
+fixed as a side effect, not by design. Still recorded as the top item in
+[§18 Limitations](#18-limitations).
 
 **The async job path failed 100% of the time until a real Docker verification caught
 why (Milestone 16 Phase 15).** After wiring `POST /documents/{id}/jobs` to a real
@@ -681,14 +714,16 @@ content, only metadata (ids, counts, durations, stage names, error types) — se
 
 Most actionable first:
 
-1. **Evidence-sufficiency is recalibrated (0.30→0.60) but still not solved.** The
-   headline finding of this project, now also its most-worked-on fix — see
-   [§15 Failure cases](#15-failure-cases) and
+1. **Evidence-sufficiency is recalibrated twice (0.30→0.60→0.70) but still not
+   solved.** The headline finding of this project, now also its most-worked-on fix —
+   see [§15 Failure cases](#15-failure-cases) and
    [reports/evidence_sufficiency/](reports/evidence_sufficiency/) for the full
-   methodology, held-out numbers, and honest remaining error analysis. Next step: a
-   score-gap-to-second-best-passage signal (a large gap plausibly indicates a genuinely
-   dominant match regardless of length) — the current 35-example calibration sample is
-   too small to fit this responsibly without a larger benchmark first.
+   methodology, held-out numbers, and honest remaining error analysis. The adopted
+   score-gap feature has a real cost: two new false negatives on genuinely
+   multi-topic-covered clauses. Next step: the 49-example calibration sample is still
+   too small to fit anything more sophisticated (e.g. a proper learned combination of
+   score, length, and gap) responsibly — growing it further is the honest prerequisite
+   for the next real improvement, not another hand-tuned feature.
 2. **Legal corpus has gaps** — no BGB provisions for confidentiality or payment-term
    clauses. Combined with limitation 1, both `§ 6 CONFIDENTIALITY` and `§ 2 PAYMENT`
    incorrectly passed the sufficiency check in the end-to-end run rather than
@@ -745,11 +780,13 @@ clause rather than guess when it has no real legal basis to reason from.
 
 Roughly in order of what would most improve the honest measured numbers above:
 
-1. Grow the evidence-sufficiency calibration benchmark beyond 35 examples and add a
-   score-gap-to-second-best-passage signal (see [§15](#15-failure-cases) and
+1. Grow the evidence-sufficiency calibration benchmark well beyond 49 examples — the
+   score-gap feature (see [§15](#15-failure-cases) and
    [reports/evidence_sufficiency/error_analysis.md](reports/evidence_sufficiency/error_analysis.md))
-   — the recalibration done so far (0.30→0.60) is real but the false-positive rate on
-   long clauses is still 25%, not 0%.
+   is a real, verified improvement (0.30→0.60→0.70 on the original benchmark) but
+   introduced its own disclosed false negatives on genuinely multi-topic-covered
+   clauses, and a bigger dataset is the honest prerequisite for the next fix, not
+   another hand-tuned feature on the current sample size.
 2. Configure `ANTHROPIC_API_KEY` and measure real reasoning/citation/hallucination
    numbers (currently all `NOT_MEASURED`), including real adversarial prompt-injection
    testing against a live model.

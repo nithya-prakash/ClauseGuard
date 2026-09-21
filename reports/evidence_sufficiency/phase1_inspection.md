@@ -81,3 +81,65 @@ the executed result):
    independent check).
 5. Clause-length and error-analysis breakdowns generated from code, not hand-typed.
 6. Regression tests for the 8 cases the spec calls for.
+
+---
+
+## Addendum (Milestone 16, follow-up session — "final AI evaluation & freeze")
+
+Re-inspected before touching anything, per the same instruction. Confirmed the state
+left by the previous session:
+
+**Current scoring function**: `check_evidence_sufficiency(passages, clause_length,
+min_score=-9.3528, length_penalty=2.0)` — `adjusted_score = top_score -
+2.0 * log(clause_length)`, `SUFFICIENT` iff `adjusted_score >= -9.3528`. Only
+`passages[0].score` is used; `passages[1]` (the second-best candidate) is retrieved by
+`retrieve_and_rerank` but never looked at by the sufficiency gate today — this is
+exactly the gap the score-gap hypothesis targets.
+
+**Current calibration method**: `eval/evidence_sufficiency/calibrate.py` grid-searches
+three score-adjustment families (none / linear-length-penalty / log-length-penalty) x
+thresholds, fit on a `calibration` split (16 examples) and selected on a `validation`
+split (9 examples) via `accuracy - 0.5*false_positive_rate`, subject to a hard
+`recall >= 0.7` floor on validation. The winner is scored exactly once on the untouched
+`test` split (10 examples), plus checked against a `full_population_sanity_check`
+(descriptive only, not held-out) to catch a rule that improves the small held-out split
+without reducing real error — this check is what caught and discarded an earlier linear
+candidate in the previous session.
+
+**Current benchmark**: `data/benchmark/evidence_sufficiency/dataset.json`, 40 examples
+(35 conclusive: FULL=18, INSUFFICIENT=13, PARTIAL=4; AMBIGUOUS=5 excluded from
+accuracy). PARTIAL is the thinnest conclusive category (n=4) and several `clause_type`
+categories (INTELLECTUAL_PROPERTY n=2, TERMINATION n=3) have very few examples.
+
+**Current split**: stratified by `coverage_type`, seeded shuffle (`seed=42`),
+calibration=16/validation=9/test=10 — recorded in
+`reports/evidence_sufficiency/results.json`'s `dataset.split_sizes`.
+
+**Current threshold/metrics** (unchanged from last session, not yet re-run):
+held-out test accuracy 0.70→0.90, FPR 0.75→0.25, recall 1.0→1.0; full-population
+accuracy 0.714→0.886, FPR 0.538→0.077.
+
+**Current error cases**: `reports/evidence_sufficiency/error_analysis.md` — 7 fixed,
+1 regressed (`payment_deadline_long`, a genuinely-covered LONG clause the log penalty
+over-suppresses), 3 still wrong (`confidentiality_long` FP, `payment_deadline_medium`
+and `penalty_for_confidentiality_breach` FN).
+
+**Previous discarded approach**: a linear length penalty that looked like a real
+improvement on the 10-example held-out test alone but had an IDENTICAL confusion
+matrix to the uncalibrated baseline on the full 35-example population — discarded
+because it only relocated which examples were wrong, per `calibrate.py`'s own
+`methodology_note_on_a_discarded_first_attempt`.
+
+**Existing tests**: `backend/tests/test_evidence_sufficiency.py` — 14 tests (4 boundary
+tests at `clause_length=0`, 1 length-inflation test, 8 Phase-10 regression tests using
+real corpus-shaped scores, 2 live-corpus integration tests). None currently exercise a
+second retrieved passage or a score-gap signal.
+
+**Proposed changes this session**: grow the calibration dataset past 35 conclusive
+examples with real, defensible additions (not random padding) — including some
+examples specifically useful for testing the score-gap hypothesis (a genuinely
+single-match clause vs. a clause that retrieves two topically-close candidates);
+re-split with the same seeded, stratified methodology; add a `score_gap =
+top_score - second_score` feature to `check_evidence_sufficiency`, compared against
+the current log-penalty method on the SAME held-out test split; keep whichever wins,
+document a negative result honestly if the score-gap feature does not help.
