@@ -8,9 +8,7 @@ celery_app = Celery(
     "clauseguard",
     broker=settings.celery_broker_url,
     backend=settings.celery_result_backend,
-    # Task modules are added incrementally as pipeline stages land
-    # (document analysis is Milestone 10 — end-to-end pipeline).
-    include=[],
+    include=["app.tasks.analysis"],
 )
 
 celery_app.conf.update(

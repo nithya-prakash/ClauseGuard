@@ -30,9 +30,11 @@ measured, and what's still open.
 - [x] Milestone 14 — Security hardening
 - [x] Milestone 15 — CI/CD + documentation
 - [ ] Milestone 16 — Finalization, calibration & production readiness (evidence-sufficiency
-      recalibration done and verified — 0.30→0.60 on the original benchmark, see
-      [§15](#15-failure-cases); LLM evaluation harness, Postgres/Celery request-path
-      migration, frontend test suite, and a fresh security/CI pass are not yet done)
+      recalibration done and verified — 0.30→0.60 on the original benchmark; LLM
+      evaluation harness built (NOT_MEASURED, no API key); Postgres persistence +
+      additive Celery async job path done and verified against real containers — see
+      [§15](#15-failure-cases); frontend test suite, a fresh security pass, and
+      attempting a real CI push are not yet done)
 
 ---
 
@@ -67,7 +69,7 @@ flowchart TD
         F2 --> F3
         F3 --> F4[Cross-encoder rerank<br/>mmarco-mMiniLMv2]
     end
-    F --> G{Evidence sufficiency<br/>score >= 0.0?}
+    F --> G{Evidence sufficiency<br/>length-adjusted score calibrated<br/>Milestone 16}
     G -- no --> H[INSUFFICIENT_EVIDENCE<br/>no LLM call]
     G -- yes --> I[LLM structured reasoning<br/>Claude tool-use, schema-constrained]
     I --> J[Citation verification<br/>vs. actually-retrieved evidence]
@@ -76,17 +78,22 @@ flowchart TD
     J --> K
     K --> L[PDF report<br/>reportlab]
     K --> M[Web UI<br/>Next.js]
+    K --> N[(PostgreSQL<br/>documents + results)]
 
-    N[(PostgreSQL<br/>metadata — Milestone 21, not yet wired)]
     O[(Qdrant<br/>legal corpus vectors)]
-    P[(Redis/Celery<br/>background jobs — Milestone 23, not yet wired)]
+    P[POST /documents/id/jobs<br/>Celery async path]
+    Q[worker container<br/>runs the same pipeline]
+    P --> Q --> N
 ```
 
-The two dashed-in-spirit boxes (Postgres persistence, Celery background jobs)
-are architected for (config, docker-compose services, healthchecks all
-exist) but not yet wired into the live request path — see
-[§18 Limitations](#18-limitations). Everything else in this diagram is real,
-built, and tested against live services, not a plan.
+Postgres now backs both the synchronous `/analyze` endpoint and an additive
+async job path (`POST /documents/{id}/jobs` → a real Celery task, run by
+the `worker` container, persisting to the same Postgres tables) - Milestone
+16 Phase 15. The existing synchronous endpoint and the frontend built
+against it are unchanged; the async path is a genuine, tested addition, not
+a replacement - see [§5 System pipeline](#5-system-pipeline) and
+[§18 Limitations](#18-limitations) for what's still interim (frontend
+doesn't use the async path yet).
 
 ## 3. Problem definition
 
@@ -193,12 +200,24 @@ than losing everything to one stage's failure.
   `POST /documents`, `POST /documents/{id}/analyze`,
   `GET /documents/{id}/{clauses,findings,report}`, `DELETE /documents/{id}`. Uploads are
   saved under a server-generated UUID filename (never the client's original filename,
-  preventing path traversal) and analyzed synchronously in a plain `def` route handler
-  (FastAPI's threadpool executor, so it doesn't block the event loop — Celery background
-  jobs are architected but not yet wired in, see [§18](#18-limitations)). Results are
-  held in a documented **interim, non-durable in-memory store**
-  ([store.py](backend/app/services/pipeline/store.py)) — real, but lost on restart;
-  Postgres persistence is also architected but not yet wired in.
+  preventing path traversal). `/analyze` still runs synchronously in a plain `def` route
+  handler (FastAPI's threadpool executor, so it doesn't block the event loop) — the
+  frontend's existing UX is unchanged.
+- **Persistence & async jobs** (Milestone 16 Phase 15): document/result storage moved
+  from an interim in-memory dict to real Postgres
+  ([store.py](backend/app/services/pipeline/store.py), via SQLAlchemy models + Alembic
+  migrations in `backend/migrations/`) — both containers run
+  `alembic upgrade head` on startup (`docker/entrypoint.sh`), and the synchronous
+  `/analyze` endpoint now persists there too, so results survive a restart. Additively,
+  not as a replacement: `POST /documents/{id}/jobs` creates a real job row and enqueues
+  a real Celery task ([tasks/analysis.py](backend/app/tasks/analysis.py)), executed by
+  the `worker` container and polled via `GET /documents/{id}/jobs/{job_id}` — verified
+  end-to-end against the actual running containers, not just unit-tested (see
+  [§15 Failure cases](#15-failure-cases) for a real bug this verification caught: the
+  worker couldn't see files the backend saved until a shared upload volume was added).
+  Unit tests stay fast by swapping in an in-memory SQLite database via dependency
+  injection (`backend/tests/conftest.py`); integration tests run against the real
+  configured Postgres.
 
 Reproduce end-to-end: `docker compose up -d --build && QDRANT_URL=http://localhost:6339
 python legal_corpus/ingestion/index_corpus.py`, then open `http://localhost:3005` and
@@ -209,9 +228,9 @@ upload a contract, or drive the API directly — see [§10](#10-running-the-appl
 | Layer | Technology |
 |---|---|
 | Backend API | FastAPI, Pydantic v2, Uvicorn |
-| Database (architected, not yet wired) | PostgreSQL + SQLAlchemy + Alembic |
+| Database | PostgreSQL + SQLAlchemy + Alembic (backs both document storage and the async job path) |
 | Vector store | Qdrant |
-| Background jobs (architected, not yet wired) | Redis + Celery |
+| Background jobs | Redis + Celery (additive async analysis path, alongside the synchronous default) |
 | Frontend | Next.js 16 (App Router), TypeScript, Tailwind CSS |
 | Document parsing | `pdfplumber` (PDF), `python-docx` (DOCX) |
 | Classification | `distilbert-base-multilingual-cased` + PEFT LoRA; TF-IDF + logistic regression baseline (`scikit-learn`) |
@@ -458,6 +477,21 @@ Still recorded as the top item in [§18 Limitations](#18-limitations), now with 
 concrete, more specific next step (a score-gap-to-second-best-passage signal, which the
 current 35-example sample is too small to calibrate responsibly).
 
+**The async job path failed 100% of the time until a real Docker verification caught
+why (Milestone 16 Phase 15).** After wiring `POST /documents/{id}/jobs` to a real
+Celery task run by the `worker` container, the very first end-to-end test against the
+live containers (not a unit test - `docker compose up`, real `curl` calls) failed every
+job with `"Could not parse the uploaded file - it may be corrupted or not a valid PDF
+file"`, even for the known-good benchmark PDF. Cause: `backend` and `worker` are
+separate containers with separate filesystems, and there was no shared volume for
+uploads - a file the backend saved to its own local `/srv/backend/uploads` simply did
+not exist from the worker's point of view. Fixed with a shared named volume
+(`clauseguard_uploads`) mounted at the same path in both services; re-verified against
+the live containers afterward (`docker compose up -d backend worker`, real upload, real
+async job, polled to `COMPLETED` with the correct 10-clause result). The same class of
+bug (data invisible across container boundaries) as the Milestone 12 findings - caught
+the same way, by actually running it rather than trusting the code review.
+
 **The LoRA classifier misclassifies real clauses.** Macro F1 0.59 on a 20-example test
 set is not high, and it showed up in practice: a genuine `§ 4 Haftung` (LIABILITY)
 clause from the benchmark contract was misclassified as `NON_COMPETE` during the
@@ -573,8 +607,8 @@ reports itself as `NOT_CONFIGURED` rather than fabricating output — verified, 
 assumed (see [§5](#5-system-pipeline)).
 
 Uploaded files are stored server-side (under a server-generated UUID filename) until
-explicitly deleted via `DELETE /documents/{id}`, which removes both the file and all
-in-memory analysis data for that document. There is currently no automatic expiry —
+explicitly deleted via `DELETE /documents/{id}`, which removes both the file and its
+analysis result from Postgres for that document. There is currently no automatic expiry —
 manual deletion is the only cleanup path today (see
 [§18 Limitations](#18-limitations)). Logs never contain contract text or clause
 content, only metadata (ids, counts, durations, stage names, error types) — see
@@ -602,13 +636,17 @@ Most actionable first:
    hallucination/faithfulness testing also needs a key.
 4. **LoRA classifier is imperfect** (macro F1 0.59) — see the real misclassification
    example in [§15](#15-failure-cases).
-5. **Document/analysis storage is in-memory, not durable** — works for the life of the
-   backend process but is lost on restart and not shared across replicas. Postgres is
-   configured (docker-compose, healthcheck, connection settings) but not wired into the
-   request path.
-6. **Celery/Redis background job processing is configured but not wired in** — analysis
-   runs synchronously inside the HTTP request (in a threadpool, so it doesn't block the
-   event loop, but there's no job queue, progress polling, or retry).
+5. **Document/analysis storage is now Postgres-backed and durable (Milestone 16 Phase
+   15)** — this used to be the top item here; see [§15](#15-failure-cases) for what
+   changed. Remaining gap: no Alembic migration has been tested as part of an upgrade
+   from a running production instance with real data (only from empty databases so far)
+   — a real concern before ever redeploying against non-empty data.
+6. **The Celery async job path is real, tested, and additive — but the frontend
+   doesn't use it yet.** `POST /documents/{id}/jobs` genuinely works end-to-end against
+   the real `worker` container (see [§15](#15-failure-cases)), but the frontend still
+   calls the synchronous `/analyze` endpoint, so a user gets no progress polling or
+   retry benefit from the job queue today. No job cleanup/expiry exists either — old
+   `analysis_jobs` rows accumulate indefinitely.
 7. **No frontend automated test suite** — the frontend was verified by manually driving
    the real app in a browser against the live Docker stack (see
    [§15 Failure cases](#15-failure-cases) for what that verification found and fixed).
@@ -649,10 +687,11 @@ Roughly in order of what would most improve the honest measured numbers above:
    numbers (currently all `NOT_MEASURED`), including real adversarial prompt-injection
    testing against a live model.
 3. Extend the legal corpus to cover confidentiality and payment-term provisions.
-4. Wire Postgres persistence into the request path (schemas/config/healthcheck already
-   exist) so analysis results survive a restart.
-5. Wire Celery background job processing so `/analyze` returns immediately with a job
-   id instead of blocking the request for the full pipeline duration.
+4. Migrate the frontend's analyze flow from the synchronous `/analyze` call to the
+   already-working async `POST /documents/{id}/jobs` + polling path (Milestone 16 Phase
+   15), for real progress feedback instead of one long blocking request.
+5. Add job cleanup/expiry for old `analysis_jobs` rows, and test an Alembic upgrade
+   against a database with real pre-existing data, not just an empty one.
 6. Add a Playwright/Vitest suite for the frontend (verification so far has been real,
    but manual, browser-driven testing against the live stack).
 7. Add rate limiting on `/analyze` and basic decompression-bomb protection for

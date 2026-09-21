@@ -103,6 +103,15 @@ jobs:
       - name: Index legal corpus into Qdrant
         run: python legal_corpus/ingestion/index_corpus.py
 
+      # Milestone 16 Phase 15: the integration test tier now depends on
+      # real Postgres tables existing (store.py/jobs_store.py are no
+      # longer in-memory) - the same migration docker/entrypoint.sh runs
+      # for the backend/worker containers, run explicitly here since CI
+      # only stands up a bare postgres service container, not the app
+      # images.
+      - name: Run Alembic migrations
+        run: alembic -c backend/alembic.ini upgrade head
+
       - name: Pytest (integration - real Postgres/Qdrant/Redis, real trained models)
         run: pytest -m "integration and not external_flaky" -v
 

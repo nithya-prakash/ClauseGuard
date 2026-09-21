@@ -59,6 +59,14 @@ services:
       # models from scratch. Named volume, not a bind mount (VirtioFS
       # bind-mount deadlocks are a known issue on this host).
       - clauseguard_hf_cache:/root/.cache/huggingface
+      # Milestone 16 Phase 15 finding: backend and worker are separate
+      # containers with separate filesystems. Without this shared volume,
+      # a file the backend saves to its own local /srv/backend/uploads is
+      # invisible to the worker container, so every async analysis job
+      # failed with a "could not parse the uploaded file" error - a real
+      # bug found by actually running the async path against the live
+      # worker container, not by reasoning about it in the abstract.
+      - clauseguard_uploads:/srv/backend/uploads
     depends_on:
       postgres:
         condition: service_healthy
@@ -87,6 +95,7 @@ services:
       CELERY_RESULT_BACKEND: redis://redis:6379/1
     volumes:
       - clauseguard_hf_cache:/root/.cache/huggingface
+      - clauseguard_uploads:/srv/backend/uploads
     depends_on:
       postgres:
         condition: service_healthy
@@ -124,3 +133,4 @@ volumes:
   clauseguard_pgdata:
   clauseguard_qdrant:
   clauseguard_hf_cache:
+  clauseguard_uploads:

@@ -18,8 +18,10 @@ from app.core.config import get_settings
 from app.core.exceptions import FileTooLargeError, NotFoundError, UnsupportedFileTypeError
 from app.core.logging import get_logger
 from app.schemas.clause import Clause
+from app.schemas.job import AnalysisJobResponse
 from app.schemas.pipeline import DocumentAnalysisResult
 from app.services.pipeline.document_analysis import analyze_document
+from app.services.pipeline.jobs_store import create_job, get_job
 from app.services.pipeline.store import (
     DocumentRecord,
     delete_document,
@@ -30,6 +32,7 @@ from app.services.pipeline.store import (
 )
 from app.services.reporting.pdf_generator import generate_report_pdf
 from app.services.retrieval.corpus_loader import load_scope
+from app.tasks.analysis import run_document_analysis
 
 logger = get_logger(__name__)
 
@@ -105,6 +108,38 @@ def analyze(document_id: str) -> DocumentAnalysisResult:
     result.filename = record.original_filename
     save_result(document_id, result)
     return result
+
+
+@router.post("/{document_id}/jobs", response_model=AnalysisJobResponse, status_code=202)
+def create_analysis_job(document_id: str) -> AnalysisJobResponse:
+    """Additive async path (Milestone 16 Phase 15) alongside the existing
+    synchronous /analyze above: creates a real Postgres-persisted job row
+    and enqueues a real Celery task (backend/app/tasks/analysis.py), run by
+    the `worker` docker-compose service. The existing synchronous endpoint
+    and the frontend built against it are unchanged - this is an addition,
+    not a replacement, per the spec's "do not rewrite the whole
+    application" instruction."""
+    _get_document_or_404(document_id)
+    job = create_job(document_id)
+    run_document_analysis.delay(job.job_id, document_id)
+    return AnalysisJobResponse(job_id=job.job_id, document_id=document_id, status=job.status)
+
+
+@router.get("/{document_id}/jobs/{job_id}", response_model=AnalysisJobResponse)
+def get_analysis_job(document_id: str, job_id: str) -> AnalysisJobResponse:
+    _get_document_or_404(document_id)
+    job = get_job(job_id)
+    if job is None or job.document_id != document_id:
+        raise NotFoundError(f"No job with id '{job_id}' for document '{document_id}'.")
+
+    result = get_result(document_id) if job.status == "COMPLETED" else None
+    return AnalysisJobResponse(
+        job_id=job.job_id,
+        document_id=job.document_id,
+        status=job.status,
+        error=job.error,
+        result=result,
+    )
 
 
 @router.get("/{document_id}/clauses", response_model=list[Clause])
