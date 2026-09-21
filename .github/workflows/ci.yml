@@ -135,6 +135,9 @@ jobs:
       - name: Lint
         run: npx eslint . --ext .ts,.tsx
 
+      - name: Unit tests (Vitest + Testing Library, Milestone 16 Phase 16)
+        run: npm test
+
       - name: Build (includes TypeScript type-check)
         run: npm run build
         env:

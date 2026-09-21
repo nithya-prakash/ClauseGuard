@@ -59,6 +59,7 @@ export default function UploadScreen({ onFileSelected, errorMessage }: UploadScr
         <input
           ref={inputRef}
           type="file"
+          data-testid="file-input"
           accept={ACCEPTED_EXTENSIONS.join(",")}
           className="hidden"
           onChange={(e) => handleFiles(e.target.files)}
