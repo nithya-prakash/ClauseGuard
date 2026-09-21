@@ -1,0 +1,82 @@
+[
+  {
+    "text": "Beide Parteien verpflichten sich, alle vertraulichen Informationen der jeweils anderen Partei streng vertraulich zu behandeln.",
+    "clause_type": "CONFIDENTIALITY"
+  },
+  {
+    "text": "Die Geheimhaltungspflicht gilt auch für einen Zeitraum von drei Jahren nach Beendigung dieses Vertrages.",
+    "clause_type": "CONFIDENTIALITY"
+  },
+  {
+    "text": "Der Auftragnehmer verarbeitet personenbezogene Daten ausschließlich im Rahmen der Auftragsverarbeitung gemäß Art. 28 DSGVO.",
+    "clause_type": "DATA_PROCESSING"
+  },
+  {
+    "text": "Die Parteien schließen eine gesonderte Vereinbarung zur Auftragsverarbeitung gemäß Art. 28 DSGVO ab.",
+    "clause_type": "DATA_PROCESSING"
+  },
+  {
+    "text": "Änderungen und Ergänzungen dieses Vertrages bedürfen der Textform.",
+    "clause_type": "GENERAL_TERMS"
+  },
+  {
+    "text": "Sollte eine Bestimmung dieses Vertrages unwirksam sein, bleibt die Wirksamkeit der übrigen Bestimmungen unberührt.",
+    "clause_type": "GENERAL_TERMS"
+  },
+  {
+    "text": "Alle im Rahmen dieses Vertrages erstellten Arbeitsergebnisse gehen mit vollständiger Bezahlung auf den Auftraggeber über.",
+    "clause_type": "INTELLECTUAL_PROPERTY"
+  },
+  {
+    "text": "Der Auftragnehmer räumt dem Auftraggeber ein einfaches, zeitlich unbeschränktes Nutzungsrecht an der Software ein.",
+    "clause_type": "INTELLECTUAL_PROPERTY"
+  },
+  {
+    "text": "Der Verkäufer haftet nur für Schäden, die auf Vorsatz oder grober Fahrlässigkeit beruhen.",
+    "clause_type": "LIABILITY"
+  },
+  {
+    "text": "Die Haftung für leichte Fahrlässigkeit ist ausgeschlossen, soweit keine wesentliche Vertragspflicht verletzt wird.",
+    "clause_type": "LIABILITY"
+  },
+  {
+    "text": "Der Arbeitnehmer verpflichtet sich, für die Dauer von zwei Jahren nach Beendigung des Arbeitsverhältnisses nicht für ein Konkurrenzunternehmen tätig zu werden.",
+    "clause_type": "NON_COMPETE"
+  },
+  {
+    "text": "Für die Einhaltung des nachvertraglichen Wettbewerbsverbots erhält der Arbeitnehmer eine Karenzentschädigung in Höhe von 50 Prozent der zuletzt bezogenen Vergütung.",
+    "clause_type": "NON_COMPETE"
+  },
+  {
+    "text": "Die Parteien bestätigen, dass sie zum Zeitpunkt der Unterzeichnung uneingeschränkt geschäftsfähig sind.",
+    "clause_type": "OTHER"
+  },
+  {
+    "text": "Der Auftraggeber stellt dem Auftragnehmer die erforderlichen Zugangsdaten spätestens eine Woche vor Projektbeginn zur Verfügung.",
+    "clause_type": "OTHER"
+  },
+  {
+    "text": "Die Vergütung ist monatlich im Voraus auf das vom Auftragnehmer benannte Konto zu zahlen.",
+    "clause_type": "PAYMENT"
+  },
+  {
+    "text": "Rechnungen sind innerhalb von 14 Tagen nach Zugang ohne Abzug zur Zahlung fällig.",
+    "clause_type": "PAYMENT"
+  },
+  {
+    "text": "Der Vertrag kann von beiden Parteien mit einer Frist von drei Monaten zum Monatsende gekündigt werden.",
+    "clause_type": "TERMINATION"
+  },
+  {
+    "text": "Das Recht zur außerordentlichen Kündigung aus wichtigem Grund bleibt unberührt.",
+    "clause_type": "TERMINATION"
+  },
+  {
+    "text": "Der Auftragnehmer gewährleistet, dass die erbrachten Leistungen dem vereinbarten Leistungsumfang entsprechen.",
+    "clause_type": "WARRANTY"
+  },
+  {
+    "text": "Mängel sind unverzüglich nach Entdeckung in Textform anzuzeigen.",
+    "clause_type": "WARRANTY"
+  }
+]

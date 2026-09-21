@@ -1,0 +1,82 @@
+[
+  {
+    "text": "Vertrauliche Informationen dürfen nur mit vorheriger schriftlicher Zustimmung an Dritte weitergegeben werden.",
+    "clause_type": "CONFIDENTIALITY"
+  },
+  {
+    "text": "Ausgenommen von der Vertraulichkeitspflicht sind Informationen, die nachweislich bereits öffentlich bekannt waren.",
+    "clause_type": "CONFIDENTIALITY"
+  },
+  {
+    "text": "Der Anbieter trifft geeignete technische und organisatorische Maßnahmen gemäß Art. 32 DSGVO.",
+    "clause_type": "DATA_PROCESSING"
+  },
+  {
+    "text": "Personenbezogene Daten der Nutzer werden ausschließlich auf Servern innerhalb der Europäischen Union verarbeitet.",
+    "clause_type": "DATA_PROCESSING"
+  },
+  {
+    "text": "Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts.",
+    "clause_type": "GENERAL_TERMS"
+  },
+  {
+    "text": "Gerichtsstand für alle Streitigkeiten aus diesem Vertrag ist, soweit gesetzlich zulässig, der Sitz des Auftraggebers.",
+    "clause_type": "GENERAL_TERMS"
+  },
+  {
+    "text": "Sämtliche Urheberrechte an den erstellten Werken verbleiben, soweit gesetzlich zulässig, beim Auftragnehmer.",
+    "clause_type": "INTELLECTUAL_PROPERTY"
+  },
+  {
+    "text": "Der Lizenznehmer erhält ein nicht-exklusives, nicht übertragbares Nutzungsrecht an der Lizenzsoftware.",
+    "clause_type": "INTELLECTUAL_PROPERTY"
+  },
+  {
+    "text": "Für mittelbare Schäden und entgangenen Gewinn wird keine Haftung übernommen.",
+    "clause_type": "LIABILITY"
+  },
+  {
+    "text": "Die Haftungshöhe ist auf den Auftragswert des jeweiligen Kalenderjahres begrenzt.",
+    "clause_type": "LIABILITY"
+  },
+  {
+    "text": "Der Auftragnehmer verpflichtet sich, während der Vertragslaufzeit nicht für direkte Wettbewerber des Auftraggebers tätig zu werden.",
+    "clause_type": "NON_COMPETE"
+  },
+  {
+    "text": "Das Wettbewerbsverbot gilt räumlich beschränkt auf das Gebiet der Bundesrepublik Deutschland.",
+    "clause_type": "NON_COMPETE"
+  },
+  {
+    "text": "Reisekosten werden nach den jeweils gültigen steuerlichen Pauschalen erstattet.",
+    "clause_type": "OTHER"
+  },
+  {
+    "text": "Der Betriebsrat ist gemäß den Vorschriften des Betriebsverfassungsgesetzes rechtzeitig zu beteiligen.",
+    "clause_type": "OTHER"
+  },
+  {
+    "text": "Bei Zahlungsverzug werden Verzugszinsen in Höhe von neun Prozentpunkten über dem Basiszinssatz berechnet.",
+    "clause_type": "PAYMENT"
+  },
+  {
+    "text": "Der Kaufpreis beträgt 25.000 Euro zzgl. der gesetzlichen Umsatzsteuer und ist bei Lieferung fällig.",
+    "clause_type": "PAYMENT"
+  },
+  {
+    "text": "Bei wiederholtem Zahlungsverzug ist der Vermieter berechtigt, das Mietverhältnis fristlos zu kündigen.",
+    "clause_type": "TERMINATION"
+  },
+  {
+    "text": "Der Arbeitsvertrag endet automatisch mit Ablauf der vereinbarten Befristung, ohne dass es einer Kündigung bedarf.",
+    "clause_type": "TERMINATION"
+  },
+  {
+    "text": "Die Gewährleistungsfrist beträgt zwei Jahre ab Übergabe der Kaufsache.",
+    "clause_type": "WARRANTY"
+  },
+  {
+    "text": "Der Verkäufer ist berechtigt, innerhalb angemessener Frist nachzubessern, bevor weitere Gewährleistungsrechte geltend gemacht werden können.",
+    "clause_type": "WARRANTY"
+  }
+]

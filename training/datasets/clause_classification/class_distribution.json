@@ -1,0 +1,58 @@
+{
+  "total_examples": 120,
+  "split_sizes": {
+    "train": 80,
+    "val": 20,
+    "test": 20
+  },
+  "class_distribution": {
+    "overall": {
+      "CONFIDENTIALITY": 12,
+      "DATA_PROCESSING": 12,
+      "GENERAL_TERMS": 12,
+      "INTELLECTUAL_PROPERTY": 12,
+      "LIABILITY": 12,
+      "NON_COMPETE": 12,
+      "OTHER": 12,
+      "PAYMENT": 12,
+      "TERMINATION": 12,
+      "WARRANTY": 12
+    },
+    "train": {
+      "CONFIDENTIALITY": 8,
+      "DATA_PROCESSING": 8,
+      "GENERAL_TERMS": 8,
+      "INTELLECTUAL_PROPERTY": 8,
+      "LIABILITY": 8,
+      "NON_COMPETE": 8,
+      "OTHER": 8,
+      "PAYMENT": 8,
+      "TERMINATION": 8,
+      "WARRANTY": 8
+    },
+    "val": {
+      "CONFIDENTIALITY": 2,
+      "DATA_PROCESSING": 2,
+      "GENERAL_TERMS": 2,
+      "INTELLECTUAL_PROPERTY": 2,
+      "LIABILITY": 2,
+      "NON_COMPETE": 2,
+      "OTHER": 2,
+      "PAYMENT": 2,
+      "TERMINATION": 2,
+      "WARRANTY": 2
+    },
+    "test": {
+      "CONFIDENTIALITY": 2,
+      "DATA_PROCESSING": 2,
+      "GENERAL_TERMS": 2,
+      "INTELLECTUAL_PROPERTY": 2,
+      "LIABILITY": 2,
+      "NON_COMPETE": 2,
+      "OTHER": 2,
+      "PAYMENT": 2,
+      "TERMINATION": 2,
+      "WARRANTY": 2
+    }
+  }
+}

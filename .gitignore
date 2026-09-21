@@ -28,9 +28,10 @@ backend/tmp/
 legal_corpus/sources/*.html
 legal_corpus/sources/*.pdf
 
-# model artifacts
+# model artifacts (regenerated deterministically by training scripts)
 training/adapter/
 training/checkpoints/
+training/models/
 *.safetensors
 *.bin
 !**/*.gitkeep

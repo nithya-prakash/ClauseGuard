@@ -1,0 +1,163 @@
+{
+  "evaluated_at": "2026-09-20T14:12:10.936617+00:00",
+  "model_name": "baseline-tfidf-logreg-v1",
+  "model_path": "training/models/baseline_classifier.joblib",
+  "dataset": "training/datasets/clause_classification (synthetic, hand-authored - see dataset.json _provenance)",
+  "test_set_size": 20,
+  "accuracy": 0.6,
+  "macro_precision": 0.5733,
+  "macro_recall": 0.6,
+  "macro_f1": 0.5471,
+  "per_class_f1": {
+    "LIABILITY": 1.0,
+    "TERMINATION": 0.6667,
+    "PAYMENT": 0.5,
+    "DATA_PROCESSING": 1.0,
+    "CONFIDENTIALITY": 0.4,
+    "NON_COMPETE": 0.0,
+    "INTELLECTUAL_PROPERTY": 0.6667,
+    "WARRANTY": 0.6667,
+    "GENERAL_TERMS": 0.0,
+    "OTHER": 0.5714
+  },
+  "confusion_matrix": {
+    "labels": [
+      "LIABILITY",
+      "TERMINATION",
+      "PAYMENT",
+      "DATA_PROCESSING",
+      "CONFIDENTIALITY",
+      "NON_COMPETE",
+      "INTELLECTUAL_PROPERTY",
+      "WARRANTY",
+      "GENERAL_TERMS",
+      "OTHER"
+    ],
+    "matrix": [
+      [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2
+      ]
+    ]
+  },
+  "limitations": [
+    "Test set has only 2 examples per class (20 total) - metrics are high-variance at this N; a single misclassification swings a class's F1 by 0.5. Not representative of real-world contract language diversity.",
+    "Dataset is synthetic and hand-authored by the developer, not sourced from or reviewed against real contracts."
+  ]
+}

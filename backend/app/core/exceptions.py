@@ -33,6 +33,13 @@ class LLMNotConfiguredError(ClauseGuardError):
     status_code = 503
 
 
+class ClassifierNotTrainedError(ClauseGuardError):
+    """Raised when clause classification is requested but no trained model
+    artifact exists yet. Never falls back to a guessed/default label."""
+
+    status_code = 503
+
+
 class OCRNotImplementedError(ClauseGuardError):
     """Raised when a PDF is detected as likely-scanned (low text density).
 

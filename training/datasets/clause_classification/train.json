@@ -1,0 +1,322 @@
+[
+  {
+    "text": "Der Arbeitnehmer verpflichtet sich, über Betriebs- und Geschäftsgeheimnisse auch nach Beendigung des Arbeitsverhältnisses Stillschweigen zu bewahren.",
+    "clause_type": "CONFIDENTIALITY"
+  },
+  {
+    "text": "Beide Parteien treffen angemessene Maßnahmen, um den unbefugten Zugriff Dritter auf vertrauliche Unterlagen zu verhindern.",
+    "clause_type": "CONFIDENTIALITY"
+  },
+  {
+    "text": "Die Offenlegung vertraulicher Informationen aufgrund gesetzlicher Verpflichtung bleibt von dieser Regelung unberührt.",
+    "clause_type": "CONFIDENTIALITY"
+  },
+  {
+    "text": "Sämtliche im Rahmen der Due Diligence offengelegten Informationen sind streng vertraulich zu behandeln.",
+    "clause_type": "CONFIDENTIALITY"
+  },
+  {
+    "text": "Mitarbeiter, die Zugang zu vertraulichen Informationen erhalten, sind entsprechend zur Verschwiegenheit zu verpflichten.",
+    "clause_type": "CONFIDENTIALITY"
+  },
+  {
+    "text": "Eine Verletzung der Vertraulichkeitspflicht berechtigt die betroffene Partei zur fristlosen Kündigung.",
+    "clause_type": "CONFIDENTIALITY"
+  },
+  {
+    "text": "Die Vertraulichkeitsvereinbarung gilt unabhängig vom Zustandekommen des Hauptvertrages fort.",
+    "clause_type": "CONFIDENTIALITY"
+  },
+  {
+    "text": "Kopien vertraulicher Unterlagen dürfen nur im für den Vertragszweck erforderlichen Umfang angefertigt werden.",
+    "clause_type": "CONFIDENTIALITY"
+  },
+  {
+    "text": "Der Auftraggeber bleibt datenschutzrechtlich Verantwortlicher im Sinne von Art. 4 Nr. 7 DSGVO.",
+    "clause_type": "DATA_PROCESSING"
+  },
+  {
+    "text": "Nach Beendigung der Verarbeitung sind sämtliche personenbezogenen Daten zu löschen oder zurückzugeben.",
+    "clause_type": "DATA_PROCESSING"
+  },
+  {
+    "text": "Eine Übermittlung personenbezogener Daten an Drittländer erfolgt nur bei Vorliegen geeigneter Garantien nach Art. 46 DSGVO.",
+    "clause_type": "DATA_PROCESSING"
+  },
+  {
+    "text": "Der Auftragnehmer unterstützt den Auftraggeber bei der Erfüllung von Betroffenenrechten gemäß Art. 12 bis 22 DSGVO.",
+    "clause_type": "DATA_PROCESSING"
+  },
+  {
+    "text": "Unterauftragsverarbeiter dürfen nur mit vorheriger schriftlicher Zustimmung des Auftraggebers eingesetzt werden.",
+    "clause_type": "DATA_PROCESSING"
+  },
+  {
+    "text": "Der Auftragnehmer meldet Datenschutzverletzungen unverzüglich, spätestens jedoch innerhalb von 24 Stunden, an den Auftraggeber.",
+    "clause_type": "DATA_PROCESSING"
+  },
+  {
+    "text": "Zugriffsrechte auf personenbezogene Daten werden nach dem Prinzip der geringsten Berechtigung vergeben.",
+    "clause_type": "DATA_PROCESSING"
+  },
+  {
+    "text": "Die Speicherfrist für Nutzerdaten beträgt maximal 24 Monate nach Beendigung des Vertragsverhältnisses.",
+    "clause_type": "DATA_PROCESSING"
+  },
+  {
+    "text": "Nebenabreden zu diesem Vertrag bestehen nicht.",
+    "clause_type": "GENERAL_TERMS"
+  },
+  {
+    "text": "Dieser Vertrag tritt mit Unterzeichnung durch beide Parteien in Kraft.",
+    "clause_type": "GENERAL_TERMS"
+  },
+  {
+    "text": "Der Vertrag wird in zwei gleichlautenden Ausfertigungen erstellt, von denen jede Partei eine erhält.",
+    "clause_type": "GENERAL_TERMS"
+  },
+  {
+    "text": "Die Überschriften dieses Vertrages dienen ausschließlich der Übersichtlichkeit und haben keinen Einfluss auf die Auslegung.",
+    "clause_type": "GENERAL_TERMS"
+  },
+  {
+    "text": "Rechte und Pflichten aus diesem Vertrag dürfen nur mit vorheriger schriftlicher Zustimmung der anderen Partei übertragen werden.",
+    "clause_type": "GENERAL_TERMS"
+  },
+  {
+    "text": "Dieser Vertrag ersetzt alle vorherigen mündlichen und schriftlichen Vereinbarungen der Parteien.",
+    "clause_type": "GENERAL_TERMS"
+  },
+  {
+    "text": "Die Parteien verpflichten sich, bei Meinungsverschiedenheiten zunächst eine gütliche Einigung anzustreben.",
+    "clause_type": "GENERAL_TERMS"
+  },
+  {
+    "text": "Anlagen zu diesem Vertrag sind dessen Bestandteil.",
+    "clause_type": "GENERAL_TERMS"
+  },
+  {
+    "text": "Patente und sonstige Schutzrechte, die während der Beschäftigung entstehen, stehen dem Arbeitgeber zu.",
+    "clause_type": "INTELLECTUAL_PROPERTY"
+  },
+  {
+    "text": "Marken- und Kennzeichenrechte des Lizenzgebers dürfen nur im vereinbarten Umfang genutzt werden.",
+    "clause_type": "INTELLECTUAL_PROPERTY"
+  },
+  {
+    "text": "Der Auftraggeber erhält ein ausschließliches Nutzungsrecht an allen im Projekt entwickelten Konzepten.",
+    "clause_type": "INTELLECTUAL_PROPERTY"
+  },
+  {
+    "text": "Quellcode und Dokumentation bleiben geistiges Eigentum des Auftragnehmers, sofern nicht ausdrücklich anders vereinbart.",
+    "clause_type": "INTELLECTUAL_PROPERTY"
+  },
+  {
+    "text": "Die Nutzungsrechte an Bildmaterial sind auf die Dauer des Vertragsverhältnisses beschränkt.",
+    "clause_type": "INTELLECTUAL_PROPERTY"
+  },
+  {
+    "text": "Verbesserungen und Weiterentwicklungen der lizenzierten Technologie stehen dem Lizenzgeber zu.",
+    "clause_type": "INTELLECTUAL_PROPERTY"
+  },
+  {
+    "text": "Der Autor überträgt dem Verlag das ausschließliche Recht zur Vervielfältigung und Verbreitung des Werkes.",
+    "clause_type": "INTELLECTUAL_PROPERTY"
+  },
+  {
+    "text": "Eine Unterlizenzierung der eingeräumten Nutzungsrechte an Dritte ist ohne Zustimmung ausgeschlossen.",
+    "clause_type": "INTELLECTUAL_PROPERTY"
+  },
+  {
+    "text": "Der Anbieter haftet nicht für Schäden, die durch unsachgemäße Nutzung der Software entstehen.",
+    "clause_type": "LIABILITY"
+  },
+  {
+    "text": "Eine Haftung nach dem Produkthaftungsgesetz bleibt von dieser Regelung unberührt.",
+    "clause_type": "LIABILITY"
+  },
+  {
+    "text": "Der Vermieter haftet nicht für Schäden am Eigentum des Mieters, sofern kein Verschulden vorliegt.",
+    "clause_type": "LIABILITY"
+  },
+  {
+    "text": "Schadensersatzansprüche gegen den Arbeitgeber verjähren innerhalb von sechs Monaten nach Fälligkeit.",
+    "clause_type": "LIABILITY"
+  },
+  {
+    "text": "Die Gesellschaft übernimmt keine Haftung für Verzögerungen, die auf höhere Gewalt zurückzuführen sind.",
+    "clause_type": "LIABILITY"
+  },
+  {
+    "text": "Im Falle einer Pflichtverletzung haftet der Lizenznehmer für sämtliche daraus entstehenden Schäden.",
+    "clause_type": "LIABILITY"
+  },
+  {
+    "text": "Die Haftung beider Parteien ist auf Vorsatz und grobe Fahrlässigkeit beschränkt, soweit gesetzlich zulässig.",
+    "clause_type": "LIABILITY"
+  },
+  {
+    "text": "Der Auftragnehmer stellt den Auftraggeber von Ansprüchen Dritter frei, die auf einer schuldhaften Pflichtverletzung beruhen.",
+    "clause_type": "LIABILITY"
+  },
+  {
+    "text": "Der Gesellschafter unterliegt für die Dauer seiner Beteiligung einem umfassenden Wettbewerbsverbot.",
+    "clause_type": "NON_COMPETE"
+  },
+  {
+    "text": "Ein Verstoß gegen das Wettbewerbsverbot verpflichtet zur Zahlung einer Vertragsstrafe in Höhe eines Monatsgehalts.",
+    "clause_type": "NON_COMPETE"
+  },
+  {
+    "text": "Das nachvertragliche Wettbewerbsverbot ist auf einen Zeitraum von zwölf Monaten begrenzt.",
+    "clause_type": "NON_COMPETE"
+  },
+  {
+    "text": "Der Handelsvertreter darf während der Vertragslaufzeit keine Konkurrenzprodukte vertreiben.",
+    "clause_type": "NON_COMPETE"
+  },
+  {
+    "text": "Die Verpflichtung zur Wettbewerbsenthaltung entfällt, wenn der Arbeitgeber auf ihre Einhaltung schriftlich verzichtet.",
+    "clause_type": "NON_COMPETE"
+  },
+  {
+    "text": "Franchise-Nehmer verpflichten sich, innerhalb des Vertragsgebiets keine konkurrierenden Tätigkeiten auszuüben.",
+    "clause_type": "NON_COMPETE"
+  },
+  {
+    "text": "Der Geschäftsführer darf während seiner Amtszeit keine Beteiligung an Wettbewerbsunternehmen erwerben.",
+    "clause_type": "NON_COMPETE"
+  },
+  {
+    "text": "Das Wettbewerbsverbot endet automatisch mit Ablauf der vereinbarten Karenzzeit.",
+    "clause_type": "NON_COMPETE"
+  },
+  {
+    "text": "Die Parteien verpflichten sich zur regelmäßigen gegenseitigen Information über den Projektfortschritt.",
+    "clause_type": "OTHER"
+  },
+  {
+    "text": "Für die Dauer der Zusammenarbeit benennt jede Partei einen zentralen Ansprechpartner.",
+    "clause_type": "OTHER"
+  },
+  {
+    "text": "Alle Mitteilungen im Rahmen dieses Vertrages sind in deutscher Sprache abzufassen.",
+    "clause_type": "OTHER"
+  },
+  {
+    "text": "Der Auftraggeber stellt geeignete Arbeitsräume und technische Ausstattung zur Verfügung.",
+    "clause_type": "OTHER"
+  },
+  {
+    "text": "Die Parteien vereinbaren, sich regelmäßig zu Statusgesprächen zu treffen.",
+    "clause_type": "OTHER"
+  },
+  {
+    "text": "Änderungen der Kontaktdaten sind der jeweils anderen Partei unverzüglich mitzuteilen.",
+    "clause_type": "OTHER"
+  },
+  {
+    "text": "Der Auftragnehmer verpflichtet sich zur Einhaltung der jeweils geltenden Arbeitsschutzvorschriften.",
+    "clause_type": "OTHER"
+  },
+  {
+    "text": "Diese Präambel dient der Erläuterung des wirtschaftlichen Hintergrunds des Vertragsschlusses.",
+    "clause_type": "OTHER"
+  },
+  {
+    "text": "Die Miete ist monatlich im Voraus, spätestens bis zum dritten Werktag eines Monats, zu entrichten.",
+    "clause_type": "PAYMENT"
+  },
+  {
+    "text": "Der Auftraggeber leistet eine Anzahlung in Höhe von 30 Prozent des Gesamtpreises bei Vertragsschluss.",
+    "clause_type": "PAYMENT"
+  },
+  {
+    "text": "Skonto wird nur bei Zahlung innerhalb von zehn Tagen in Höhe von zwei Prozent gewährt.",
+    "clause_type": "PAYMENT"
+  },
+  {
+    "text": "Alle Preise verstehen sich netto zuzüglich der jeweils geltenden gesetzlichen Mehrwertsteuer.",
+    "clause_type": "PAYMENT"
+  },
+  {
+    "text": "Bei Zahlungsverzug von mehr als 30 Tagen ist der Lieferant berechtigt, weitere Lieferungen zurückzuhalten.",
+    "clause_type": "PAYMENT"
+  },
+  {
+    "text": "Das Gehalt wird jeweils zum letzten Werktag des Monats auf das angegebene Bankkonto überwiesen.",
+    "clause_type": "PAYMENT"
+  },
+  {
+    "text": "Zusätzliche Leistungen werden auf Stundenbasis zu einem Satz von 95 Euro pro Stunde abgerechnet.",
+    "clause_type": "PAYMENT"
+  },
+  {
+    "text": "Der Lizenznehmer zahlt eine jährliche Lizenzgebühr in Höhe von 4.800 Euro im Voraus.",
+    "clause_type": "PAYMENT"
+  },
+  {
+    "text": "Beide Parteien können den Vertrag mit einer Frist von sechs Wochen zum Quartalsende kündigen.",
+    "clause_type": "TERMINATION"
+  },
+  {
+    "text": "Eine ordentliche Kündigung ist während der Mindestvertragslaufzeit von zwölf Monaten ausgeschlossen.",
+    "clause_type": "TERMINATION"
+  },
+  {
+    "text": "Kündigungen bedürfen der Schriftform, eine Kündigung per E-Mail ist nicht ausreichend.",
+    "clause_type": "TERMINATION"
+  },
+  {
+    "text": "Nach Beendigung des Vertrages sind sämtliche überlassenen Unterlagen unverzüglich zurückzugeben.",
+    "clause_type": "TERMINATION"
+  },
+  {
+    "text": "Der Lizenzvertrag verlängert sich automatisch um ein Jahr, sofern er nicht mit einer Frist von drei Monaten gekündigt wird.",
+    "clause_type": "TERMINATION"
+  },
+  {
+    "text": "Im Falle der Insolvenz einer Partei ist die andere Partei zur sofortigen Kündigung berechtigt.",
+    "clause_type": "TERMINATION"
+  },
+  {
+    "text": "Die Probezeit beträgt sechs Monate; während dieser Zeit kann das Arbeitsverhältnis mit einer Frist von zwei Wochen gekündigt werden.",
+    "clause_type": "TERMINATION"
+  },
+  {
+    "text": "Der Auftraggeber ist berechtigt, den Vertrag jederzeit ohne Angabe von Gründen mit einer Frist von vier Wochen zu kündigen.",
+    "clause_type": "TERMINATION"
+  },
+  {
+    "text": "Für gebrauchte Gegenstände wird die Gewährleistung auf ein Jahr verkürzt.",
+    "clause_type": "WARRANTY"
+  },
+  {
+    "text": "Der Vermieter gewährleistet, dass die Mietsache sich bei Übergabe in einem vertragsgemäßen Zustand befindet.",
+    "clause_type": "WARRANTY"
+  },
+  {
+    "text": "Offensichtliche Mängel sind innerhalb von zwei Wochen nach Lieferung schriftlich zu rügen.",
+    "clause_type": "WARRANTY"
+  },
+  {
+    "text": "Der Hersteller übernimmt eine freiwillige Garantie von drei Jahren zusätzlich zur gesetzlichen Gewährleistung.",
+    "clause_type": "WARRANTY"
+  },
+  {
+    "text": "Bei fehlgeschlagener Nacherfüllung ist der Käufer berechtigt, vom Vertrag zurückzutreten oder den Kaufpreis zu mindern.",
+    "clause_type": "WARRANTY"
+  },
+  {
+    "text": "Die Gewährleistung entfällt bei unsachgemäßer Behandlung oder eigenmächtigen Änderungen durch den Käufer.",
+    "clause_type": "WARRANTY"
+  },
+  {
+    "text": "Der Auftragnehmer sichert zu, dass die gelieferte Software frei von wesentlichen Fehlern ist.",
+    "clause_type": "WARRANTY"
+  },
+  {
+    "text": "Versteckte Mängel sind unverzüglich nach ihrer Entdeckung, spätestens jedoch innerhalb der Verjährungsfrist, anzuzeigen.",
+    "clause_type": "WARRANTY"
+  }
+]

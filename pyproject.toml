@@ -24,6 +24,8 @@ dependencies = [
     "anthropic>=0.40",
     "structlog>=24.4",
     "tenacity>=9.0",
+    "scikit-learn>=1.5",
+    "joblib>=1.4",
 ]
 
 [project.optional-dependencies]

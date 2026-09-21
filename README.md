@@ -13,7 +13,7 @@ Build in progress. See commit history / project memory for milestone-by-mileston
 
 - [x] Milestone 1 — Repository architecture, configuration, Docker, FastAPI skeleton
 - [x] Milestone 2 — PDF/DOCX ingestion + clause segmentation
-- [ ] Milestone 3 — Clause classification baseline
+- [x] Milestone 3 — Clause classification baseline
 - [ ] Milestone 4 — LoRA fine-tuning pipeline
 - [ ] Milestone 5 — Legal corpus ingestion
 - [ ] Milestone 6 — Dense + BM25 + RRF retrieval
@@ -60,6 +60,31 @@ Container-to-container traffic uses the standard ports internally.
   by `eval/segmentation/evaluate_segmentation.py`. This benchmark is small
   and hand-authored; it demonstrates correctness on one contract structure,
   not generalization — documented as a limitation in the report itself.
+
+## Clause classification (Milestone 3: baseline)
+
+- 10-label taxonomy: LIABILITY, TERMINATION, PAYMENT, DATA_PROCESSING,
+  CONFIDENTIALITY, NON_COMPETE, INTELLECTUAL_PROPERTY, WARRANTY,
+  GENERAL_TERMS, OTHER. See
+  [backend/app/services/classification/labels.py](backend/app/services/classification/labels.py).
+- Baseline model: TF-IDF (word 1-2grams) + logistic regression, deliberately
+  simple — this is the pre-LoRA baseline the spec requires (Milestone 4 adds
+  the LoRA-tuned model; a real baseline-vs-LoRA comparison only happens once
+  both are measured).
+- Trained on a 120-example synthetic dataset the developer hand-authored
+  (`training/datasets/clause_classification/dataset.json`, see its
+  `_provenance` field) — not real contract data, not legally reviewed.
+  Deterministic 8/2/2 per-class train/val/test split
+  (`training/scripts/prepare_dataset.py`, no randomness).
+- Real measured baseline results (not fabricated) in
+  [reports/classification/baseline/report.md](reports/classification/baseline/report.md):
+  **60% accuracy, macro F1 0.547** on the 20-example test set — several
+  classes (e.g. NON_COMPETE, GENERAL_TERMS) score 0 F1, confused with
+  semantically adjacent classes. The report documents why this number is
+  noisy at N=20 and why it isn't representative of real-world contracts.
+- Reproduce: `python training/scripts/prepare_dataset.py && python
+  training/scripts/train_baseline_classifier.py && python
+  eval/classification/evaluate_baseline.py`
 
 ## Legal scope
 
