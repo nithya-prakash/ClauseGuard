@@ -1,11 +1,13 @@
 name: CI
 
-# Note (Milestone 15): this repository has not yet been pushed to a GitHub
-# remote, so this workflow has been authored carefully and validated
-# locally (equivalent commands run against the real stack throughout
-# Milestones 1-14) but has NOT been executed by a live GitHub Actions
-# runner. Per the project's own anti-fabrication policy (spec section 34),
-# that is stated here plainly rather than claiming "CI passes."
+# Note (Milestone 16 Phase 18): this repository has not yet been pushed to
+# a GitHub remote (a deliberate decision - the developer was asked and
+# declined to push during this milestone), so this workflow has been
+# authored carefully and validated locally (every command below run
+# against the real stack throughout Milestones 1-16) but has NOT been
+# executed by a live GitHub Actions runner. Per the project's own
+# anti-fabrication policy, that is stated here plainly rather than
+# claiming "CI passes."
 
 on:
   push:

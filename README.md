@@ -553,11 +553,17 @@ real dependency on a third-party site's availability — the two tests that hit 
 are excluded from CI via a dedicated `external_flaky` pytest marker (not from local
 runs, where they still serve as real live-fetch verification).
 
-**CI has been authored, not executed.** This repository has no GitHub remote configured
-yet — [`.github/workflows/ci.yml`](.github/workflows/ci.yml) was written carefully and
-every command in it was independently verified locally throughout Milestones 1–14, but
-the workflow itself has never run on a live GitHub Actions runner. Stated here plainly
-rather than claiming "CI passes" for something never executed — see
+**CI has been authored, not executed.** This repository has no GitHub remote configured —
+a deliberate decision, not an oversight: asked directly during Milestone 16 Phase 18,
+the developer chose to keep this local rather than push.
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) was written carefully and **every
+single command in it has been independently re-run locally** as of Milestone 16 Phase 18
+(`ruff check .`, `mypy backend/app`, the full unit suite, a real `alembic upgrade head`
+against a freshly-dropped Postgres schema, the full integration suite, `pip-audit`,
+`npm audit`, `npx eslint`, `npm test`, `npm run build`, and both `docker build` commands
+in the `docker-build` job) — but the workflow itself has still never run on a live
+GitHub Actions runner, which is a meaningfully different claim from "every command
+passes locally," and is stated here plainly rather than collapsed into "CI passes." See
 [§20 Future work](#20-future-work).
 
 ## 16. Security
