@@ -69,6 +69,7 @@ pythonpath = ["backend"]
 asyncio_mode = "auto"
 markers = [
     "integration: requires real external resources (docker compose services, or a downloaded base model for LoRA inference) - not mocked, skipped by default CI run",
+    "external_flaky: hits a live third-party site observed to intermittently rate-limit/fail (EUR-Lex) - excluded from CI even in the integration run, not from local ad-hoc runs",
 ]
 
 [tool.ruff]

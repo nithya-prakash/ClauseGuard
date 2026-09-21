@@ -1,12 +1,19 @@
 name: CI
 
+# Note (Milestone 15): this repository has not yet been pushed to a GitHub
+# remote, so this workflow has been authored carefully and validated
+# locally (equivalent commands run against the real stack throughout
+# Milestones 1-14) but has NOT been executed by a live GitHub Actions
+# runner. Per the project's own anti-fabrication policy (spec section 34),
+# that is stated here plainly rather than claiming "CI passes."
+
 on:
   push:
     branches: [main]
   pull_request:
 
 jobs:
-  lint-and-unit-test:
+  backend-lint-and-unit-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,6 +21,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: "pip"
 
       - name: Install dependencies
         run: pip install -e ".[dev]"
@@ -24,5 +32,148 @@ jobs:
       - name: Mypy
         run: mypy backend/app
 
-      - name: Pytest (unit)
+      - name: Pytest (unit - no external services, no downloaded models)
         run: pytest -m "not integration" -v
+
+  backend-integration-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: clauseguard
+          POSTGRES_PASSWORD: clauseguard
+          POSTGRES_DB: clauseguard
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U clauseguard -d clauseguard"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+      qdrant:
+        image: qdrant/qdrant:v1.12.4
+        ports: ["6333:6333"]
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql+psycopg://clauseguard:clauseguard@localhost:5432/clauseguard
+      QDRANT_URL: http://localhost:6333
+      REDIS_URL: redis://localhost:6379/0
+      CELERY_BROKER_URL: redis://localhost:6379/0
+      CELERY_RESULT_BACKEND: redis://localhost:6379/1
+      # Ready for when a real key exists as a repo secret - if unset, this
+      # is empty and the gated live-LLM test correctly stays skipped
+      # (see test_reasoning_client.py's skipif), never faked.
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
+
+      # Cache the ~1GB of embedding/classifier/reranker models downloaded
+      # below, across CI runs - the same lesson learned locally in
+      # Milestone 12 (a persisted Docker volume) applies here too.
+      - name: Cache Hugging Face models
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-cache-clauseguard-v1
+
+      - name: Prepare classification dataset (deterministic, no network)
+        run: python training/scripts/prepare_dataset.py
+
+      - name: Train baseline classifier (TF-IDF+LogReg, seconds)
+        run: python training/scripts/train_baseline_classifier.py
+
+      - name: Train LoRA classifier (downloads base model, several minutes on CPU)
+        run: python training/scripts/train_lora_classifier.py
+
+      # legal_corpus/metadata/corpus.json is committed (Milestone 5) - not
+      # re-fetched here, since the live BGB/EUR-Lex fetchers are excluded
+      # from CI via the external_flaky marker (see below) precisely because
+      # EUR-Lex has been observed rate-limiting repeated automated requests.
+      - name: Index legal corpus into Qdrant
+        run: python legal_corpus/ingestion/index_corpus.py
+
+      - name: Pytest (integration - real Postgres/Qdrant/Redis, real trained models)
+        run: pytest -m "integration and not external_flaky" -v
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npx eslint . --ext .ts,.tsx
+
+      - name: Build (includes TypeScript type-check)
+        run: npm run build
+        env:
+          NEXT_PUBLIC_API_BASE_URL: http://localhost:8004
+
+  security-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -e ".[dev]" pip-audit
+
+      - name: Audit Python dependencies
+        run: pip-audit --skip-editable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Audit frontend dependencies
+        working-directory: frontend
+        run: npm audit --audit-level=high
+
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build backend image
+        run: docker build -f docker/backend.Dockerfile -t clauseguard-backend:ci .
+
+      - name: Build frontend image
+        run: docker build -f docker/frontend.Dockerfile -t clauseguard-frontend:ci .
+
+      # Deliberately no push step: no container registry is configured for
+      # this project. Building here proves the Dockerfiles are correct
+      # (spec section 27), not that deployment is set up (spec section 34:
+      # "Do not claim deployment unless deployment is actually configured
+      # and tested" - it isn't, so this workflow doesn't claim it).

@@ -93,7 +93,12 @@ def test_live_fetch_bgb_section():
 
 
 @pytest.mark.integration
+@pytest.mark.external_flaky
 def test_live_fetch_dsgvo_article():
+    # EUR-Lex has been observed (Milestone 8) intermittently returning HTTP
+    # 202 with an empty body under repeated automated requests - marked
+    # separately so CI can exclude it without excluding all integration
+    # tests (see clauseguard_build_conventions memory).
     raw = fetch_dsgvo_raw()
     tree = html.fromstring(raw)
     passage = parse_dsgvo_article(tree, "28")
@@ -102,6 +107,7 @@ def test_live_fetch_dsgvo_article():
 
 
 @pytest.mark.integration
+@pytest.mark.external_flaky
 def test_full_corpus_build_produces_expected_passage_count():
     passages = fetch_bgb_all() + fetch_dsgvo_all()
     assert len(passages) == 15
