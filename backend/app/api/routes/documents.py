@@ -1,22 +1,23 @@
 """Document upload/analysis endpoints (spec section 20).
 
-Analysis runs synchronously inside the request (Celery background job
-processing is Milestone 23, not yet built) - the route handler is a plain
-`def`, not `async def`, so FastAPI runs it in its threadpool executor
-rather than blocking the event loop. This is a real, documented interim
-architecture, not a shortcut hidden from the caller.
+The synchronous /analyze endpoint's handler is a plain `def`, not
+`async def`, so FastAPI runs it in its threadpool executor rather than
+blocking the event loop. An additive async job path also exists (see
+POST/GET /documents/{id}/jobs, backend/app/tasks/analysis.py) - Milestone
+16 Phase 15.
 """
 
 import uuid
 from pathlib import Path
 
-from fastapi import APIRouter, File, UploadFile
+from fastapi import APIRouter, Depends, File, UploadFile
 from fastapi.responses import Response
 from qdrant_client import QdrantClient
 
 from app.core.config import get_settings
 from app.core.exceptions import FileTooLargeError, NotFoundError, UnsupportedFileTypeError
 from app.core.logging import get_logger
+from app.core.rate_limit import enforce_rate_limit
 from app.schemas.clause import Clause
 from app.schemas.job import AnalysisJobResponse
 from app.schemas.pipeline import DocumentAnalysisResult
@@ -96,7 +97,11 @@ def get_document_metadata(document_id: str) -> dict:
     }
 
 
-@router.post("/{document_id}/analyze", response_model=DocumentAnalysisResult)
+@router.post(
+    "/{document_id}/analyze",
+    response_model=DocumentAnalysisResult,
+    dependencies=[Depends(enforce_rate_limit)],
+)
 def analyze(document_id: str) -> DocumentAnalysisResult:
     record = _get_document_or_404(document_id)
     settings = get_settings()
@@ -110,7 +115,12 @@ def analyze(document_id: str) -> DocumentAnalysisResult:
     return result
 
 
-@router.post("/{document_id}/jobs", response_model=AnalysisJobResponse, status_code=202)
+@router.post(
+    "/{document_id}/jobs",
+    response_model=AnalysisJobResponse,
+    status_code=202,
+    dependencies=[Depends(enforce_rate_limit)],
+)
 def create_analysis_job(document_id: str) -> AnalysisJobResponse:
     """Additive async path (Milestone 16 Phase 15) alongside the existing
     synchronous /analyze above: creates a real Postgres-persisted job row

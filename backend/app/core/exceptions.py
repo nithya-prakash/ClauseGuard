@@ -29,6 +29,10 @@ class NotFoundError(ClauseGuardError):
     status_code = 404
 
 
+class RateLimitExceededError(ClauseGuardError):
+    status_code = 429
+
+
 class LLMNotConfiguredError(ClauseGuardError):
     status_code = 503
 

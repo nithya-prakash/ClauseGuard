@@ -581,6 +581,32 @@ concrete gaps (detailed in [§15 Failure cases](#15-failure-cases)):
 3. **No delete/cleanup endpoint** — added `DELETE /documents/{id}`, verified it
    actually removes the file from disk.
 
+**Milestone 16 Phase 17 additions:**
+
+4. **Decompression-bomb protection.** DOCX is a zip archive —
+   `MAX_UPLOAD_SIZE_MB` only bounds the compressed upload size, not what it expands
+   to. [docx_parser.py](backend/app/services/ingestion/docx_parser.py) now inspects
+   the zip's own central directory (metadata only, no decompression) before handing
+   the file to `python-docx`, rejecting an unreasonable total uncompressed size
+   (200MB) or an implausible compression ratio (100x). PDFs get an analogous cap:
+   [pdf_parser.py](backend/app/services/ingestion/pdf_parser.py) rejects more than
+   500 pages before extracting any page's text. Both verified with real crafted
+   files, not just reasoned about (a genuine zip-bomb-shaped archive and an
+   artificially-lowered page cap against a real multi-page PDF).
+5. **Rate limiting** on `/analyze` and `POST /documents/{id}/jobs` (the two
+   pipeline-triggering endpoints) — a minimal fixed-window limiter per client IP
+   ([rate_limit.py](backend/app/core/rate_limit.py)), returning 429 past 10
+   requests/minute. Explicitly documented as a real but partial defense, not
+   hidden: it's per-process (not shared across multiple backend replicas) and
+   trusts the client's reported IP. A production multi-replica deployment would
+   want a shared store (this project already has Redis) instead - noted as a
+   concrete next step, not silently left as a gap.
+
+**Not addressed this pass, still honestly out of scope:** no magic-byte content
+sniffing beyond parse-time validation (which already safely rejects mismatched
+content); the `DELETE` endpoint has no frontend UI yet; no automatic job/upload
+expiry (manual deletion only).
+
 **Prompt-injection defenses** (spec section 30, built in Milestone 9) in
 [prompts.py](backend/app/services/reasoning/prompts.py): the contract clause is
 wrapped in a delimiter tag with a random per-request nonce (`secrets.token_hex(8)`) so
@@ -647,14 +673,18 @@ Most actionable first:
    calls the synchronous `/analyze` endpoint, so a user gets no progress polling or
    retry benefit from the job queue today. No job cleanup/expiry exists either — old
    `analysis_jobs` rows accumulate indefinitely.
-7. **No frontend automated test suite** — the frontend was verified by manually driving
-   the real app in a browser against the live Docker stack (see
-   [§15 Failure cases](#15-failure-cases) for what that verification found and fixed).
-   A Playwright/Vitest suite is a reasonable addition.
-8. **No rate limiting on upload/analyze** — each `/analyze` call is expensive, so
-   repeated calls are a real, undefended DoS vector on a single-instance deployment.
-9. **No decompression-bomb protection for DOCX/PDF parsing** — bounded by
-   `MAX_UPLOAD_SIZE_MB` on the compressed size only.
+7. **Frontend has a real automated test suite now (Milestone 16 Phase 16)** — Vitest +
+   Testing Library, 20 tests covering upload/loading/findings/insufficient-evidence/
+   citation-display/report/error states. Still no Playwright end-to-end suite driving
+   an actual browser against the real backend - the current tests mock the API layer.
+8. **Rate limiting exists but is minimal** (Milestone 16 Phase 17) — a per-process,
+   per-IP fixed-window limiter on `/analyze` and `POST /jobs`. Not shared across
+   multiple backend replicas, and trusts the client's reported IP - see
+   [§16 Security](#16-security).
+9. **Decompression-bomb protection exists for DOCX/PDF now** (Milestone 16 Phase 17) —
+   zip-metadata and page-count caps, see [§16 Security](#16-security). Not a complete
+   defense against every resource-exhaustion vector (e.g. deeply nested PDF object
+   graphs are not specifically checked).
 10. **The `DELETE /documents/{id}` endpoint has no frontend UI** yet.
 11. **CI has never run against a real GitHub Actions runner** — see
     [§15](#15-failure-cases) and [§20](#20-future-work).
@@ -692,10 +722,11 @@ Roughly in order of what would most improve the honest measured numbers above:
    15), for real progress feedback instead of one long blocking request.
 5. Add job cleanup/expiry for old `analysis_jobs` rows, and test an Alembic upgrade
    against a database with real pre-existing data, not just an empty one.
-6. Add a Playwright/Vitest suite for the frontend (verification so far has been real,
-   but manual, browser-driven testing against the live stack).
-7. Add rate limiting on `/analyze` and basic decompression-bomb protection for
-   DOCX/PDF parsing.
+6. Add a Playwright end-to-end suite for the frontend that drives a real browser
+   against the real backend (the Milestone 16 Phase 16 Vitest suite mocks the API
+   layer - real, but not a substitute for a true end-to-end check).
+7. Move rate limiting to a shared store (Redis, already in the stack) so it works
+   correctly across multiple backend replicas, not just a single process.
 8. Wire the `DELETE /documents/{id}` endpoint into the frontend UI, and add automatic
    upload expiry.
 9. Push this repository to GitHub and actually run

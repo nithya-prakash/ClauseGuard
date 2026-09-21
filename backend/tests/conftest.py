@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from app.core import db as db_module
+from app.core.rate_limit import reset_rate_limits
 from app.main import app
 from app.models.document import Base  # noqa: F401 - registers all models on Base.metadata
 
@@ -12,6 +13,17 @@ from app.models.document import Base  # noqa: F401 - registers all models on Bas
 @pytest.fixture
 def client() -> TestClient:
     return TestClient(app)
+
+
+@pytest.fixture(autouse=True)
+def _reset_rate_limits():
+    """The rate limiter (Milestone 16 Phase 17) tracks request history in a
+    module-level dict for the life of the process - without this, tests
+    across different test functions would share rate-limit state and could
+    fail depending on test execution order/count, not on their own logic."""
+    reset_rate_limits()
+    yield
+    reset_rate_limits()
 
 
 @pytest.fixture(autouse=True)

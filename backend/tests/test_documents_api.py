@@ -91,6 +91,29 @@ def test_delete_unknown_document_is_404(client: TestClient):
     assert response.status_code == 404
 
 
+def test_analyze_endpoint_returns_429_after_rate_limit_exceeded(
+    client: TestClient, tmp_path: Path, monkeypatch
+):
+    # Milestone 16 Phase 17: lowers the limit (rather than making 11 real
+    # analyze calls, each running the full pipeline) to keep this test fast
+    # while still exercising the real HTTP path, not just the unit-level
+    # rate_limit module directly.
+    import app.core.rate_limit as rate_limit_module
+
+    monkeypatch.setattr(rate_limit_module, "MAX_REQUESTS_PER_WINDOW", 1)
+
+    corrupted = tmp_path / "corrupted.pdf"
+    corrupted.write_bytes(b"garbage")
+    body = _upload(client, corrupted, "application/pdf")
+
+    first = client.post(f"/documents/{body['document_id']}/analyze")
+    assert first.status_code == 422  # the real corrupted-file path, still counted
+
+    second = client.post(f"/documents/{body['document_id']}/analyze")
+    assert second.status_code == 429
+    assert "Rate limit exceeded" in second.json()["detail"]
+
+
 def test_analyze_corrupted_upload_returns_clean_422_not_500(client: TestClient, tmp_path: Path):
     # Milestone 14: passes the extension/size checks (valid .pdf name,
     # small size) but the content is garbage - a realistic case (wrong file

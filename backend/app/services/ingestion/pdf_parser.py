@@ -2,6 +2,7 @@ from pathlib import Path
 
 import pdfplumber
 
+from app.core.exceptions import ValidationFailedError
 from app.schemas.document import ParsedPage, ParseResult
 from app.services.ingestion.ocr import get_ocr_provider
 
@@ -12,10 +13,23 @@ from app.services.ingestion.ocr import get_ocr_provider
 # *average* across the document that's checked.
 MIN_AVG_CHARS_PER_PAGE = 40
 
+# Milestone 16 Phase 17: MAX_UPLOAD_SIZE_MB (spec section 29) bounds the
+# uploaded PDF's bytes on disk, not the processing cost of extracting text
+# from every page - a small PDF can still declare an extreme page count
+# (e.g. thousands of near-empty pages) that's cheap to store but expensive
+# to fully process. No real German contract needs anywhere near this many
+# pages; checking `len(pdf.pages)` first is metadata-only and cheap
+# relative to actually extracting each page's text.
+MAX_PDF_PAGES = 500
+
 
 def parse_pdf(path: Path) -> ParseResult:
     pages: list[ParsedPage] = []
     with pdfplumber.open(path) as pdf:
+        if len(pdf.pages) > MAX_PDF_PAGES:
+            raise ValidationFailedError(
+                f"The uploaded PDF has more than {MAX_PDF_PAGES} pages and was rejected."
+            )
         for i, page in enumerate(pdf.pages, start=1):
             text = page.extract_text() or ""
             pages.append(ParsedPage(page_number=i, text=text))
