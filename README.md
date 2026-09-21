@@ -23,7 +23,7 @@ Build in progress. See commit history / project memory for milestone-by-mileston
 - [x] Milestone 10 — End-to-end pipeline
 - [x] Milestone 11 — Evaluation suite
 - [x] Milestone 12 — Frontend
-- [ ] Milestone 13 — PDF report
+- [x] Milestone 13 — PDF report
 - [ ] Milestone 14 — Security hardening
 - [ ] Milestone 15 — CI/CD + documentation
 
@@ -120,6 +120,46 @@ throughout.
 Frontend-specific automated tests (e.g. Playwright) are not yet in place — verification
 here was manual browser-driven testing against the real stack, documented above, not
 skipped silently. A good Milestone 15 candidate.
+
+## PDF report (Milestone 13)
+
+`GET /documents/{id}/report` generates a real PDF via
+[backend/app/services/reporting/pdf_generator.py](backend/app/services/reporting/pdf_generator.py)
+(`reportlab`) and streams it back with a proper `Content-Disposition` header — the
+frontend's "Generate report" button (previously an honest 501 stub since Milestone 12)
+now triggers a real browser download.
+
+Deliberately plain, functional styling — spec section 19 explicitly says **"Do not make
+the report look like an official legal opinion,"** so there's no letterhead, seal, or
+formal-document styling. The disclaimer appears on the cover *and* in a footer on every
+page. Contents, all computed from the real analysis result, nothing templated:
+
+- Document metadata (filename, analysis timestamp, clause count)
+- **Supported legal scope**, pulled live from `legal_corpus/metadata/scope.json` — the
+  same 15 real passages documented in Milestone 5, not a separate hardcoded list
+- **Executive summary** — real counts of LOW/MEDIUM/HIGH/INSUFFICIENT_EVIDENCE/
+  LLM_NOT_CONFIGURED clauses, always summing to the actual clause count
+- **Clause-by-clause findings** — classification, risk level, explanation, and for each
+  AI finding: the claim, legal source + citation, quoted evidence, and a
+  VERIFIED/CITATION_UNVERIFIED badge (spec: "clear visual distinction between AI
+  finding / legal source / evidence / uncertainty")
+- Per-clause and global limitations, plus the standard disclaimer
+
+Verified with a real round-trip test (generate → re-parse with `pdfplumber`, already a
+project dependency, and assert on the actual extracted text) in
+[test_pdf_report.py](backend/tests/test_pdf_report.py), and end-to-end against the live
+Docker stack: uploaded the real 10-clause benchmark contract through the browser,
+clicked "Generate report", and confirmed a genuine 3-page, 6.4KB PDF downloaded with
+correct classifications for all 10 clauses, the real evidence-sufficiency explanation
+for `§ 10` (`"Top retrieved passage score (-0.6584) is below the sufficiency threshold
+(0.0)..."`), and an executive summary that correctly totals 1 INSUFFICIENT_EVIDENCE + 9
+LLM_NOT_CONFIGURED = 10.
+
+Reproduce: `docker compose up -d --build && QDRANT_URL=http://localhost:6339 python
+legal_corpus/ingestion/index_corpus.py`, then upload+analyze a document via the
+frontend and click "Generate report", or `curl -X POST
+localhost:8004/documents/{id}/analyze && curl localhost:8004/documents/{id}/report -o
+report.pdf`.
 
 ## Document ingestion & segmentation (Milestone 2)
 

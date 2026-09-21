@@ -11,15 +11,11 @@ import uuid
 from pathlib import Path
 
 from fastapi import APIRouter, File, UploadFile
+from fastapi.responses import Response
 from qdrant_client import QdrantClient
 
 from app.core.config import get_settings
-from app.core.exceptions import (
-    FileTooLargeError,
-    NotFoundError,
-    ReportNotImplementedError,
-    UnsupportedFileTypeError,
-)
+from app.core.exceptions import FileTooLargeError, NotFoundError, UnsupportedFileTypeError
 from app.schemas.clause import Clause
 from app.schemas.pipeline import DocumentAnalysisResult
 from app.services.pipeline.document_analysis import analyze_document
@@ -30,6 +26,8 @@ from app.services.pipeline.store import (
     save_document,
     save_result,
 )
+from app.services.reporting.pdf_generator import generate_report_pdf
+from app.services.retrieval.corpus_loader import load_scope
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -124,8 +122,17 @@ def get_findings(document_id: str) -> DocumentAnalysisResult:
 
 
 @router.get("/{document_id}/report")
-def get_report(document_id: str) -> None:
+def get_report(document_id: str) -> Response:
     _get_document_or_404(document_id)
-    raise ReportNotImplementedError(
-        "PDF report generation is not yet implemented (Milestone 13)."
+    result = get_result(document_id)
+    if result is None:
+        raise NotFoundError(f"Document '{document_id}' has not been analyzed yet.")
+
+    pdf_bytes = generate_report_pdf(result, load_scope())
+    safe_name = result.filename.rsplit(".", 1)[0].replace('"', "")
+    content_disposition = f'attachment; filename="{safe_name}_clauseguard_report.pdf"'
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": content_disposition},
     )

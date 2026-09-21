@@ -1,5 +1,7 @@
+import io
 from pathlib import Path
 
+import pdfplumber
 import pytest
 from fastapi.testclient import TestClient
 
@@ -61,11 +63,10 @@ def test_get_clauses_before_analysis_is_404(client: TestClient):
     assert response.status_code == 404
 
 
-def test_get_report_is_not_implemented(client: TestClient):
+def test_get_report_before_analysis_is_404(client: TestClient):
     body = _upload(client, BENCHMARK_PDF, "application/pdf")
     response = client.get(f"/documents/{body['document_id']}/report")
-    assert response.status_code == 501
-    assert "Milestone 13" in response.json()["detail"]
+    assert response.status_code == 404
 
 
 @pytest.mark.integration
@@ -92,3 +93,20 @@ def test_upload_then_analyze_then_fetch_findings(client: TestClient):
 
     metadata_response = client.get(f"/documents/{document_id}")
     assert metadata_response.json()["analyzed"] is True
+
+    report_response = client.get(f"/documents/{document_id}/report")
+    assert report_response.status_code == 200
+    assert report_response.headers["content-type"] == "application/pdf"
+    assert "sample_contract_de" in report_response.headers["content-disposition"]
+    assert report_response.content.startswith(b"%PDF")
+
+    with pdfplumber.open(io.BytesIO(report_response.content)) as pdf:
+        report_text = "\n".join(page.extract_text() or "" for page in pdf.pages)
+    # Real clause content from the actual analyzed document, not a stub.
+    # The classification asserted here is whatever the real (imperfect,
+    # ~60-80% accurate - see Milestone 3/4/10) classifier actually returned
+    # for this run, not a hardcoded assumption about what it "should" say.
+    assert "sample_contract_de.pdf" in report_text
+    assert "§ 4" in report_text
+    clause_4 = next(c for c in result["clauses"] if c["clause"]["section"] == "§ 4")
+    assert clause_4["classification"]["clause_type"] in report_text

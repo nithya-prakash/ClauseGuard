@@ -75,8 +75,12 @@ export default function Home() {
         <ResultsScreen result={result} onViewReport={() => setScreen("report")} />
       )}
 
-      {screen === "report" && documentId && (
-        <ReportScreen documentId={documentId} onBack={() => setScreen("results")} />
+      {screen === "report" && documentId && result && (
+        <ReportScreen
+          documentId={documentId}
+          filename={result.filename}
+          onBack={() => setScreen("results")}
+        />
       )}
     </main>
   );

@@ -56,7 +56,17 @@ export async function getClauses(documentId: string): Promise<Clause[]> {
   return handleResponse<Clause[]>(response);
 }
 
-export async function getReportStatus(documentId: string): Promise<never> {
+export async function downloadReport(documentId: string): Promise<Blob> {
   const response = await fetch(`${API_BASE_URL}/documents/${documentId}/report`);
-  return handleResponse<never>(response);
+  if (!response.ok) {
+    let detail = `Request failed with status ${response.status}`;
+    try {
+      const body = (await response.json()) as ApiError;
+      if (body.detail) detail = body.detail;
+    } catch {
+      // response body wasn't JSON (e.g. a real PDF error path) - keep the generic message
+    }
+    throw new ApiRequestError(response.status, detail);
+  }
+  return response.blob();
 }
