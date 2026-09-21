@@ -1,0 +1,20 @@
+{
+  "_provenance": "Manually curated retrieval benchmark, hand-authored by the developer. Each query paraphrases the kind of contract-clause language a real clause in that category might contain, and names the legal_corpus passage(s) it should retrieve. Ground truth by construction - the author wrote each query knowing which passage it targets, cross-checked against the actual passage text in legal_corpus/metadata/corpus.json. With only 15 passages in the corpus, this benchmark demonstrates the retrieval pipeline works correctly, not that it generalizes to a large real-world legal corpus - documented as a limitation in the eval report.",
+  "queries": [
+    {"query_id": "q1", "query": "Der Verkäufer haftet nur für Schäden, die auf Vorsatz oder grober Fahrlässigkeit beruhen.", "relevant": [{"source": "BGB", "section": "§ 276"}]},
+    {"query_id": "q2", "query": "Welche Voraussetzungen gelten für Schadensersatz wegen Verletzung einer Vertragspflicht?", "relevant": [{"source": "BGB", "section": "§ 280"}]},
+    {"query_id": "q3", "query": "Eine Klausel, die so ungewöhnlich versteckt ist, dass der Vertragspartner nicht mit ihr rechnen musste, wird nicht Vertragsbestandteil.", "relevant": [{"source": "BGB", "section": "§ 305c"}]},
+    {"query_id": "q4", "query": "Individuell zwischen den Parteien ausgehandelte Vereinbarungen gehen den vorformulierten Allgemeinen Geschäftsbedingungen vor.", "relevant": [{"source": "BGB", "section": "§ 305b"}]},
+    {"query_id": "q5", "query": "Unter welchen Voraussetzungen werden Allgemeine Geschäftsbedingungen wirksam in einen Vertrag einbezogen?", "relevant": [{"source": "BGB", "section": "§ 305"}]},
+    {"query_id": "q6", "query": "Was passiert mit dem übrigen Vertrag, wenn einzelne Klauseln der Allgemeinen Geschäftsbedingungen nicht wirksam einbezogen wurden?", "relevant": [{"source": "BGB", "section": "§ 306"}]},
+    {"query_id": "q7", "query": "Eine Klausel in Allgemeinen Geschäftsbedingungen ist unwirksam, wenn sie den Vertragspartner entgegen Treu und Glauben unangemessen benachteiligt.", "relevant": [{"source": "BGB", "section": "§ 307"}]},
+    {"query_id": "q8", "query": "Klauselverbote mit Wertungsmöglichkeit, etwa unangemessen lange Annahme- oder Leistungsfristen in Allgemeinen Geschäftsbedingungen.", "relevant": [{"source": "BGB", "section": "§ 308"}]},
+    {"query_id": "q9", "query": "Ein vollständiger Haftungsausschluss für Schäden aus der Verletzung von Leben, Körper oder Gesundheit ist in Allgemeinen Geschäftsbedingungen stets unwirksam.", "relevant": [{"source": "BGB", "section": "§ 309"}]},
+    {"query_id": "q10", "query": "Für welche Vertragsparteien und in welchem Umfang gelten die Vorschriften über Allgemeine Geschäftsbedingungen?", "relevant": [{"source": "BGB", "section": "§ 310"}]},
+    {"query_id": "q11", "query": "Ein Dauerschuldverhältnis kann von jeder Vertragspartei aus wichtigem Grund ohne Einhaltung einer Kündigungsfrist gekündigt werden.", "relevant": [{"source": "BGB", "section": "§ 314"}]},
+    {"query_id": "q12", "query": "Personenbezogene Daten müssen auf rechtmäßige, faire und transparente Weise verarbeitet werden (Grundsätze der Datenverarbeitung).", "relevant": [{"source": "DSGVO", "section": "Art. 5"}]},
+    {"query_id": "q13", "query": "Wann ist die Verarbeitung personenbezogener Daten rechtmäßig, zum Beispiel bei Einwilligung der betroffenen Person?", "relevant": [{"source": "DSGVO", "section": "Art. 6"}]},
+    {"query_id": "q14", "query": "Ein Auftragsverarbeiter darf personenbezogene Daten nur auf dokumentierte Weisung des Verantwortlichen verarbeiten, gemäß Vereinbarung zur Auftragsverarbeitung.", "relevant": [{"source": "DSGVO", "section": "Art. 28"}]},
+    {"query_id": "q15", "query": "Welche technischen und organisatorischen Maßnahmen sind zur Sicherheit der Verarbeitung personenbezogener Daten zu treffen?", "relevant": [{"source": "DSGVO", "section": "Art. 32"}]}
+  ]
+}

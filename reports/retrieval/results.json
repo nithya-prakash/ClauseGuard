@@ -1,0 +1,35 @@
+{
+  "evaluated_at": "2026-09-20T14:31:39.708105+00:00",
+  "benchmark": "data/benchmark/retrieval/queries.json (15 hand-authored queries against the 15-passage legal corpus)",
+  "corpus_size": 15,
+  "results": [
+    {
+      "method": "dense",
+      "recall_at_1": 0.8,
+      "recall_at_3": 0.9333,
+      "recall_at_5": 0.9333,
+      "mrr": 0.8651,
+      "ndcg_at_5": 0.8754
+    },
+    {
+      "method": "bm25",
+      "recall_at_1": 0.8,
+      "recall_at_3": 0.9333,
+      "recall_at_5": 0.9333,
+      "mrr": 0.8667,
+      "ndcg_at_5": 0.8841
+    },
+    {
+      "method": "hybrid_rrf",
+      "recall_at_1": 0.8,
+      "recall_at_3": 0.9333,
+      "recall_at_5": 0.9333,
+      "mrr": 0.8639,
+      "ndcg_at_5": 0.8754
+    }
+  ],
+  "limitations": [
+    "Corpus has only 15 passages - this benchmark demonstrates the retrieval pipeline (dense/BM25/RRF) works correctly end-to-end, not that it generalizes to a large real-world legal corpus. Near-perfect recall at this corpus size is expected and not evidence of strong ranking quality at scale.",
+    "Queries were authored knowing which passage they target - not collected from real user behavior."
+  ]
+}

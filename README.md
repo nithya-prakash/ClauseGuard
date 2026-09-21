@@ -16,7 +16,7 @@ Build in progress. See commit history / project memory for milestone-by-mileston
 - [x] Milestone 3 — Clause classification baseline
 - [x] Milestone 4 — LoRA fine-tuning pipeline
 - [x] Milestone 5 — Legal corpus ingestion
-- [ ] Milestone 6 — Dense + BM25 + RRF retrieval
+- [x] Milestone 6 — Dense + BM25 + RRF retrieval
 - [ ] Milestone 7 — Cross-encoder reranking
 - [ ] Milestone 8 — Evidence sufficiency + citation verification
 - [ ] Milestone 9 — LLM structured reasoning
@@ -60,6 +60,32 @@ Container-to-container traffic uses the standard ports internally.
   by `eval/segmentation/evaluate_segmentation.py`. This benchmark is small
   and hand-authored; it demonstrates correctness on one contract structure,
   not generalization — documented as a limitation in the report itself.
+
+## Retrieval (Milestone 6: dense + BM25 + RRF)
+
+- **Dense**: `intfloat/multilingual-e5-small` embeddings, stored in Qdrant
+  (`legal_corpus/ingestion/index_corpus.py` embeds and indexes all 15
+  corpus passages).
+- **BM25**: lexical search over the corpus text (`rank_bm25`), built
+  in-memory at query time (corpus is small enough that persistence isn't
+  needed yet).
+- **Hybrid**: Reciprocal Rank Fusion (`k=60`, standard Cormack et al.
+  constant) combines dense + BM25 rankings by position, not raw score — see
+  [backend/app/services/retrieval/rrf.py](backend/app/services/retrieval/rrf.py).
+- Real measured results (not fabricated) on a 15-query hand-authored
+  benchmark against the 15-passage corpus, in
+  [reports/retrieval/report.md](reports/retrieval/report.md): all three
+  methods land around **Recall@1 0.80, Recall@3/5 0.93** — nearly identical,
+  because a 15-document corpus is too small to meaningfully differentiate
+  them. The report says this explicitly: this demonstrates the pipeline
+  works end-to-end, not that hybrid retrieval beats either method alone —
+  that comparison needs a larger corpus.
+- Cross-encoder reranking (Milestone 7) is evaluated separately once built.
+- Reproduce (from the host, outside Docker, hence the port override —
+  `QDRANT_URL` defaults to the in-Docker hostname otherwise):
+  `docker compose up -d qdrant && QDRANT_URL=http://localhost:6339 python
+  legal_corpus/ingestion/index_corpus.py && QDRANT_URL=http://localhost:6339
+  python eval/retrieval/evaluate_retrieval.py`
 
 ## Clause classification (Milestone 3: baseline)
 
