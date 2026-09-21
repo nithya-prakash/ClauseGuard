@@ -19,7 +19,7 @@ Build in progress. See commit history / project memory for milestone-by-mileston
 - [x] Milestone 6 — Dense + BM25 + RRF retrieval
 - [x] Milestone 7 — Cross-encoder reranking
 - [x] Milestone 8 — Evidence sufficiency + citation verification
-- [ ] Milestone 9 — LLM structured reasoning
+- [x] Milestone 9 — LLM structured reasoning
 - [ ] Milestone 10 — End-to-end pipeline
 - [ ] Milestone 11 — Evaluation suite
 - [ ] Milestone 12 — Frontend
@@ -129,6 +129,40 @@ section numbers, citations to real sections that weren't retrieved,
 hallucinated evidence text, malformed citation strings) since Milestone 9's
 real LLM output doesn't exist yet — see
 [backend/tests/test_citation_verification.py](backend/tests/test_citation_verification.py).
+
+## LLM structured reasoning (Milestone 9)
+
+`assess_clause()` ([backend/app/services/reasoning/service.py](backend/app/services/reasoning/service.py))
+is the first stage that calls an LLM, and the full pipeline up to this point:
+retrieve + rerank → evidence sufficiency (Milestone 8) → **[LLM]** →
+citation verification (Milestone 8) → `ReasoningResult`.
+
+- **No `ANTHROPIC_API_KEY` is configured in this environment.** The
+  INSUFFICIENT_EVIDENCE path (e.g. an off-topic clause) never touches the
+  LLM and works today — verified against the live corpus. A clause with
+  sufficient evidence raises `LLMNotConfiguredError` with a clear message
+  instead of faking a result. Both behaviors are integration-tested.
+- **Structured output**: uses Claude's tool-use (not "ask it to output
+  JSON in prose") with a JSON-schema-constrained tool, so `risk_level` can
+  only ever be `LOW`/`MEDIUM`/`HIGH` and `classification` can only be one
+  of the 10 taxonomy labels — the model cannot invent categories (spec
+  section 14). Every response is additionally validated against a Pydantic
+  schema before anything downstream trusts it.
+- **Prompt-injection defenses** (spec section 30) in
+  [prompts.py](backend/app/services/reasoning/prompts.py): the contract
+  clause is wrapped in a delimiter tag with a random per-request nonce
+  (`secrets.token_hex(8)`) so an attacker crafting clause text in advance
+  can't forge a matching closing tag; explicit written instructions (system
+  prompt + inline) that the clause is data, never commands; a reinforcing
+  instruction placed *after* the untrusted section. These reduce risk —
+  **they are not a guarantee**, and that's stated plainly in the code, not
+  oversold. Real adversarial testing against a live model is Milestone 16's
+  job once an API key makes it possible; for now, tests verify the prompt
+  is *structured* correctly (injection text stays inside its delimited
+  section, nonces are unpredictable per call) — see
+  [test_reasoning_prompts.py](backend/tests/test_reasoning_prompts.py).
+- A live-call test (`test_reasoning_client.py`) is written and ready,
+  gated on `ANTHROPIC_API_KEY` being set — `SKIPPED` today, not deleted or faked.
 
 ## Clause classification (Milestone 3: baseline)
 
