@@ -4,7 +4,11 @@ import pytest
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
-from app.core.exceptions import OCRNotImplementedError, UnsupportedFileTypeError
+from app.core.exceptions import (
+    OCRNotImplementedError,
+    UnsupportedFileTypeError,
+    ValidationFailedError,
+)
 from app.services.ingestion.service import ingest_document
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -47,3 +51,29 @@ def test_scanned_pdf_raises_ocr_not_implemented(tmp_path: Path):
 
     with pytest.raises(OCRNotImplementedError):
         ingest_document(scanned)
+
+
+def test_corrupted_pdf_raises_clean_validation_error_not_library_exception(tmp_path: Path):
+    # Milestone 14: a malformed upload (real files people accidentally
+    # upload - truncated, wrong format renamed, etc.) must not leak a raw
+    # third-party library exception (pdfminer.PdfminerException) up to the
+    # generic 500 handler; it's a bad-input case (422), not a server bug.
+    corrupted = tmp_path / "corrupted.pdf"
+    corrupted.write_bytes(b"not a real pdf file, just garbage bytes")
+    with pytest.raises(ValidationFailedError) as exc_info:
+        ingest_document(corrupted)
+    assert exc_info.value.status_code == 422
+    assert "PDF" in exc_info.value.detail
+    # No internal library/file-path details leaked into the user-facing message.
+    assert "pdfminer" not in exc_info.value.detail.lower()
+    assert str(corrupted) not in exc_info.value.detail
+
+
+def test_corrupted_docx_raises_clean_validation_error_not_library_exception(tmp_path: Path):
+    corrupted = tmp_path / "corrupted.docx"
+    corrupted.write_bytes(b"not a real docx file, just garbage bytes")
+    with pytest.raises(ValidationFailedError) as exc_info:
+        ingest_document(corrupted)
+    assert exc_info.value.status_code == 422
+    assert "DOCX" in exc_info.value.detail
+    assert str(corrupted) not in exc_info.value.detail

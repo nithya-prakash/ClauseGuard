@@ -163,3 +163,78 @@ def test_generated_pdf_shows_reasoning_not_available_distinctly(
 
     assert "Reasoning not available" in text
     assert "ANTHROPIC_API_KEY" in text
+
+
+# --- Security (Milestone 14): untrusted contract content must never be
+# interpreted as reportlab's Paragraph markup. Reachable TODAY via clause
+# heading/section alone (segmented straight from the uploaded document's raw
+# text) - no LLM key required. Verified real before fixing: an unbalanced
+# tag crashed generate_report_pdf() with an unhandled ValueError, and a
+# well-formed tag rendered as live formatting/a link rather than literal
+# text. See _safe() in pdf_generator.py.
+
+
+def _clause_analysis_with_heading(heading: str) -> ClauseAnalysis:
+    return ClauseAnalysis(
+        clause=_clause("c1", "irrelevant text", "§ 1", heading, 1),
+        classification=ClassificationResult(
+            clause_type="GENERAL_TERMS", confidence=0.5, model_name="x"
+        ),
+        classification_error=None,
+        reasoning=None,
+        reasoning_error=(
+            "Set LLM_PROVIDER=anthropic and ANTHROPIC_API_KEY to enable the reasoning stage."
+        ),
+    )
+
+
+def test_unbalanced_tag_in_clause_heading_does_not_crash_report_generation():
+    # A completely plausible heading from a real German contract (angle-
+    # bracket placeholder convention), not a contrived attack string.
+    result = DocumentAnalysisResult(
+        filename="contract.pdf",
+        analyzed_at="2026-09-20T18:00:00+00:00",
+        clause_count=1,
+        clauses=[_clause_analysis_with_heading("<Kundennummer> Vertragsgegenstand")],
+    )
+    pdf_bytes = generate_report_pdf(result, load_scope())  # must not raise
+    assert pdf_bytes.startswith(b"%PDF")
+
+
+def test_markup_injection_in_clause_heading_renders_as_literal_text():
+    injected = '<font color="red" size="60">INJECTED</font>'
+    result = DocumentAnalysisResult(
+        filename="contract.pdf",
+        analyzed_at="2026-09-20T18:00:00+00:00",
+        clause_count=1,
+        clauses=[_clause_analysis_with_heading(injected)],
+    )
+    pdf_bytes = generate_report_pdf(result, load_scope())
+    with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
+        text = "\n".join(page.extract_text() or "" for page in pdf.pages)
+
+    # The literal markup must be visible as text (proving it was escaped),
+    # not silently stripped and not interpreted as real formatting/a link.
+    assert "<font color=" in text
+    assert "INJECTED" in text
+
+
+def test_malicious_finding_content_does_not_crash_or_inject(sample_result: DocumentAnalysisResult):
+    # Exercises the findings path (claim/legal_basis/citation/evidence) -
+    # this is where real LLM output will flow once an API key is
+    # configured, and it's derived from the same untrusted contract text.
+    malicious = VerifiedFinding(
+        claim="<unbalanced tag claim",
+        legal_basis='<font size="60">huge</font>',
+        citation="§ 1 <b>BGB",
+        evidence="<a href=\"evil://x\">evidence</a>",
+        citation_status="VERIFIED",
+        citation_reason=None,
+    )
+    sample_result.clauses[0].reasoning.findings = [malicious]  # type: ignore[union-attr]
+
+    pdf_bytes = generate_report_pdf(sample_result, load_scope())  # must not raise
+    with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
+        text = "\n".join(page.extract_text() or "" for page in pdf.pages)
+    assert "<unbalanced tag claim" in text
+    assert "<a href=" in text

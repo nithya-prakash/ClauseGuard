@@ -69,6 +69,45 @@ def test_get_report_before_analysis_is_404(client: TestClient):
     assert response.status_code == 404
 
 
+def test_delete_document_removes_it_and_the_uploaded_file(client: TestClient):
+    # Spec section 29 (Privacy): "provide cleanup/delete functionality."
+    body = _upload(client, BENCHMARK_PDF, "application/pdf")
+    document_id = body["document_id"]
+
+    from app.services.pipeline.store import get_document
+
+    stored_path = get_document(document_id).stored_path  # type: ignore[union-attr]
+    assert stored_path.exists()
+
+    delete_response = client.delete(f"/documents/{document_id}")
+    assert delete_response.status_code == 204
+
+    assert not stored_path.exists(), "uploaded file must actually be removed from disk"
+    assert client.get(f"/documents/{document_id}").status_code == 404
+
+
+def test_delete_unknown_document_is_404(client: TestClient):
+    response = client.delete("/documents/does-not-exist")
+    assert response.status_code == 404
+
+
+def test_analyze_corrupted_upload_returns_clean_422_not_500(client: TestClient, tmp_path: Path):
+    # Milestone 14: passes the extension/size checks (valid .pdf name,
+    # small size) but the content is garbage - a realistic case (wrong file
+    # renamed, truncated upload), not a contrived attack. Must surface as a
+    # clean 422, not a raw library exception hitting the generic 500
+    # handler (main.py's unhandled_error_handler, added in Milestone 12).
+    corrupted = tmp_path / "corrupted.pdf"
+    corrupted.write_bytes(b"not a real pdf file, just garbage bytes")
+    body = _upload(client, corrupted, "application/pdf")
+
+    response = client.post(f"/documents/{body['document_id']}/analyze")
+    assert response.status_code == 422, response.text
+    detail = response.json()["detail"]
+    assert "PDF" in detail
+    assert str(corrupted) not in detail
+
+
 @pytest.mark.integration
 def test_upload_then_analyze_then_fetch_findings(client: TestClient):
     body = _upload(client, BENCHMARK_PDF, "application/pdf")

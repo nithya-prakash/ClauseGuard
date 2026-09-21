@@ -16,11 +16,13 @@ from qdrant_client import QdrantClient
 
 from app.core.config import get_settings
 from app.core.exceptions import FileTooLargeError, NotFoundError, UnsupportedFileTypeError
+from app.core.logging import get_logger
 from app.schemas.clause import Clause
 from app.schemas.pipeline import DocumentAnalysisResult
 from app.services.pipeline.document_analysis import analyze_document
 from app.services.pipeline.store import (
     DocumentRecord,
+    delete_document,
     get_document,
     get_result,
     save_document,
@@ -28,6 +30,8 @@ from app.services.pipeline.store import (
 )
 from app.services.reporting.pdf_generator import generate_report_pdf
 from app.services.retrieval.corpus_loader import load_scope
+
+logger = get_logger(__name__)
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -119,6 +123,25 @@ def get_findings(document_id: str) -> DocumentAnalysisResult:
     if result is None:
         raise NotFoundError(f"Document '{document_id}' has not been analyzed yet.")
     return result
+
+
+@router.delete("/{document_id}", status_code=204)
+def delete_document_endpoint(document_id: str) -> None:
+    """Spec section 29 (Privacy): "don't persist raw documents unnecessarily,
+    provide cleanup/delete functionality." Removes the uploaded file from
+    disk and clears both the document metadata and any analysis result from
+    the store - nothing about this document remains server-side afterward."""
+    record = _get_document_or_404(document_id)
+    delete_document(document_id)
+    try:
+        record.stored_path.unlink(missing_ok=True)
+    except OSError as exc:
+        # Deletion from the in-memory store already succeeded (the document
+        # is gone from the API's perspective); a filesystem error removing
+        # the underlying file is logged, not surfaced as a failed request -
+        # surfacing it would be misleading (the delete DID work) and there's
+        # nothing the caller can do about a filesystem issue on the server.
+        logger.warning("upload_file_delete_failed", document_id=document_id, error=str(exc))
 
 
 @router.get("/{document_id}/report")

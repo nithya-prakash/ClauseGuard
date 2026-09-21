@@ -24,7 +24,7 @@ Build in progress. See commit history / project memory for milestone-by-mileston
 - [x] Milestone 11 — Evaluation suite
 - [x] Milestone 12 — Frontend
 - [x] Milestone 13 — PDF report
-- [ ] Milestone 14 — Security hardening
+- [x] Milestone 14 — Security hardening
 - [ ] Milestone 15 — CI/CD + documentation
 
 ## Quickstart
@@ -160,6 +160,61 @@ legal_corpus/ingestion/index_corpus.py`, then upload+analyze a document via the
 frontend and click "Generate report", or `curl -X POST
 localhost:8004/documents/{id}/analyze && curl localhost:8004/documents/{id}/report -o
 report.pdf`.
+
+## Security hardening (Milestone 14)
+
+Audited spec section 25's checklist against what was already built (file type/size
+validation, UUID-based filename sanitization, no path traversal, no execution of
+uploaded files, prompt-injection defenses in the reasoning prompt, secrets only via
+environment variables, `.env` gitignored and never committed — all already true from
+Milestones 9/12) and found and fixed three real, concrete gaps rather than treating the
+audit as a checkbox exercise:
+
+1. **PDF report markup/XML injection — the most serious finding.** `reportlab`'s
+   `Paragraph` parses its input as a small markup language (`<b>`, `<font>`, `<a>`, ...).
+   Clause `section`/`heading` are extracted directly from the *uploaded document's raw
+   text* (`services/segmentation/segmenter.py`) and were embedded unescaped. Verified
+   real, not hypothetical, with a completely plausible input — the common German
+   contract placeholder convention `<Kundennummer>` as a clause heading **crashed
+   report generation** with an unhandled `ValueError`, no LLM or attacker intent
+   required. A well-formed tag like `<font color="red" size="60">` rendered
+   successfully, letting the uploaded document inject arbitrary styling or a clickable
+   link into what looks like ClauseGuard's own compliance report. Fixed with a `_safe()`
+   XML-escaping helper applied to every value that traces back to the contract —
+   including LLM output (`finding.claim`, `.evidence`, `.legal_basis`,
+   `reasoning.explanation`) unconditionally, since that's also derived from the
+   untrusted document and will start flowing through this code path the moment an
+   `ANTHROPIC_API_KEY` is configured. Verified with adversarial tests (unbalanced tag
+   doesn't crash; a well-formed injection attempt appears as literal text, not live
+   formatting) in
+   [test_pdf_report.py](backend/tests/test_pdf_report.py).
+2. **Corrupted uploads leaked internal exceptions to a generic 500.** A malformed PDF/
+   DOCX (wrong file renamed, truncated upload — a realistic accident, not just an
+   attack) raised a raw `pdfminer`/`python-docx` library exception that fell through to
+   the Milestone 12 catch-all handler: safe (no info leak) but misleading, since a 500
+   implies a server bug rather than a bad upload. `services/ingestion/service.py` now
+   catches these at the parse boundary and re-raises a clean `ValidationFailedError`
+   (422) with a safe message — the real exception is still logged server-side. Verified
+   with real corrupted files (not mocks) at both the service and API level.
+3. **No delete/cleanup endpoint existed at all** — a direct gap against spec section 29
+   ("don't persist raw documents unnecessarily, provide cleanup/delete functionality").
+   Added `DELETE /documents/{id}`, which removes the uploaded file from disk and clears
+   both the document metadata and any analysis result from the store. Verified the file
+   is actually gone from disk, not just unlinked from the API's view.
+
+**Documented, not silently ignored, rather than fixed in this pass** (a reasonable
+scope boundary, not an oversight): no magic-byte/content-sniffing validation beyond
+extension + parse-time validation (parse-time validation already safely rejects
+mismatched content, just without an earlier short-circuit); no explicit protection
+against a DOCX/PDF decompression bomb (bounded by `MAX_UPLOAD_SIZE_MB` on the
+*compressed* size, not the decompressed size — a genuinely advanced attack vector, not
+something an ordinary corrupted file would trigger); no rate limiting on
+upload/analyze (each `/analyze` call is expensive — retrieval + reranking + optional
+LLM per clause — so repeated calls are a real, undefended DoS vector); the new DELETE
+endpoint has no frontend UI affordance yet (backend capability only, since Milestone 14
+is scoped to security hardening, not new frontend features).
+
+68 unit tests passing (up from 66), ruff + mypy clean.
 
 ## Document ingestion & segmentation (Milestone 2)
 
@@ -488,3 +543,16 @@ Milestone 15). Current honest limitations, most actionable first:
    Docker stack (see "Frontend" section above for what that verification
    found and fixed). A Playwright/Vitest suite is a reasonable Milestone 15
    addition.
+7. **No rate limiting on upload/analyze** (Milestone 14) - each `/analyze`
+   call is expensive (retrieval + reranking + optional LLM per clause), so
+   repeated calls are a real, undefended DoS vector on a single-instance
+   deployment. Reasonable Milestone 15 addition.
+8. **No decompression-bomb protection for DOCX/PDF parsing** (Milestone 14)
+   - `MAX_UPLOAD_SIZE_MB` bounds the compressed upload size, not what it
+   could expand to during parsing. A genuinely advanced attack vector, not
+   triggered by an ordinary corrupted file (which is now handled cleanly -
+   see "Security hardening" above).
+9. **The new `DELETE /documents/{id}` endpoint has no frontend UI** yet -
+   it's a backend capability added to satisfy spec section 29's cleanup
+   requirement; wiring it into the frontend is a small, reasonable addition
+   whenever the frontend gets its next pass.

@@ -12,6 +12,7 @@ DocumentAnalysisResult passed in - nothing here is a template placeholder.
 import io
 from collections import Counter
 from typing import Any
+from xml.sax.saxutils import escape as _xml_escape
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
@@ -41,6 +42,25 @@ RISK_COLORS = {
     "HIGH": colors.HexColor("#dc2626"),
     "INSUFFICIENT_EVIDENCE": colors.HexColor("#6b7280"),
 }
+
+
+def _safe(text: str) -> str:
+    """Escapes text for safe embedding inside a reportlab Paragraph, which
+    parses its input as a small XML-like markup language (<b>, <font>, <a>,
+    ...). Every value that ultimately traces back to the uploaded contract
+    (clause text/heading/section, and - once an LLM is configured - its
+    output, since that's derived from the contract too) MUST go through
+    this before being embedded in an f-string passed to Paragraph().
+
+    This is a real, exploitable-today issue, not a hypothetical: a clause
+    heading containing an unbalanced tag-like sequence (e.g. the common
+    German contract placeholder convention "<Kundennummer>") crashes
+    Paragraph's parser with an unhandled ValueError; a well-formed tag like
+    <font size="40" color="red"> renders successfully and lets the
+    "untrusted document" inject arbitrary styling/links into what looks
+    like ClauseGuard's own report. Found and fixed in Milestone 14.
+    """
+    return _xml_escape(text)
 
 
 def _styles() -> dict[str, ParagraphStyle]:
@@ -117,9 +137,13 @@ def generate_report_pdf(result: DocumentAnalysisResult, scope: dict[str, Any]) -
     story.append(Spacer(1, 12))
 
     story.append(Paragraph("Document", styles["h1"]))
+    # Filename is the client's original, untrusted upload filename (see
+    # documents.py) - Table cells render plain strings literally (no markup
+    # parsing, unlike Paragraph), so this is already safe as-is, but escaped
+    # too for defense in depth in case this ever moves into a Paragraph.
     meta_table = Table(
         [
-            ["Filename", result.filename],
+            ["Filename", _safe(result.filename)],
             ["Analyzed at", result.analyzed_at],
             ["Clauses detected", str(result.clause_count)],
         ],
@@ -136,11 +160,13 @@ def generate_report_pdf(result: DocumentAnalysisResult, scope: dict[str, Any]) -
     )
     story.append(meta_table)
 
+    # scope.json is our own committed corpus metadata, not user input - but
+    # escaped anyway (cheap, and defends against a future edit mistake).
     story.append(Paragraph("Supported Legal Scope", styles["h1"]))
     story.append(
         Paragraph(
-            f"Jurisdiction: {scope.get('jurisdiction', 'unknown')}. "
-            f"Sources: {', '.join(scope.get('sources', []))}. "
+            f"Jurisdiction: {_safe(scope.get('jurisdiction', 'unknown'))}. "
+            f"Sources: {_safe(', '.join(scope.get('sources', [])))}. "
             "This analysis is limited to the provisions listed below - a clause "
             "outside this scope is reported as evidence-insufficient, not "
             "assessed as compliant or non-compliant.",
@@ -148,7 +174,10 @@ def generate_report_pdf(result: DocumentAnalysisResult, scope: dict[str, Any]) -
         )
     )
     for cs in scope.get("covered_sections", []):
-        line = f"&bull; {cs['source']} {cs['section']} &mdash; {cs['title']}"
+        line = (
+            f"&bull; {_safe(cs['source'])} {_safe(cs['section'])} "
+            f"&mdash; {_safe(cs['title'])}"
+        )
         story.append(Paragraph(line, styles["quote"]))
 
     story.append(Paragraph("Executive Summary", styles["h1"]))
@@ -191,52 +220,67 @@ def generate_report_pdf(result: DocumentAnalysisResult, scope: dict[str, Any]) -
 
     for ca in sorted(result.clauses, key=lambda c: c.clause.position):
         block: list[Any] = []
-        heading = ca.clause.section or f"Clause {ca.clause.position}"
+        # clause.section/heading come directly from segmenting the UPLOADED
+        # document's raw text (services/segmentation/segmenter.py) - this is
+        # untrusted content, reachable today with no LLM key required. Must
+        # be escaped before embedding in Paragraph markup (see _safe()).
+        heading = _safe(ca.clause.section) if ca.clause.section else f"Clause {ca.clause.position}"
         if ca.clause.heading:
-            heading += f" &mdash; {ca.clause.heading}"
+            heading += f" &mdash; {_safe(ca.clause.heading)}"
         block.append(Paragraph(heading, styles["h2"]))
 
         classification_text = (
             ca.classification.clause_type if ca.classification else "unavailable"
         )
-        block.append(Paragraph(f"<b>Classification:</b> {classification_text}", styles["body"]))
+        block.append(
+            Paragraph(f"<b>Classification:</b> {_safe(classification_text)}", styles["body"])
+        )
 
         if ca.reasoning is not None:
             risk = ca.reasoning.risk_level
             risk_color = RISK_COLORS.get(risk, colors.black).hexval()
             block.append(
                 Paragraph(
-                    f'<b>Risk level:</b> <font color="{risk_color}">{risk}</font> '
-                    f"(status: {ca.reasoning.status})",
+                    f'<b>Risk level:</b> <font color="{risk_color}">{_safe(risk)}</font> '
+                    f"(status: {_safe(ca.reasoning.status)})",
                     styles["body"],
                 )
             )
-            block.append(Paragraph(ca.reasoning.explanation, styles["body"]))
+            # explanation/findings/limitations are system-generated today,
+            # but become LLM output (derived from the untrusted contract)
+            # once ANTHROPIC_API_KEY is configured - escaped unconditionally
+            # so this stays safe when that happens, not just today.
+            block.append(Paragraph(_safe(ca.reasoning.explanation), styles["body"]))
             for finding in ca.reasoning.findings:
                 citation_color = (
                     "#16a34a" if finding.citation_status == "VERIFIED" else "#dc2626"
                 )
                 block.append(
                     Paragraph(
-                        f"<b>AI finding:</b> {finding.claim} "
-                        f'[<font color="{citation_color}">{finding.citation_status}</font>]',
+                        f"<b>AI finding:</b> {_safe(finding.claim)} "
+                        f'[<font color="{citation_color}">'
+                        f"{_safe(finding.citation_status)}</font>]",
                         styles["quote"],
                     )
                 )
                 block.append(
                     Paragraph(
-                        f"<b>Legal source:</b> {finding.citation} &mdash; {finding.legal_basis}",
+                        f"<b>Legal source:</b> {_safe(finding.citation)} "
+                        f"&mdash; {_safe(finding.legal_basis)}",
                         styles["quote"],
                     )
                 )
-                evidence_line = f"<b>Evidence:</b> &ldquo;{finding.evidence}&rdquo;"
+                evidence_line = f"<b>Evidence:</b> &ldquo;{_safe(finding.evidence)}&rdquo;"
                 block.append(Paragraph(evidence_line, styles["quote"]))
             if ca.reasoning.limitations:
                 for limitation in ca.reasoning.limitations:
-                    block.append(Paragraph(f"Limitation: {limitation}", styles["small"]))
+                    block.append(Paragraph(f"Limitation: {_safe(limitation)}", styles["small"]))
         elif ca.reasoning_error:
             block.append(
-                Paragraph(f"<b>Reasoning not available:</b> {ca.reasoning_error}", styles["small"])
+                Paragraph(
+                    f"<b>Reasoning not available:</b> {_safe(ca.reasoning_error)}",
+                    styles["small"],
+                )
             )
 
         block.append(Spacer(1, 10))

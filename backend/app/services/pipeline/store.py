@@ -45,3 +45,14 @@ def save_result(document_id: str, result: DocumentAnalysisResult) -> None:
 def get_result(document_id: str) -> DocumentAnalysisResult | None:
     with _lock:
         return _results.get(document_id)
+
+
+def delete_document(document_id: str) -> DocumentRecord | None:
+    """Removes a document's metadata and analysis result from the store
+    (spec section 29: "provide cleanup/delete functionality"). Does not
+    touch the file on disk - the caller (the API route) does that, since
+    filesystem access doesn't belong in this in-memory store module."""
+    with _lock:
+        record = _documents.pop(document_id, None)
+        _results.pop(document_id, None)
+        return record
