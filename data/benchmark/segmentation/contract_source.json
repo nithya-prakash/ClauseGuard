@@ -1,0 +1,67 @@
+{
+  "_provenance": "Synthetic benchmark contract, authored by hand for ClauseGuard testing/evaluation purposes. NOT a real contract, NOT a legal template, and must not be used as one. Clause structure and clause_type labels are ground truth by construction (this file is the single source both the fixture generator and the segmentation/classification benchmarks read from).",
+  "title": "Dienstleistungsvertrag",
+  "parties_preamble": "zwischen der Muster Softwarelösungen GmbH, Beispielstraße 12, 10115 Berlin (nachfolgend \"Auftraggeber\") und der Beispiel IT-Consulting UG, Teststraße 4, 80331 München (nachfolgend \"Auftragnehmer\")",
+  "clauses": [
+    {
+      "section": "§ 1",
+      "heading": "Vertragsgegenstand",
+      "clause_type": "GENERAL_TERMS",
+      "body": "Der Auftragnehmer erbringt für den Auftraggeber Beratungsleistungen im Bereich der Softwareentwicklung gemäß der als Anlage 1 beigefügten Leistungsbeschreibung. Der genaue Leistungsumfang wird in gesonderten Leistungsscheinen konkretisiert, die Bestandteil dieses Vertrages werden."
+    },
+    {
+      "section": "§ 2",
+      "heading": "Vergütung und Zahlungsbedingungen",
+      "clause_type": "PAYMENT",
+      "body": "Der Auftraggeber zahlt dem Auftragnehmer ein Honorar in Höhe von 120 Euro pro Stunde zzgl. der gesetzlichen Umsatzsteuer. Die Abrechnung erfolgt monatlich auf Basis der tatsächlich geleisteten Stunden. Rechnungen sind innerhalb von 14 Tagen nach Zugang ohne Abzug zur Zahlung fällig. Bei Zahlungsverzug ist der Auftragnehmer berechtigt, Verzugszinsen in gesetzlicher Höhe zu berechnen."
+    },
+    {
+      "section": "§ 3",
+      "heading": "Laufzeit und Kündigung",
+      "clause_type": "TERMINATION",
+      "body": "Dieser Vertrag wird auf unbestimmte Zeit geschlossen und kann von beiden Parteien mit einer Frist von sechs Wochen zum Quartalsende schriftlich gekündigt werden. Das Recht zur außerordentlichen Kündigung aus wichtigem Grund bleibt unberührt. Ein wichtiger Grund liegt insbesondere vor, wenn eine Partei wesentliche Vertragspflichten trotz schriftlicher Abmahnung wiederholt verletzt."
+    },
+    {
+      "section": "§ 4",
+      "heading": "Haftung",
+      "clause_type": "LIABILITY",
+      "body": "Der Auftragnehmer haftet unbeschränkt für Vorsatz und grobe Fahrlässigkeit sowie nach Maßgabe des Produkthaftungsgesetzes. Für leichte Fahrlässigkeit haftet der Auftragnehmer nur bei Verletzung einer wesentlichen Vertragspflicht (Kardinalpflicht) und in diesem Fall beschränkt auf den vertragstypisch vorhersehbaren Schaden. Im Übrigen ist die Haftung für leicht fahrlässig verursachte Schäden ausgeschlossen, soweit gesetzlich zulässig."
+    },
+    {
+      "section": "§ 5",
+      "heading": "Gewährleistung",
+      "clause_type": "WARRANTY",
+      "body": "Der Auftragnehmer gewährleistet, dass die erbrachten Leistungen dem vereinbarten Leistungsumfang entsprechen und mit der erforderlichen fachlichen Sorgfalt erbracht werden. Mängel sind unverzüglich nach Entdeckung in Textform anzuzeigen. Der Auftragnehmer ist berechtigt, innerhalb angemessener Frist nachzubessern, bevor weitere Gewährleistungsrechte geltend gemacht werden können."
+    },
+    {
+      "section": "§ 6",
+      "heading": "Vertraulichkeit",
+      "clause_type": "CONFIDENTIALITY",
+      "body": "Beide Parteien verpflichten sich, alle im Rahmen dieses Vertrages erlangten vertraulichen Informationen der jeweils anderen Partei streng vertraulich zu behandeln und nicht an Dritte weiterzugeben. Diese Verpflichtung gilt auch für einen Zeitraum von drei Jahren nach Beendigung dieses Vertrages. Ausgenommen sind Informationen, die nachweislich bereits öffentlich bekannt waren oder aufgrund gesetzlicher Verpflichtung offengelegt werden müssen."
+    },
+    {
+      "section": "§ 7",
+      "heading": "Datenverarbeitung",
+      "clause_type": "DATA_PROCESSING",
+      "body": "Soweit der Auftragnehmer im Rahmen der Leistungserbringung personenbezogene Daten im Auftrag des Auftraggebers verarbeitet, schließen die Parteien eine gesonderte Vereinbarung zur Auftragsverarbeitung gemäß Art. 28 DSGVO ab. Der Auftragnehmer trifft geeignete technische und organisatorische Maßnahmen gemäß Art. 32 DSGVO, um ein dem Risiko angemessenes Schutzniveau sicherzustellen."
+    },
+    {
+      "section": "§ 8",
+      "heading": "Wettbewerbsverbot",
+      "clause_type": "NON_COMPETE",
+      "body": "Der Auftragnehmer verpflichtet sich, während der Laufzeit dieses Vertrages nicht für direkte Wettbewerber des Auftraggebers auf demselben Projekt tätig zu werden, sofern dies zu einem Interessenkonflikt führen würde. Diese Verpflichtung endet mit Beendigung des Vertrages, sofern nicht gesondert eine nachvertragliche Regelung getroffen wird."
+    },
+    {
+      "section": "§ 9",
+      "heading": "Geistiges Eigentum",
+      "clause_type": "INTELLECTUAL_PROPERTY",
+      "body": "Alle im Rahmen dieses Vertrages vom Auftragnehmer erstellten Arbeitsergebnisse, insbesondere Software, Dokumentationen und Konzepte, gehen mit vollständiger Bezahlung der vereinbarten Vergütung auf den Auftraggeber über, soweit sie urheberrechtlich schutzfähig sind. Der Auftragnehmer räumt dem Auftraggeber im Übrigen ein einfaches, zeitlich und räumlich unbeschränktes Nutzungsrecht ein."
+    },
+    {
+      "section": "§ 10",
+      "heading": "Schlussbestimmungen",
+      "clause_type": "GENERAL_TERMS",
+      "body": "Änderungen und Ergänzungen dieses Vertrages bedürfen der Textform. Sollte eine Bestimmung dieses Vertrages unwirksam sein oder werden, bleibt die Wirksamkeit der übrigen Bestimmungen hiervon unberührt. Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts. Gerichtsstand für alle Streitigkeiten aus oder im Zusammenhang mit diesem Vertrag ist, soweit gesetzlich zulässig, der Sitz des Auftraggebers."
+    }
+  ]
+}

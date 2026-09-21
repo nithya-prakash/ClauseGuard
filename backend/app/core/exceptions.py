@@ -33,6 +33,16 @@ class LLMNotConfiguredError(ClauseGuardError):
     status_code = 503
 
 
+class OCRNotImplementedError(ClauseGuardError):
+    """Raised when a PDF is detected as likely-scanned (low text density).
+
+    OCR is architecturally planned (see services/ingestion/ocr.py) but not
+    implemented. We refuse to silently return near-empty extracted text.
+    """
+
+    status_code = 501
+
+
 class PipelineStageError(ClauseGuardError):
     """A pipeline stage (segmentation, retrieval, reasoning, ...) failed."""
 

@@ -1,0 +1,29 @@
+{
+  "evaluated_at": "2026-09-20T13:56:19.851049+00:00",
+  "benchmark": "data/benchmark/segmentation/contract_source.json (1 synthetic contract, hand-authored ground truth)",
+  "script": "eval/segmentation/evaluate_segmentation.py",
+  "limitations": [
+    "Single benchmark document - measures correctness on one contract structure, not generalization across real-world contract styles.",
+    "Ground truth is authored, not independently reviewed by a legal expert (no real contract or legal labeling involved)."
+  ],
+  "results": [
+    {
+      "file": "sample_contract_de.pdf",
+      "expected_clause_count": 10,
+      "predicted_clause_count": 10,
+      "clause_count_exact_match": true,
+      "section_label_accuracy": 1.0,
+      "heading_accuracy": 1.0,
+      "pagination_available": true
+    },
+    {
+      "file": "sample_contract_de.docx",
+      "expected_clause_count": 10,
+      "predicted_clause_count": 10,
+      "clause_count_exact_match": true,
+      "section_label_accuracy": 1.0,
+      "heading_accuracy": 1.0,
+      "pagination_available": false
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "_provenance": "Manually authored ground truth for the synthetic benchmark contract in contract_source.json. Exact by construction, not extracted or guessed - each clause below matches what generate_benchmark_fixtures.py rendered into the PDF/DOCX.",
+  "expected_clause_count": 10,
+  "clauses": [
+    {
+      "position": 1,
+      "section": "§ 1",
+      "heading": "Vertragsgegenstand",
+      "clause_type": "GENERAL_TERMS"
+    },
+    {
+      "position": 2,
+      "section": "§ 2",
+      "heading": "Vergütung und Zahlungsbedingungen",
+      "clause_type": "PAYMENT"
+    },
+    {
+      "position": 3,
+      "section": "§ 3",
+      "heading": "Laufzeit und Kündigung",
+      "clause_type": "TERMINATION"
+    },
+    {
+      "position": 4,
+      "section": "§ 4",
+      "heading": "Haftung",
+      "clause_type": "LIABILITY"
+    },
+    {
+      "position": 5,
+      "section": "§ 5",
+      "heading": "Gewährleistung",
+      "clause_type": "WARRANTY"
+    },
+    {
+      "position": 6,
+      "section": "§ 6",
+      "heading": "Vertraulichkeit",
+      "clause_type": "CONFIDENTIALITY"
+    },
+    {
+      "position": 7,
+      "section": "§ 7",
+      "heading": "Datenverarbeitung",
+      "clause_type": "DATA_PROCESSING"
+    },
+    {
+      "position": 8,
+      "section": "§ 8",
+      "heading": "Wettbewerbsverbot",
+      "clause_type": "NON_COMPETE"
+    },
+    {
+      "position": 9,
+      "section": "§ 9",
+      "heading": "Geistiges Eigentum",
+      "clause_type": "INTELLECTUAL_PROPERTY"
+    },
+    {
+      "position": 10,
+      "section": "§ 10",
+      "heading": "Schlussbestimmungen",
+      "clause_type": "GENERAL_TERMS"
+    }
+  ]
+}
