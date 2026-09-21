@@ -8,8 +8,8 @@ AI-assisted first-pass compliance/risk analysis for German contracts.
 
 ## Status
 
-All 15 originally-planned milestones complete; Milestone 16 (finalization,
-calibration, production readiness) is in progress. See commit history / project memory
+All 15 originally-planned milestones complete, plus Milestone 16 (finalization,
+calibration, production readiness). See commit history / project memory
 for milestone-by-milestone progress; the "Failure cases" and "Limitations" sections
 below are the honest summary of what actually works, what's genuinely
 measured, and what's still open.
@@ -29,12 +29,16 @@ measured, and what's still open.
 - [x] Milestone 13 — PDF report
 - [x] Milestone 14 — Security hardening
 - [x] Milestone 15 — CI/CD + documentation
-- [ ] Milestone 16 — Finalization, calibration & production readiness (evidence-sufficiency
-      recalibration done and verified — 0.30→0.60 on the original benchmark; LLM
-      evaluation harness built (NOT_MEASURED, no API key); Postgres persistence +
-      additive Celery async job path done and verified against real containers — see
-      [§15](#15-failure-cases); frontend test suite, a fresh security pass, and
-      attempting a real CI push are not yet done)
+- [x] Milestone 16 — Finalization, calibration & production readiness.
+      Evidence-sufficiency recalibrated and verified (0.30→0.60 on the original
+      benchmark); LLM evaluation harness built (`NOT_MEASURED`, no API key — never
+      fabricated); citation-verification dead-code bug found and fixed; Postgres
+      persistence + an additive, tested Celery async job path (a real bug found and
+      fixed via live container verification); a real frontend test suite (20 tests);
+      rate limiting + decompression-bomb protection; every CI command re-verified
+      locally. **Not done**: pushing to GitHub and running CI on a real runner — asked
+      explicitly, the developer chose to keep this local (see
+      [§15](#15-failure-cases)).
 
 ---
 
@@ -240,7 +244,7 @@ upload a contract, or drive the API directly — see [§10](#10-running-the-appl
 | LLM reasoning | Anthropic Claude (tool-use / structured output), configurable, off by default |
 | PDF report generation | `reportlab` |
 | Training | PyTorch, Hugging Face `transformers` + `peft` |
-| Testing | `pytest`, `ruff`, `mypy` |
+| Testing | `pytest`, `ruff`, `mypy` (backend); Vitest + React Testing Library, ESLint (frontend) |
 | CI/CD | GitHub Actions (authored, not yet run — see [§15](#15-failure-cases)) |
 | Containerization | Docker, Docker Compose |
 
@@ -282,8 +286,15 @@ The first `/analyze` request downloads ~1GB of models (embeddings, reranker,
 classifier) into a persisted named volume (`clauseguard_hf_cache`) — slow once, fast on
 every request after, including across container rebuilds.
 
-Tear down: `docker compose down` (add `-v` to also drop the Postgres/Qdrant/model-cache
-volumes — not needed for normal use).
+The Postgres schema is created automatically — `backend` and `worker` both run
+`alembic upgrade head` on startup (`docker/entrypoint.sh`) before their main process,
+so no manual migration step is needed for normal use. To run Alembic from the host
+(e.g. to inspect the schema) use the same host-port override pattern as Qdrant:
+`DATABASE_URL=postgresql+psycopg://clauseguard:clauseguard@localhost:5436/clauseguard
+alembic -c backend/alembic.ini current`.
+
+Tear down: `docker compose down` (add `-v` to also drop the Postgres/Qdrant/model-cache/
+uploads volumes — not needed for normal use).
 
 ## 9. Environment variables
 
@@ -295,7 +306,7 @@ See [.env.example](.env.example) for the full, authoritative list. Summary:
 | `LOG_LEVEL` | structlog level | `INFO` |
 | `DATABASE_URL` | Postgres connection string | docker-compose host |
 | `QDRANT_URL`, `QDRANT_COLLECTION` | legal corpus vector store | docker-compose host |
-| `REDIS_URL`, `CELERY_BROKER_URL`, `CELERY_RESULT_BACKEND` | queue (architected, not yet wired) | docker-compose host |
+| `REDIS_URL`, `CELERY_BROKER_URL`, `CELERY_RESULT_BACKEND` | queue backing the additive async job path (§15) | docker-compose host |
 | `LLM_PROVIDER` | `anthropic` or unset | unset (honest `NOT_CONFIGURED`) |
 | `ANTHROPIC_API_KEY` | required only if `LLM_PROVIDER=anthropic` | empty |
 | `ANTHROPIC_MODEL` | Claude model id | `claude-sonnet-5` |
@@ -322,6 +333,14 @@ curl -X POST localhost:8004/documents/{id}/analyze
 curl localhost:8004/documents/{id}/findings
 curl localhost:8004/documents/{id}/report -o report.pdf
 curl -X DELETE localhost:8004/documents/{id}
+```
+
+Or the additive async path (Milestone 16 Phase 15 — real, tested, not yet used by the
+frontend):
+
+```bash
+curl -X POST localhost:8004/documents/{id}/jobs          # -> {job_id, status: "PENDING"}
+curl localhost:8004/documents/{id}/jobs/{job_id}          # poll until status == "COMPLETED"
 ```
 
 Health check: `curl localhost:8004/health` — reports real per-dependency status
@@ -351,6 +370,17 @@ QDRANT_URL=http://localhost:6339 python eval/retrieval/evaluate_retrieval.py
 
 # End-to-end (needs Qdrant + trained models, all of the above)
 QDRANT_URL=http://localhost:6339 python eval/end_to_end/evaluate_end_to_end.py
+
+# Evidence-sufficiency calibration (Milestone 16 - see §15/reports/evidence_sufficiency/)
+QDRANT_URL=http://localhost:6339 python eval/evidence_sufficiency/score_dataset.py
+python eval/evidence_sufficiency/calibrate.py
+
+# Reasoning evaluation (Milestone 16 - honest NOT_MEASURED without a key, real
+# eval with one)
+ANTHROPIC_API_KEY=... QDRANT_URL=http://localhost:6339 python eval/reasoning/evaluate_reasoning.py
+
+# Frontend unit tests (Milestone 16 - Vitest + Testing Library)
+cd frontend && npm test
 ```
 
 ## 12. Fine-tuning
@@ -571,8 +601,9 @@ passes locally," and is stated here plainly rather than collapsed into "CI passe
 Audited spec section 25's checklist against what was already built (file type/size
 validation, UUID-based filename sanitization, no path traversal, no execution of
 uploaded files, secrets only via environment variables, `.env` gitignored and never
-committed — all already true from earlier milestones) and found and fixed three real,
-concrete gaps (detailed in [§15 Failure cases](#15-failure-cases)):
+committed — all already true from earlier milestones) and found and fixed five real,
+concrete gaps across Milestones 14 and 16 (detailed in
+[§15 Failure cases](#15-failure-cases)):
 
 1. **PDF report markup/XML injection** — fixed with a `_safe()` XML-escaping helper
    ([pdf_generator.py](backend/app/services/reporting/pdf_generator.py)) applied to
