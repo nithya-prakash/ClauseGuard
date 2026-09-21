@@ -85,7 +85,18 @@ def test_parse_dsgvo_article_raises_when_missing():
 
 
 @pytest.mark.integration
+@pytest.mark.external_flaky
 def test_live_fetch_bgb_section():
+    # Observed failing on a real GitHub Actions run (httpx.ConnectTimeout,
+    # 30s) fetching gesetze-im-internet.de - this site had been reliable in
+    # all local testing throughout the project, so this is a genuinely new
+    # finding: it's not just EUR-Lex that's flaky from CI infrastructure.
+    # A ConnectTimeout (never even established a TCP connection) is a
+    # different failure mode than EUR-Lex's HTTP 202/empty-body pattern -
+    # plausibly the site treats cloud/datacenter IP ranges differently than
+    # a home connection, or a transient outage during that specific run.
+    # Marked external_flaky rather than silently retried/ignored, matching
+    # this project's existing convention for the EUR-Lex tests below.
     raw = fetch_bgb_raw("307")
     passage = parse_bgb_passage("307", raw)
     assert passage.section == "§ 307"

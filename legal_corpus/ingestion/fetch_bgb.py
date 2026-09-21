@@ -24,6 +24,7 @@ from pathlib import Path
 
 import httpx
 from lxml import html
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT / "backend"))
@@ -52,6 +53,22 @@ SECTIONS = [
 RAW_DIR = ROOT / "legal_corpus" / "sources" / "bgb"
 
 
+@retry(
+    # Real failure observed on a GitHub Actions run: httpx.ConnectTimeout
+    # after 30s (never even established a TCP connection) - a different
+    # failure mode than EUR-Lex's HTTP 202/empty-body pattern (see
+    # fetch_dsgvo.py), plausibly transient network conditions or
+    # datacenter-IP-specific handling by the source site. Retrying is a
+    # genuine mitigation here (unlike a real 404/parse error, which
+    # wouldn't be fixed by retrying) - this site had been reliable in all
+    # local testing throughout the project, so no evidence yet that a
+    # retry alone is insufficient (see backend/tests/test_legal_corpus.py's
+    # external_flaky marker on the live test either way).
+    retry=retry_if_exception_type((httpx.ConnectTimeout, httpx.ConnectError, httpx.ReadTimeout)),
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=2, min=2, max=20),
+    reraise=True,
+)
 def fetch_raw(section: str) -> str:
     url = BASE_URL.format(section)
     response = httpx.get(url, headers={"User-Agent": USER_AGENT}, timeout=30, follow_redirects=True)
