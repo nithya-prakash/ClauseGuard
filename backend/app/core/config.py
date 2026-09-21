@@ -40,10 +40,22 @@ class Settings(BaseSettings):
     max_upload_size_mb: int = 20
     upload_allowed_extensions: str = ".pdf,.docx"
 
+    # CORS: origins the frontend is actually served from - the Docker
+    # Compose frontend service (port 3005) and the `npm run dev` server
+    # (port 3006, see .claude/launch.json). Configurable since dev server
+    # ports vary by environment; not wildcarded (spec section 25: no
+    # unnecessary open surface).
+    cors_allowed_origins: str = "http://localhost:3005,http://localhost:3006"
+
     @property
     def upload_allowed_extensions_list(self) -> list[str]:
         raw = self.upload_allowed_extensions.split(",")
         return [ext.strip().lower() for ext in raw if ext.strip()]
+
+    @property
+    def cors_allowed_origins_list(self) -> list[str]:
+        raw = self.cors_allowed_origins.split(",")
+        return [origin.strip() for origin in raw if origin.strip()]
 
     @property
     def llm_configured(self) -> bool:

@@ -22,22 +22,104 @@ Build in progress. See commit history / project memory for milestone-by-mileston
 - [x] Milestone 9 — LLM structured reasoning
 - [x] Milestone 10 — End-to-end pipeline
 - [x] Milestone 11 — Evaluation suite
-- [ ] Milestone 12 — Frontend
+- [x] Milestone 12 — Frontend
 - [ ] Milestone 13 — PDF report
 - [ ] Milestone 14 — Security hardening
 - [ ] Milestone 15 — CI/CD + documentation
 
-## Quickstart (current: backend skeleton only)
+## Quickstart
 
 ```bash
 cp .env.example .env
 docker compose up -d --build
-curl http://localhost:8004/health
+QDRANT_URL=http://localhost:6339 python legal_corpus/ingestion/index_corpus.py
+open http://localhost:3005
 ```
 
 Host ports are deliberately non-default (5436 Postgres, 6339/6340 Qdrant, 6383 Redis,
-8004 backend) to avoid clashing with other projects' containers on the same machine.
-Container-to-container traffic uses the standard ports internally.
+8004 backend, 3005 frontend) to avoid clashing with other projects' containers on the
+same machine. Container-to-container traffic uses the standard ports internally.
+
+The first analysis request downloads ~1GB of models (embeddings, reranker, classifier)
+into a persisted Docker volume (`clauseguard_hf_cache`) — slow once, fast after.
+
+## Frontend (Milestone 12)
+
+Next.js 16 (App Router, TypeScript, Tailwind) — [frontend/](frontend). Four screens
+matching spec section 18, all driven by the real API (no mock data anywhere):
+
+- **Upload** — drag-and-drop or click-to-browse, PDF/DOCX only.
+- **Processing** — real per-stage checkmarks computed from the actual response (there's
+  no live progress channel yet since analysis runs synchronously — background job
+  processing is Milestone 23 — so this is "not started → done", not a fabricated
+  animated progress bar). Honestly shows "Risk analysis completed"/"Citations verified"
+  as *not* done when no LLM is configured, rather than checking them anyway.
+- **Results** — per-clause classification badge, risk badge, and (spec: "clear visual
+  distinction between AI finding / legal source / evidence / uncertainty") a
+  distinctly-styled "AI finding" / "Legal source" / "Evidence" block per finding with a
+  citation-verified/unverified badge. Clauses with no configured LLM show a clearly
+  different blue "Reasoning not available" state, never a fake risk level.
+- **Report** — calls `GET /documents/{id}/report`, which honestly returns 501 "not yet
+  implemented (Milestone 13)" — shown as-is, not hidden or faked.
+
+**Building this required a real REST API that didn't exist yet** (the spec's section 20
+endpoints — `POST /documents`, `POST /documents/{id}/analyze`,
+`GET /documents/{id}/{clauses,findings,report}` — weren't part of the original 15
+milestones' explicit scope, but a frontend with nothing real to call would mean fake
+data, which violates the whole project's anti-fabrication policy). Added
+[backend/app/api/routes/documents.py](backend/app/api/routes/documents.py): uploads are
+saved under a server-generated UUID filename (never the client's original filename, to
+prevent path traversal) and analyzed synchronously in a plain `def` route handler
+(FastAPI's threadpool executor, so it doesn't block the event loop — Celery background
+jobs are Milestone 23). Results are held in a documented **interim, non-durable
+in-memory store** ([store.py](backend/app/services/pipeline/store.py)) — real, but lost
+on restart; Postgres persistence is Milestone 21.
+
+### Real bugs found and fixed while verifying this end-to-end in a real browser
+
+Verification wasn't "click around and take a screenshot" — every one of these was found
+by actually driving the app against the live Docker stack and tracing the failure to
+its root cause:
+
+1. **Docker image was missing runtime data entirely.** `docker/backend.Dockerfile` only
+   ever copied `backend/` — `legal_corpus/metadata/corpus.json` (retrieval) and
+   `training/` (classifier models) were never in the image, so the container would have
+   crashed on the first real request with an unhandled `FileNotFoundError`. Fixed by
+   copying both in (after the pip install layer, so corpus/model changes don't
+   invalidate that expensive layer) and adding a defense-in-depth catch-all exception
+   handler in `main.py` so any *future* gap like this returns a clean 500, not a leaked
+   traceback.
+2. **`transformers`/`peft` were never installed in the backend image.** They were left
+   in the training-only extras group from Milestone 1, but Milestone 10's
+   `classify_clause_lora` made them a genuine runtime dependency of the live API —
+   moved to core dependencies.
+3. **CORS only allowed a hardcoded `localhost:3000`** that nothing in this project
+   actually uses (frontend is 3005/3006) — every real browser request was silently
+   blocked. Made configurable (`CORS_ALLOWED_ORIGINS`), fixed, and covered by a
+   regression test ([test_cors.py](backend/tests/test_cors.py)).
+4. **Analysis results showed the server-generated UUID filename**, not the user's
+   original filename — fixed in the `/analyze` route, covered by a test assertion.
+5. **The Celery worker inherited the backend's HTTP healthcheck** and could never pass
+   it (nothing listens on port 8000 in a Celery process) — gave it a real
+   `celery inspect ping` healthcheck instead.
+6. **The Docker frontend container's healthcheck could never pass**: Docker
+   auto-sets a `HOSTNAME` env var to the container ID, and Next.js standalone mode
+   binds to `process.env.HOSTNAME` when set — so the server ended up listening only on
+   that hostname's resolved address, not all interfaces, and a healthcheck connecting
+   via `127.0.0.1` was refused even though the host-mapped port still worked. Fixed
+   with an explicit `ENV HOSTNAME=0.0.0.0`.
+7. **No persisted model cache** — every container rebuild re-downloaded ~1GB of models
+   from Hugging Face from scratch. Added a named `clauseguard_hf_cache` volume (not a
+   bind mount — VirtioFS bind-mount deadlocks are a known issue on this host).
+
+Real upload → analyze → results flow was verified in the built-in browser against the
+actual Docker stack, with the genuine 10-clause benchmark contract, real classification/
+retrieval/evidence-sufficiency results, and correctly honest LLM-not-configured states
+throughout.
+
+Frontend-specific automated tests (e.g. Playwright) are not yet in place — verification
+here was manual browser-driven testing against the real stack, documented above, not
+skipped silently. A good Milestone 15 candidate.
 
 ## Document ingestion & segmentation (Milestone 2)
 
@@ -357,3 +439,12 @@ Milestone 15). Current honest limitations, most actionable first:
    NON_COMPETE. This did not affect evidence retrieval (which operates on
    the clause text, not the classification label), but would affect the
    classification label reported to a user.
+5. **Document/analysis storage is in-memory, not durable** (Milestone 12,
+   documented in `store.py`) - works correctly for the life of the backend
+   process but is lost on restart and not shared across replicas. Postgres
+   persistence is Milestone 21.
+6. **No frontend automated test suite yet** - Milestone 12's frontend was
+   verified by manually driving the real app in a browser against the live
+   Docker stack (see "Frontend" section above for what that verification
+   found and fixed). A Playwright/Vitest suite is a reasonable Milestone 15
+   addition.

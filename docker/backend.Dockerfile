@@ -25,6 +25,20 @@ RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/wh
 # fine-tuning stays a separate local environment, not the served app).
 RUN pip install --no-cache-dir .
 
+# Runtime reads these directly off disk (not as Python imports), so they
+# must be baked into the image, not just present on the build host. Copied
+# AFTER the pip installs above so changing the corpus/retraining a model
+# doesn't invalidate that expensive layer. COPY of a directory reflects
+# whatever's actually there - training/adapter and training/models are
+# gitignored ML artifacts that may or may not exist yet (a fresh clone that
+# hasn't run the training scripts) - both are handled gracefully by
+# classify_clause_lora/classify_clause falling back to
+# ClassifierNotTrainedError rather than crashing. Not a bind mount
+# (VirtioFS bind-mount deadlocks are a known issue on this host - see
+# clauseguard_build_conventions memory) - these are baked in at build time.
+COPY legal_corpus/metadata ./legal_corpus/metadata
+COPY training ./training
+
 ENV PYTHONUNBUFFERED=1 \
     PYTHONPATH=/srv/backend
 

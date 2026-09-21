@@ -50,6 +50,12 @@ class OCRNotImplementedError(ClauseGuardError):
     status_code = 501
 
 
+class ReportNotImplementedError(ClauseGuardError):
+    """PDF report generation is Milestone 13 - not built yet."""
+
+    status_code = 501
+
+
 class PipelineStageError(ClauseGuardError):
     """A pipeline stage (segmentation, retrieval, reasoning, ...) failed."""
 

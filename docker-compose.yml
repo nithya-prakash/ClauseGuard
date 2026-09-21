@@ -52,6 +52,13 @@ services:
       CELERY_RESULT_BACKEND: redis://redis:6379/1
     ports:
       - "8004:8000"
+    volumes:
+      # Embedding/classification/reranking models are downloaded from
+      # Hugging Face on first use (see clauseguard_build_conventions memory)
+      # - without this, EVERY container recreation re-downloads ~1GB+ of
+      # models from scratch. Named volume, not a bind mount (VirtioFS
+      # bind-mount deadlocks are a known issue on this host).
+      - clauseguard_hf_cache:/root/.cache/huggingface
     depends_on:
       postgres:
         condition: service_healthy
@@ -78,6 +85,8 @@ services:
       REDIS_URL: redis://redis:6379/0
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_RESULT_BACKEND: redis://redis:6379/1
+    volumes:
+      - clauseguard_hf_cache:/root/.cache/huggingface
     depends_on:
       postgres:
         condition: service_healthy
@@ -85,7 +94,33 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    healthcheck:
+      # Overrides the shared image's HTTP healthcheck (baked in for the
+      # backend/uvicorn process) - the worker runs Celery, not a web server,
+      # so nothing listens on port 8000 here and that check could never
+      # pass. Found and fixed in Milestone 12 while verifying the stack.
+      test: ["CMD-SHELL", "celery -A app.core.celery_app inspect ping || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend.Dockerfile
+      args:
+        # Baked into the browser bundle at build time (see Dockerfile) -
+        # must be the HOST-mapped backend port, not the in-Docker hostname,
+        # because the browser runs on the developer's machine.
+        NEXT_PUBLIC_API_BASE_URL: http://localhost:8004
+    ports:
+      - "3005:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
 
 volumes:
   clauseguard_pgdata:
   clauseguard_qdrant:
+  clauseguard_hf_cache:
