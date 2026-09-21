@@ -1,0 +1,1685 @@
+{
+  "_provenance": "Real retrieve_and_rerank() output against the live Qdrant corpus (legal_corpus/metadata/corpus.json, 15 passages), captured for every example in dataset.json. Not simulated - regenerate by re-running this script against a running Qdrant with the corpus indexed.",
+  "clauses": [
+    {
+      "clause_id": "general_terms_scope_short",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "Subject-matter/scope definition - no corpus passage addresses defining what a contract is about.",
+      "clause_text": "Gegenstand dieses Vertrages ist die Erbringung von Beratungsleistungen im Bereich der Softwareentwicklung durch den Auftragnehmer für den Auftraggeber.",
+      "clause_length_chars": 151,
+      "top_score": -0.6925,
+      "top_passage": {
+        "source": "DSGVO",
+        "section": "Art. 28",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": -0.6925
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305b",
+          "score": -3.3016
+        },
+        {
+          "source": "BGB",
+          "section": "§ 310",
+          "score": -4.2084
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305c",
+          "score": -4.2619
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 6",
+          "score": -4.3571
+        }
+      ]
+    },
+    {
+      "clause_id": "general_terms_scope_medium",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "Same as short variant, plus scope elaboration - still no corpus coverage.",
+      "clause_text": "Gegenstand dieses Vertrages ist die Erbringung von Beratungsleistungen im Bereich der Softwareentwicklung durch den Auftragnehmer für den Auftraggeber. Der genaue Leistungsumfang ergibt sich aus der als Anlage 1 beigefügten Leistungsbeschreibung, die Bestandteil dieses Vertrages ist.",
+      "clause_length_chars": 284,
+      "top_score": 0.0598,
+      "top_passage": {
+        "source": "DSGVO",
+        "section": "Art. 28",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": 0.0598
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305b",
+          "score": -0.5165
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305c",
+          "score": -1.6185
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 32",
+          "score": -1.6343
+        },
+        {
+          "source": "BGB",
+          "section": "§ 308",
+          "score": -2.0976
+        }
+      ]
+    },
+    {
+      "clause_id": "general_terms_scope_long",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "Same legal content as short/medium, with boilerplate elaboration added purely to test length effects - coverage does not change.",
+      "clause_text": "Gegenstand dieses Vertrages ist die Erbringung von Beratungsleistungen im Bereich der Softwareentwicklung durch den Auftragnehmer für den Auftraggeber. Der genaue Leistungsumfang ergibt sich aus der als Anlage 1 beigefügten Leistungsbeschreibung, die Bestandteil dieses Vertrages ist. Nebenleistungen, die zur ordnungsgemäßen Erfüllung des Vertragszwecks erforderlich sind, gelten auch dann als vom Vertragsgegenstand umfasst, wenn sie in der Leistungsbeschreibung nicht ausdrücklich genannt sind, sofern sie nach Treu und Glauben unter Berücksichtigung der Verkehrssitte vom Auftragnehmer zu erwarten sind. Änderungen des Leistungsumfangs bedürfen der Schriftform und der vorherigen Zustimmung beider Parteien.",
+      "clause_length_chars": 711,
+      "top_score": 3.2477,
+      "top_passage": {
+        "source": "DSGVO",
+        "section": "Art. 28",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": 3.2477
+        },
+        {
+          "source": "BGB",
+          "section": "§ 308",
+          "score": 1.8705
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 6",
+          "score": 1.6928
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305c",
+          "score": 1.6099
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 32",
+          "score": 1.427
+        }
+      ]
+    },
+    {
+      "clause_id": "general_terms_severability_short",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "BGB Sec. 306 (Rechtsfolgen bei Unwirksamkeit) directly addresses severability of AGB provisions.",
+      "clause_text": "Sollte eine Bestimmung dieses Vertrages unwirksam sein oder werden, so bleibt die Wirksamkeit der übrigen Bestimmungen hiervon unberührt.",
+      "clause_length_chars": 137,
+      "top_score": 6.1156,
+      "top_passage": {
+        "source": "BGB",
+        "section": "§ 306",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "BGB",
+          "section": "§ 306",
+          "score": 6.1156
+        },
+        {
+          "source": "BGB",
+          "section": "§ 307",
+          "score": 2.5183
+        },
+        {
+          "source": "BGB",
+          "section": "§ 309",
+          "score": 0.2353
+        },
+        {
+          "source": "BGB",
+          "section": "§ 308",
+          "score": 0.2324
+        },
+        {
+          "source": "BGB",
+          "section": "§ 310",
+          "score": -0.0384
+        }
+      ]
+    },
+    {
+      "clause_id": "general_terms_severability_medium",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "Same as short, plus replacement-provision language - still directly BGB Sec. 306.",
+      "clause_text": "Sollte eine Bestimmung dieses Vertrages unwirksam sein oder werden, so bleibt die Wirksamkeit der übrigen Bestimmungen hiervon unberührt. An die Stelle der unwirksamen Bestimmung tritt eine Regelung, die dem wirtschaftlichen Zweck der unwirksamen Bestimmung am nächsten kommt.",
+      "clause_length_chars": 276,
+      "top_score": 7.7967,
+      "top_passage": {
+        "source": "BGB",
+        "section": "§ 306",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "BGB",
+          "section": "§ 306",
+          "score": 7.7967
+        },
+        {
+          "source": "BGB",
+          "section": "§ 307",
+          "score": 5.6486
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305c",
+          "score": 3.0971
+        },
+        {
+          "source": "BGB",
+          "section": "§ 309",
+          "score": 2.5841
+        },
+        {
+          "source": "BGB",
+          "section": "§ 310",
+          "score": 1.8743
+        }
+      ]
+    },
+    {
+      "clause_id": "general_terms_severability_long",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "Same core severability content, extended with jurisdiction/governing-law boilerplate - this is the direct analogue of the original Milestone 10 benchmark's Sec. 10, which the un-calibrated system incorrectly scored INSUFFICIENT (a real false negative in the current results.json).",
+      "clause_text": "Sollte eine Bestimmung dieses Vertrages unwirksam sein oder werden, so bleibt die Wirksamkeit der übrigen Bestimmungen hiervon unberührt. An die Stelle der unwirksamen Bestimmung tritt eine Regelung, die dem wirtschaftlichen Zweck der unwirksamen Bestimmung am nächsten kommt. Dies gilt entsprechend für den Fall, dass sich der Vertrag als lückenhaft erweist. Gerichtsstand für alle Streitigkeiten aus oder im Zusammenhang mit diesem Vertrag ist, soweit gesetzlich zulässig, der Sitz des Auftragnehmers. Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts.",
+      "clause_length_chars": 588,
+      "top_score": 8.3249,
+      "top_passage": {
+        "source": "BGB",
+        "section": "§ 306",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "BGB",
+          "section": "§ 306",
+          "score": 8.3249
+        },
+        {
+          "source": "BGB",
+          "section": "§ 307",
+          "score": 6.3193
+        },
+        {
+          "source": "BGB",
+          "section": "§ 310",
+          "score": 4.7764
+        },
+        {
+          "source": "BGB",
+          "section": "§ 308",
+          "score": 4.3258
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": 4.1937
+        }
+      ]
+    },
+    {
+      "clause_id": "general_terms_agb_incorporation_short",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "BGB Sec. 305 directly governs when AGB become part of a contract.",
+      "clause_text": "Diese Allgemeinen Geschäftsbedingungen werden nur dann Vertragsbestandteil, wenn der Auftraggeber bei Vertragsschluss ausdrücklich auf sie hingewiesen wurde und die Möglichkeit hatte, in zumutbarer Weise von ihrem Inhalt Kenntnis zu nehmen.",
+      "clause_length_chars": 240,
+      "top_score": 10.5597,
+      "top_passage": {
+        "source": "BGB",
+        "section": "§ 305",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "BGB",
+          "section": "§ 305",
+          "score": 10.5597
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305c",
+          "score": 4.8355
+        },
+        {
+          "source": "BGB",
+          "section": "§ 306",
+          "score": 4.0334
+        },
+        {
+          "source": "BGB",
+          "section": "§ 310",
+          "score": 0.7556
+        },
+        {
+          "source": "BGB",
+          "section": "§ 307",
+          "score": 0.6069
+        }
+      ]
+    },
+    {
+      "clause_id": "general_terms_agb_incorporation_long",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "Same core content, extended with surprising-clause language that maps directly to BGB Sec. 305c.",
+      "clause_text": "Diese Allgemeinen Geschäftsbedingungen werden nur dann Vertragsbestandteil, wenn der Auftraggeber bei Vertragsschluss ausdrücklich auf sie hingewiesen wurde und die Möglichkeit hatte, in zumutbarer Weise von ihrem Inhalt Kenntnis zu nehmen. Bestimmungen in diesen Geschäftsbedingungen, die nach den Umständen, insbesondere nach dem äußeren Erscheinungsbild des Vertrages, so ungewöhnlich sind, dass der Vertragspartner des Verwenders mit ihnen nicht zu rechnen braucht, werden nicht Vertragsbestandteil. Bei Zweifeln über die Auslegung gehen individuelle Vertragsabreden diesen Geschäftsbedingungen stets vor.",
+      "clause_length_chars": 609,
+      "top_score": 8.8435,
+      "top_passage": {
+        "source": "BGB",
+        "section": "§ 306",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "BGB",
+          "section": "§ 306",
+          "score": 8.8435
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305c",
+          "score": 8.4274
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305b",
+          "score": 8.1819
+        },
+        {
+          "source": "BGB",
+          "section": "§ 307",
+          "score": 8.0008
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305",
+          "score": 7.5299
+        }
+      ]
+    },
+    {
+      "clause_id": "general_terms_individual_agreement",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "BGB Sec. 305b (Vorrang der Individualabrede) directly on point.",
+      "clause_text": "Individuelle Vertragsabreden der Parteien haben stets Vorrang vor den Bestimmungen dieser Allgemeinen Geschäftsbedingungen.",
+      "clause_length_chars": 123,
+      "top_score": 10.1292,
+      "top_passage": {
+        "source": "BGB",
+        "section": "§ 305b",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "BGB",
+          "section": "§ 305b",
+          "score": 10.1292
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305",
+          "score": 1.5496
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": -0.7975
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 6",
+          "score": -1.2236
+        },
+        {
+          "source": "BGB",
+          "section": "§ 308",
+          "score": -1.8429
+        }
+      ]
+    },
+    {
+      "clause_id": "payment_deadline_short",
+      "clause_type": "PAYMENT",
+      "coverage_type": "PARTIAL",
+      "expected_sufficient": true,
+      "coverage_note": "BGB Sec. 308 Nr. 1a addresses unreasonably long payment-deadline reservations with an explicit 30-day reference point - real, specific relevance, but no dedicated Zahlungsrecht chapter exists in the corpus.",
+      "clause_text": "Rechnungen sind innerhalb von 14 Tagen nach Zugang ohne Abzug zur Zahlung fällig.",
+      "clause_length_chars": 81,
+      "top_score": -0.3989,
+      "top_passage": {
+        "source": "BGB",
+        "section": "§ 308",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "BGB",
+          "section": "§ 308",
+          "score": -0.3989
+        },
+        {
+          "source": "BGB",
+          "section": "§ 309",
+          "score": -3.0953
+        },
+        {
+          "source": "BGB",
+          "section": "§ 310",
+          "score": -5.0688
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305b",
+          "score": -5.213
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305c",
+          "score": -5.6248
+        }
+      ]
+    },
+    {
+      "clause_id": "payment_deadline_medium",
+      "clause_type": "PAYMENT",
+      "coverage_type": "PARTIAL",
+      "expected_sufficient": true,
+      "coverage_note": "Same as short, plus interest-on-arrears language - still generically relevant via Sec. 308, not a specific enumerated match.",
+      "clause_text": "Rechnungen sind innerhalb von 14 Tagen nach Zugang ohne Abzug zur Zahlung fällig. Bei Zahlungsverzug ist der Auftragnehmer berechtigt, Verzugszinsen in gesetzlicher Höhe zu berechnen.",
+      "clause_length_chars": 183,
+      "top_score": -0.552,
+      "top_passage": {
+        "source": "BGB",
+        "section": "§ 308",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "BGB",
+          "section": "§ 308",
+          "score": -0.552
+        },
+        {
+          "source": "BGB",
+          "section": "§ 309",
+          "score": -2.0268
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305b",
+          "score": -3.6929
+        },
+        {
+          "source": "BGB",
+          "section": "§ 310",
+          "score": -3.868
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 32",
+          "score": -4.0966
+        }
+      ]
+    },
+    {
+      "clause_id": "payment_deadline_long",
+      "clause_type": "PAYMENT",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "The added set-off/retention restriction directly matches BGB Sec. 309 Nr. 2/3 (Leistungsverweigerungsrechte, Aufrechnungsverbot) - a specific enumerated match, stronger than the short/medium variants.",
+      "clause_text": "Rechnungen sind innerhalb von 14 Tagen nach Zugang ohne Abzug zur Zahlung fällig. Bei Zahlungsverzug ist der Auftragnehmer berechtigt, Verzugszinsen in gesetzlicher Höhe zu berechnen. Der Auftraggeber ist nur zur Aufrechnung berechtigt, wenn seine Gegenansprüche rechtskräftig festgestellt, unbestritten oder von dem Auftragnehmer anerkannt sind. Ein Zurückbehaltungsrecht steht dem Auftraggeber nur wegen Gegenansprüchen aus demselben Vertragsverhältnis zu.",
+      "clause_length_chars": 458,
+      "top_score": 0.4952,
+      "top_passage": {
+        "source": "BGB",
+        "section": "§ 308",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "BGB",
+          "section": "§ 308",
+          "score": 0.4952
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 32",
+          "score": -2.1621
+        },
+        {
+          "source": "BGB",
+          "section": "§ 309",
+          "score": -2.3604
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": -2.6823
+        },
+        {
+          "source": "BGB",
+          "section": "§ 310",
+          "score": -3.0616
+        }
+      ]
+    },
+    {
+      "clause_id": "payment_method_short",
+      "clause_type": "PAYMENT",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "Payment method/currency mechanics - no BGB provision in the corpus concerns this.",
+      "clause_text": "Sämtliche Zahlungen erfolgen in Euro per Banküberweisung auf das vom Auftragnehmer benannte Konto.",
+      "clause_length_chars": 98,
+      "top_score": -4.805,
+      "top_passage": {
+        "source": "BGB",
+        "section": "§ 305b",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "BGB",
+          "section": "§ 305b",
+          "score": -4.805
+        },
+        {
+          "source": "BGB",
+          "section": "§ 308",
+          "score": -4.8394
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": -4.9542
+        },
+        {
+          "source": "BGB",
+          "section": "§ 309",
+          "score": -5.0354
+        },
+        {
+          "source": "BGB",
+          "section": "§ 310",
+          "score": -5.0751
+        }
+      ]
+    },
+    {
+      "clause_id": "termination_cause_short",
+      "clause_type": "TERMINATION",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "BGB Sec. 314 (Kündigung von Dauerschuldverhältnissen aus wichtigem Grund) directly on point.",
+      "clause_text": "Jede Partei kann diesen Vertrag aus wichtigem Grund ohne Einhaltung einer Kündigungsfrist kündigen, wenn ihr unter Berücksichtigung aller Umstände des Einzelfalls die Fortsetzung des Vertragsverhältnisses bis zum Ablauf der Kündigungsfrist nicht zugemutet werden kann.",
+      "clause_length_chars": 268,
+      "top_score": 10.1691,
+      "top_passage": {
+        "source": "BGB",
+        "section": "§ 314",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "BGB",
+          "section": "§ 314",
+          "score": 10.1691
+        },
+        {
+          "source": "BGB",
+          "section": "§ 308",
+          "score": 0.1426
+        },
+        {
+          "source": "BGB",
+          "section": "§ 306",
+          "score": -0.2769
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 6",
+          "score": -0.4078
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": -0.4137
+        }
+      ]
+    },
+    {
+      "clause_id": "termination_cause_medium",
+      "clause_type": "TERMINATION",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "Same as short plus a form requirement - still Sec. 314.",
+      "clause_text": "Jede Partei kann diesen Vertrag aus wichtigem Grund ohne Einhaltung einer Kündigungsfrist kündigen, wenn ihr unter Berücksichtigung aller Umstände des Einzelfalls die Fortsetzung des Vertragsverhältnisses bis zum Ablauf der Kündigungsfrist nicht zugemutet werden kann. Die Kündigung bedarf der Schriftform.",
+      "clause_length_chars": 306,
+      "top_score": 9.9943,
+      "top_passage": {
+        "source": "BGB",
+        "section": "§ 314",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "BGB",
+          "section": "§ 314",
+          "score": 9.9943
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 6",
+          "score": 1.2964
+        },
+        {
+          "source": "BGB",
+          "section": "§ 306",
+          "score": 0.9947
+        },
+        {
+          "source": "BGB",
+          "section": "§ 308",
+          "score": 0.7109
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305c",
+          "score": 0.3948
+        }
+      ]
+    },
+    {
+      "clause_id": "termination_cause_long",
+      "clause_type": "TERMINATION",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "Same core content with examples of what constitutes an important reason - still Sec. 314.",
+      "clause_text": "Jede Partei kann diesen Vertrag aus wichtigem Grund ohne Einhaltung einer Kündigungsfrist kündigen, wenn ihr unter Berücksichtigung aller Umstände des Einzelfalls die Fortsetzung des Vertragsverhältnisses bis zum Ablauf der Kündigungsfrist nicht zugemutet werden kann. Die Kündigung bedarf der Schriftform. Ein wichtiger Grund liegt insbesondere vor, wenn eine Partei gegen wesentliche Pflichten aus diesem Vertrag verstößt und diesen Verstoß trotz schriftlicher Abmahnung mit angemessener Fristsetzung nicht behebt, oder wenn über das Vermögen einer Partei ein Insolvenzverfahren eröffnet oder mangels Masse abgelehnt wird.",
+      "clause_length_chars": 624,
+      "top_score": 6.8489,
+      "top_passage": {
+        "source": "BGB",
+        "section": "§ 314",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "BGB",
+          "section": "§ 314",
+          "score": 6.8489
+        },
+        {
+          "source": "BGB",
+          "section": "§ 306",
+          "score": 6.1665
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": 6.1522
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305c",
+          "score": 6.1212
+        },
+        {
+          "source": "BGB",
+          "section": "§ 310",
+          "score": 5.4487
+        }
+      ]
+    },
+    {
+      "clause_id": "liability_limitation_short",
+      "clause_type": "LIABILITY",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "BGB Sec. 276/280 (general fault/damages standard) directly on point.",
+      "clause_text": "Der Auftragnehmer haftet nur für Vorsatz und grobe Fahrlässigkeit.",
+      "clause_length_chars": 66,
+      "top_score": 1.6947,
+      "top_passage": {
+        "source": "BGB",
+        "section": "§ 276",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "BGB",
+          "section": "§ 276",
+          "score": 1.6947
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": -0.6499
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 32",
+          "score": -2.7156
+        },
+        {
+          "source": "BGB",
+          "section": "§ 308",
+          "score": -3.229
+        },
+        {
+          "source": "BGB",
+          "section": "§ 309",
+          "score": -3.232
+        }
+      ]
+    },
+    {
+      "clause_id": "liability_limitation_medium",
+      "clause_type": "LIABILITY",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "Same as short plus a foreseeable-damage cap for slight negligence on cardinal duties - still Sec. 276/280.",
+      "clause_text": "Der Auftragnehmer haftet nur für Vorsatz und grobe Fahrlässigkeit. Für leichte Fahrlässigkeit haftet der Auftragnehmer nur bei Verletzung wesentlicher Vertragspflichten, begrenzt auf den vorhersehbaren, vertragstypischen Schaden.",
+      "clause_length_chars": 229,
+      "top_score": 6.8618,
+      "top_passage": {
+        "source": "BGB",
+        "section": "§ 276",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "BGB",
+          "section": "§ 276",
+          "score": 6.8618
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305b",
+          "score": 3.9892
+        },
+        {
+          "source": "BGB",
+          "section": "§ 280",
+          "score": 3.2337
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": 2.8287
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305c",
+          "score": 2.812
+        }
+      ]
+    },
+    {
+      "clause_id": "liability_limitation_long",
+      "clause_type": "LIABILITY",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "The life/health/gross-negligence carve-out almost exactly mirrors BGB Sec. 309 Nr. 7a's enumerated wording - a specific, not just general, match.",
+      "clause_text": "Der Auftragnehmer haftet nur für Vorsatz und grobe Fahrlässigkeit. Für leichte Fahrlässigkeit haftet der Auftragnehmer nur bei Verletzung wesentlicher Vertragspflichten, begrenzt auf den vorhersehbaren, vertragstypischen Schaden. Die vorstehenden Haftungsbeschränkungen gelten nicht für Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit sowie nicht, soweit der Auftragnehmer Mängel arglistig verschwiegen oder eine Garantie für die Beschaffenheit der Leistung übernommen hat. Die Haftung nach dem Produkthaftungsgesetz bleibt unberührt.",
+      "clause_length_chars": 557,
+      "top_score": 8.6341,
+      "top_passage": {
+        "source": "BGB",
+        "section": "§ 276",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "BGB",
+          "section": "§ 276",
+          "score": 8.6341
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": 5.9171
+        },
+        {
+          "source": "BGB",
+          "section": "§ 280",
+          "score": 5.0915
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 32",
+          "score": 4.6102
+        },
+        {
+          "source": "BGB",
+          "section": "§ 310",
+          "score": 4.2764
+        }
+      ]
+    },
+    {
+      "clause_id": "warranty_remedy_short",
+      "clause_type": "WARRANTY",
+      "coverage_type": "PARTIAL",
+      "expected_sufficient": true,
+      "coverage_note": "BGB Sec. 309 Nr. 8b bb restricts limiting defect remedies to repair/Nacherfüllung alone - real relevance, but whether THIS exact wording is compliant or void is not resolvable from the clause text alone, so PARTIAL not FULL.",
+      "clause_text": "Ansprüche des Auftraggebers wegen Mängeln der Leistung sind auf das Recht zur Nacherfüllung beschränkt.",
+      "clause_length_chars": 103,
+      "top_score": 0.2567,
+      "top_passage": {
+        "source": "BGB",
+        "section": "§ 309",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "BGB",
+          "section": "§ 309",
+          "score": 0.2567
+        },
+        {
+          "source": "BGB",
+          "section": "§ 308",
+          "score": -2.2398
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": -2.6733
+        },
+        {
+          "source": "BGB",
+          "section": "§ 280",
+          "score": -3.0935
+        },
+        {
+          "source": "BGB",
+          "section": "§ 314",
+          "score": -3.9361
+        }
+      ]
+    },
+    {
+      "clause_id": "warranty_remedy_medium",
+      "clause_type": "WARRANTY",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "Adding the fallback Minderung/Rücktritt right after failed Nacherfüllung is exactly the carve-out BGB Sec. 309 Nr. 8b bb requires to remain valid - a specific, not just general, match.",
+      "clause_text": "Ansprüche des Auftraggebers wegen Mängeln der Leistung sind auf das Recht zur Nacherfüllung beschränkt. Schlägt die Nacherfüllung fehl, kann der Auftraggeber die Vergütung mindern oder vom Vertrag zurücktreten.",
+      "clause_length_chars": 210,
+      "top_score": 1.6699,
+      "top_passage": {
+        "source": "BGB",
+        "section": "§ 309",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "BGB",
+          "section": "§ 309",
+          "score": 1.6699
+        },
+        {
+          "source": "BGB",
+          "section": "§ 280",
+          "score": -0.3347
+        },
+        {
+          "source": "BGB",
+          "section": "§ 308",
+          "score": -0.825
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": -0.8967
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305b",
+          "score": -1.1984
+        }
+      ]
+    },
+    {
+      "clause_id": "warranty_remedy_long",
+      "clause_type": "WARRANTY",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "The short defect-notice deadline and shortened limitation period map directly to BGB Sec. 309 Nr. 8b ee/ff (Ausschlussfrist, Verjährungserleichterung).",
+      "clause_text": "Ansprüche des Auftraggebers wegen Mängeln der Leistung sind auf das Recht zur Nacherfüllung beschränkt. Schlägt die Nacherfüllung fehl, kann der Auftraggeber die Vergütung mindern oder vom Vertrag zurücktreten. Offensichtliche Mängel sind dem Auftragnehmer innerhalb von zwei Wochen nach Ablieferung schriftlich anzuzeigen; verdeckte Mängel unverzüglich nach ihrer Entdeckung. Die Verjährungsfrist für Mängelansprüche beträgt zwölf Monate ab Abnahme, soweit gesetzlich zulässig.",
+      "clause_length_chars": 478,
+      "top_score": 3.2711,
+      "top_passage": {
+        "source": "BGB",
+        "section": "§ 305b",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "BGB",
+          "section": "§ 305b",
+          "score": 3.2711
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 5",
+          "score": 2.8657
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 32",
+          "score": 2.7107
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": 2.5197
+        },
+        {
+          "source": "BGB",
+          "section": "§ 309",
+          "score": 2.4878
+        }
+      ]
+    },
+    {
+      "clause_id": "warranty_spec_short",
+      "clause_type": "WARRANTY",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "Describing agreed specifications (not limiting remedies) is not a Klauselverbot topic - no corpus coverage.",
+      "clause_text": "Die Leistungsbeschreibung in Anlage 1 ist maßgeblich für die vereinbarte Beschaffenheit der Leistung.",
+      "clause_length_chars": 101,
+      "top_score": -2.687,
+      "top_passage": {
+        "source": "DSGVO",
+        "section": "Art. 6",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "DSGVO",
+          "section": "Art. 6",
+          "score": -2.687
+        },
+        {
+          "source": "BGB",
+          "section": "§ 310",
+          "score": -3.179
+        },
+        {
+          "source": "BGB",
+          "section": "§ 309",
+          "score": -3.6106
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": -3.8614
+        },
+        {
+          "source": "BGB",
+          "section": "§ 308",
+          "score": -3.9592
+        }
+      ]
+    },
+    {
+      "clause_id": "confidentiality_short",
+      "clause_type": "CONFIDENTIALITY",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "No BGB/DSGVO passage in the corpus addresses confidentiality/trade-secret obligations (GeschGehG is not in the corpus).",
+      "clause_text": "Die Parteien verpflichten sich, alle im Rahmen dieses Vertrages ausgetauschten vertraulichen Informationen streng vertraulich zu behandeln und nicht an Dritte weiterzugeben.",
+      "clause_length_chars": 173,
+      "top_score": -0.4915,
+      "top_passage": {
+        "source": "DSGVO",
+        "section": "Art. 28",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": -0.4915
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 6",
+          "score": -0.8651
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 5",
+          "score": -3.0022
+        },
+        {
+          "source": "BGB",
+          "section": "§ 309",
+          "score": -3.7019
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 32",
+          "score": -3.8492
+        }
+      ]
+    },
+    {
+      "clause_id": "confidentiality_medium",
+      "clause_type": "CONFIDENTIALITY",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "Same as short plus a post-contract duration - still no corpus coverage.",
+      "clause_text": "Die Parteien verpflichten sich, alle im Rahmen dieses Vertrages ausgetauschten vertraulichen Informationen streng vertraulich zu behandeln und nicht an Dritte weiterzugeben. Diese Verpflichtung gilt auch für einen Zeitraum von drei Jahren nach Beendigung dieses Vertrages.",
+      "clause_length_chars": 272,
+      "top_score": 1.4501,
+      "top_passage": {
+        "source": "DSGVO",
+        "section": "Art. 6",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "DSGVO",
+          "section": "Art. 6",
+          "score": 1.4501
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": 0.6856
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 5",
+          "score": -0.0607
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 32",
+          "score": -0.5234
+        },
+        {
+          "source": "BGB",
+          "section": "§ 308",
+          "score": -1.5389
+        }
+      ]
+    },
+    {
+      "clause_id": "confidentiality_long",
+      "clause_type": "CONFIDENTIALITY",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "Same legal content, extended definition of what counts as confidential and carve-outs - coverage does not change; this is the clearest length-hypothesis test since it is genuinely INSUFFICIENT at every length.",
+      "clause_text": "Die Parteien verpflichten sich, alle im Rahmen dieses Vertrages ausgetauschten vertraulichen Informationen streng vertraulich zu behandeln und nicht an Dritte weiterzugeben. Diese Verpflichtung gilt auch für einen Zeitraum von drei Jahren nach Beendigung dieses Vertrages. Als vertraulich gelten alle Informationen, die als solche gekennzeichnet sind oder deren Vertraulichkeit sich aus den Umständen ergibt, insbesondere technisches Know-how, Geschäftsgeheimnisse und Kundendaten. Ausgenommen sind Informationen, die bereits öffentlich bekannt waren oder unabhängig entwickelt wurden.",
+      "clause_length_chars": 585,
+      "top_score": 4.7649,
+      "top_passage": {
+        "source": "DSGVO",
+        "section": "Art. 6",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "DSGVO",
+          "section": "Art. 6",
+          "score": 4.7649
+        },
+        {
+          "source": "BGB",
+          "section": "§ 306",
+          "score": 4.7341
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305",
+          "score": 4.4744
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 32",
+          "score": 4.3447
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 5",
+          "score": 4.0937
+        }
+      ]
+    },
+    {
+      "clause_id": "data_processing_short",
+      "clause_type": "DATA_PROCESSING",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "DSGVO Art. 28/32 directly on point (processor instructions, technical/organizational measures).",
+      "clause_text": "Der Auftragnehmer verarbeitet personenbezogene Daten ausschließlich auf dokumentierte Weisung des Auftraggebers und trifft geeignete technische und organisatorische Maßnahmen zum Schutz dieser Daten.",
+      "clause_length_chars": 199,
+      "top_score": 8.1169,
+      "top_passage": {
+        "source": "DSGVO",
+        "section": "Art. 28",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": 8.1169
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 32",
+          "score": 5.536
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 5",
+          "score": 1.6875
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 6",
+          "score": -0.1732
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305b",
+          "score": -2.2418
+        }
+      ]
+    },
+    {
+      "clause_id": "data_processing_medium",
+      "clause_type": "DATA_PROCESSING",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "Same as short plus a confidentiality-of-staff commitment - still Art. 28.",
+      "clause_text": "Der Auftragnehmer verarbeitet personenbezogene Daten ausschließlich auf dokumentierte Weisung des Auftraggebers und trifft geeignete technische und organisatorische Maßnahmen zum Schutz dieser Daten. Der Auftragnehmer gewährleistet, dass sich die zur Verarbeitung befugten Personen zur Vertraulichkeit verpflichtet haben.",
+      "clause_length_chars": 321,
+      "top_score": 8.1087,
+      "top_passage": {
+        "source": "DSGVO",
+        "section": "Art. 28",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": 8.1087
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 32",
+          "score": 6.4214
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 5",
+          "score": 6.0132
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 6",
+          "score": 3.5498
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305b",
+          "score": 3.4556
+        }
+      ]
+    },
+    {
+      "clause_id": "data_processing_long",
+      "clause_type": "DATA_PROCESSING",
+      "coverage_type": "FULL",
+      "expected_sufficient": true,
+      "coverage_note": "Adds data-subject-rights support and breach notification - directly references DSGVO Art. 33/34, still within the corpus's DSGVO coverage.",
+      "clause_text": "Der Auftragnehmer verarbeitet personenbezogene Daten ausschließlich auf dokumentierte Weisung des Auftraggebers und trifft geeignete technische und organisatorische Maßnahmen zum Schutz dieser Daten. Der Auftragnehmer gewährleistet, dass sich die zur Verarbeitung befugten Personen zur Vertraulichkeit verpflichtet haben. Der Auftragnehmer unterstützt den Auftraggeber bei der Erfüllung von Betroffenenrechten sowie bei der Meldung von Datenschutzverletzungen gemäß Art. 33 und 34 DSGVO und unterzieht sich Kontrollen einschließlich Inspektionen, die vom Auftraggeber durchgeführt werden.",
+      "clause_length_chars": 588,
+      "top_score": 9.8579,
+      "top_passage": {
+        "source": "DSGVO",
+        "section": "Art. 28",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": 9.8579
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 5",
+          "score": 7.3502
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305b",
+          "score": 7.0916
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 6",
+          "score": 6.9003
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 32",
+          "score": 6.8846
+        }
+      ]
+    },
+    {
+      "clause_id": "data_processing_vague",
+      "clause_type": "DATA_PROCESSING",
+      "coverage_type": "AMBIGUOUS",
+      "expected_sufficient": null,
+      "coverage_note": "Too generic to confidently map to Art. 28/32's specific processor obligations, but topically in the DSGVO domain the corpus does cover - a reasonable annotator could go either way.",
+      "clause_text": "Die Parteien beachten bei der Durchführung dieses Vertrages die geltenden datenschutzrechtlichen Bestimmungen.",
+      "clause_length_chars": 110,
+      "top_score": 1.7162,
+      "top_passage": {
+        "source": "DSGVO",
+        "section": "Art. 6",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "DSGVO",
+          "section": "Art. 6",
+          "score": 1.7162
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": 0.6262
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 32",
+          "score": -1.2838
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 5",
+          "score": -1.9684
+        },
+        {
+          "source": "BGB",
+          "section": "§ 309",
+          "score": -3.5509
+        }
+      ]
+    },
+    {
+      "clause_id": "non_compete_short",
+      "clause_type": "NON_COMPETE",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "Would need Sec. 74 HGB or Sec. 138 BGB (Sittenwidrigkeit) - neither is in the corpus.",
+      "clause_text": "Der Auftragnehmer verpflichtet sich, für die Dauer von zwei Jahren nach Beendigung dieses Vertrages keine Konkurrenztätigkeit auszuüben.",
+      "clause_length_chars": 136,
+      "top_score": -0.9854,
+      "top_passage": {
+        "source": "DSGVO",
+        "section": "Art. 28",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": -0.9854
+        },
+        {
+          "source": "BGB",
+          "section": "§ 309",
+          "score": -1.9734
+        },
+        {
+          "source": "BGB",
+          "section": "§ 308",
+          "score": -3.0852
+        },
+        {
+          "source": "BGB",
+          "section": "§ 310",
+          "score": -4.0753
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 32",
+          "score": -4.8511
+        }
+      ]
+    },
+    {
+      "clause_id": "non_compete_long",
+      "clause_type": "NON_COMPETE",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "Same legal content, extended with geographic scope and penalty language - still no corpus coverage regardless of length.",
+      "clause_text": "Der Auftragnehmer verpflichtet sich, für die Dauer von zwei Jahren nach Beendigung dieses Vertrages keine Konkurrenztätigkeit auszuüben. Dieses Wettbewerbsverbot gilt räumlich für das Gebiet der Bundesrepublik Deutschland und umfasst insbesondere die Anbahnung von Geschäftsbeziehungen zu Kunden, mit denen der Auftragnehmer während der Vertragslaufzeit in Kontakt stand. Für jeden Verstoß ist eine Vertragsstrafe in Höhe von 25.000 EUR zu zahlen.",
+      "clause_length_chars": 447,
+      "top_score": 0.0727,
+      "top_passage": {
+        "source": "DSGVO",
+        "section": "Art. 28",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": 0.0727
+        },
+        {
+          "source": "BGB",
+          "section": "§ 308",
+          "score": -0.5115
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 32",
+          "score": -0.717
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305b",
+          "score": -1.2194
+        },
+        {
+          "source": "BGB",
+          "section": "§ 309",
+          "score": -1.2714
+        }
+      ]
+    },
+    {
+      "clause_id": "non_compete_lexical_trap",
+      "clause_type": "NON_COMPETE",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "Adversarial case: heavy use of 'Kündigung'/'Vertrag' vocabulary that lexically overlaps with BGB Sec. 314 (termination), even though the actual legal question - post-contractual competition restriction - has no corpus coverage at all. Tests whether retrieval is fooled by lexical overlap into a false SUFFICIENT.",
+      "clause_text": "Nach Kündigung dieses Vertrages ist es dem Auftragnehmer für die Dauer von zwei Jahren untersagt, in Konkurrenz zum Auftraggeber tätig zu werden oder Kunden des Auftraggebers abzuwerben, unabhängig davon, aus welchem Grund die Kündigung dieses Vertrages erfolgt ist.",
+      "clause_length_chars": 266,
+      "top_score": 1.5851,
+      "top_passage": {
+        "source": "BGB",
+        "section": "§ 305b",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "BGB",
+          "section": "§ 305b",
+          "score": 1.5851
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": 0.1582
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305c",
+          "score": -0.0074
+        },
+        {
+          "source": "BGB",
+          "section": "§ 308",
+          "score": -0.3804
+        },
+        {
+          "source": "BGB",
+          "section": "§ 309",
+          "score": -0.4558
+        }
+      ]
+    },
+    {
+      "clause_id": "ip_assignment_short",
+      "clause_type": "INTELLECTUAL_PROPERTY",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "UrhG is not in the corpus - no coverage.",
+      "clause_text": "Sämtliche im Rahmen dieses Vertrages entstehenden Urheberrechte und sonstigen Schutzrechte stehen dem Auftraggeber zu.",
+      "clause_length_chars": 118,
+      "top_score": -0.2391,
+      "top_passage": {
+        "source": "DSGVO",
+        "section": "Art. 28",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": -0.2391
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 6",
+          "score": -2.0906
+        },
+        {
+          "source": "BGB",
+          "section": "§ 309",
+          "score": -2.7974
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 32",
+          "score": -3.5828
+        },
+        {
+          "source": "BGB",
+          "section": "§ 310",
+          "score": -3.8317
+        }
+      ]
+    },
+    {
+      "clause_id": "ip_assignment_long",
+      "clause_type": "INTELLECTUAL_PROPERTY",
+      "coverage_type": "INSUFFICIENT",
+      "expected_sufficient": false,
+      "coverage_note": "Same legal content, extended with usage-rights and pre-existing-IP carve-out language - still no corpus coverage.",
+      "clause_text": "Sämtliche im Rahmen dieses Vertrages entstehenden Urheberrechte und sonstigen Schutzrechte stehen dem Auftraggeber zu. Der Auftragnehmer räumt dem Auftraggeber an bereits vor Vertragsbeginn bestehenden Schutzrechten ein einfaches, zeitlich und räumlich unbeschränktes Nutzungsrecht ein, soweit dies zur Nutzung der Vertragsleistung erforderlich ist. Rechte Dritter bleiben hiervon unberührt.",
+      "clause_length_chars": 391,
+      "top_score": 2.2561,
+      "top_passage": {
+        "source": "DSGVO",
+        "section": "Art. 6",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "DSGVO",
+          "section": "Art. 6",
+          "score": 2.2561
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 32",
+          "score": 1.2093
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": 0.9966
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305b",
+          "score": 0.6899
+        },
+        {
+          "source": "BGB",
+          "section": "§ 310",
+          "score": 0.4168
+        }
+      ]
+    },
+    {
+      "clause_id": "hybrid_liability_warranty",
+      "clause_type": "LIABILITY",
+      "coverage_type": "AMBIGUOUS",
+      "expected_sufficient": null,
+      "coverage_note": "Mixes a liability exclusion (clearly covered, Sec. 276/280/309 Nr.7) with a warranty-period shortening (also covered, Sec. 309 Nr.8b ff) in one paragraph - genuinely covered content, but classifying which single corpus passage 'is the' evidence is ambiguous, and the clause also touches on Vertragsstrafe fairness (Sec. 309 Nr.6), making this a defensible edge case rather than a clean FULL/PARTIAL call.",
+      "clause_text": "Die Haftung des Auftragnehmers ist auf Vorsatz und grobe Fahrlässigkeit beschränkt; die Verjährungsfrist für Mängelansprüche beträgt abweichend von der gesetzlichen Regelung sechs Monate ab Ablieferung, und für jeden Fall einer schuldhaften Pflichtverletzung ist eine Vertragsstrafe von 5.000 EUR zu zahlen.",
+      "clause_length_chars": 307,
+      "top_score": 0.2842,
+      "top_passage": {
+        "source": "BGB",
+        "section": "§ 276",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "BGB",
+          "section": "§ 276",
+          "score": 0.2842
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": -0.7268
+        },
+        {
+          "source": "BGB",
+          "section": "§ 309",
+          "score": -1.6785
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 6",
+          "score": -1.9682
+        },
+        {
+          "source": "BGB",
+          "section": "§ 308",
+          "score": -2.0685
+        }
+      ]
+    },
+    {
+      "clause_id": "vague_risk_allocation",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "AMBIGUOUS",
+      "expected_sufficient": null,
+      "coverage_note": "Extremely generic risk-allocation language - could be read as invoking Sec. 276's fault standard, or as too vague to map to any specific passage. A reasonable annotator could defensibly go either way.",
+      "clause_text": "Jede Partei trägt das Risiko für die von ihr zu vertretenden Umstände.",
+      "clause_length_chars": 70,
+      "top_score": -2.5739,
+      "top_passage": {
+        "source": "DSGVO",
+        "section": "Art. 32",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "DSGVO",
+          "section": "Art. 32",
+          "score": -2.5739
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 6",
+          "score": -2.5843
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": -3.751
+        },
+        {
+          "source": "BGB",
+          "section": "§ 309",
+          "score": -4.5968
+        },
+        {
+          "source": "BGB",
+          "section": "§ 308",
+          "score": -4.9258
+        }
+      ]
+    },
+    {
+      "clause_id": "jurisdiction_only",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "AMBIGUOUS",
+      "expected_sufficient": null,
+      "coverage_note": "A bare choice-of-law clause with no severability/incorporation content. Choice-of-law clauses in AGB can in principle be subject to Sec. 307 fairness control, but this single sentence has too little content to confidently say the corpus's AGB-control passages are 'the' relevant evidence versus irrelevant.",
+      "clause_text": "Es gilt das Recht der Bundesrepublik Deutschland.",
+      "clause_length_chars": 49,
+      "top_score": -1.3705,
+      "top_passage": {
+        "source": "DSGVO",
+        "section": "Art. 6",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "DSGVO",
+          "section": "Art. 6",
+          "score": -1.3705
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": -2.4478
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305b",
+          "score": -3.5551
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305",
+          "score": -3.9263
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 32",
+          "score": -3.9845
+        }
+      ]
+    },
+    {
+      "clause_id": "schriftform_clause",
+      "clause_type": "GENERAL_TERMS",
+      "coverage_type": "AMBIGUOUS",
+      "expected_sufficient": null,
+      "coverage_note": "BGB Sec. 309 Nr.13 addresses form requirements for declarations TO the user (Verwender), not general contract-modification form clauses - close enough that a careless read might call it covered, but not actually the same rule. A genuinely close call.",
+      "clause_text": "Änderungen und Ergänzungen dieses Vertrages bedürfen der Schriftform.",
+      "clause_length_chars": 69,
+      "top_score": 0.2375,
+      "top_passage": {
+        "source": "DSGVO",
+        "section": "Art. 28",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": 0.2375
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305",
+          "score": -2.6405
+        },
+        {
+          "source": "DSGVO",
+          "section": "Art. 6",
+          "score": -2.8866
+        },
+        {
+          "source": "BGB",
+          "section": "§ 309",
+          "score": -3.1101
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305b",
+          "score": -3.1827
+        }
+      ]
+    },
+    {
+      "clause_id": "penalty_for_confidentiality_breach",
+      "clause_type": "CONFIDENTIALITY",
+      "coverage_type": "PARTIAL",
+      "expected_sufficient": true,
+      "coverage_note": "The underlying confidentiality obligation itself has no corpus coverage, but the Vertragsstrafe (contractual penalty) mechanism for breaching it is specifically addressed by BGB Sec. 309 Nr. 6 - a real but narrow legal basis that covers the penalty clause, not the confidentiality duty it attaches to. A nuanced case showing topic-label coverage and mechanism coverage can diverge.",
+      "clause_text": "Der Auftragnehmer zahlt eine Vertragsstrafe von 10.000 EUR für jeden Fall der schuldhaften Verletzung der Verschwiegenheitspflicht.",
+      "clause_length_chars": 131,
+      "top_score": -3.3715,
+      "top_passage": {
+        "source": "DSGVO",
+        "section": "Art. 28",
+        "method": "hybrid_rrf_reranked"
+      },
+      "retrieved_evidence": [
+        {
+          "source": "DSGVO",
+          "section": "Art. 28",
+          "score": -3.3715
+        },
+        {
+          "source": "BGB",
+          "section": "§ 309",
+          "score": -3.8985
+        },
+        {
+          "source": "BGB",
+          "section": "§ 308",
+          "score": -4.9119
+        },
+        {
+          "source": "BGB",
+          "section": "§ 314",
+          "score": -5.4198
+        },
+        {
+          "source": "BGB",
+          "section": "§ 305c",
+          "score": -5.6354
+        }
+      ]
+    }
+  ]
+}

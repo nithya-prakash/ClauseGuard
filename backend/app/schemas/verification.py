@@ -12,6 +12,7 @@ class EvidenceSufficiencyResult(BaseModel):
     status: EvidenceStatus
     reason: str | None
     top_score: float | None
+    adjusted_score: float | None
     evidence: list[RetrievedPassage]
 
 

@@ -1,5 +1,5 @@
 {
-  "evaluated_at": "2026-09-20T15:24:23.325115+00:00",
+  "evaluated_at": "2026-09-20T19:43:23.886051+00:00",
   "contract": "data/benchmark/segmentation/sample_contract_de.pdf",
   "clause_count": 10,
   "components": {
@@ -14,7 +14,7 @@
       "model": "lora-distilbert-multilingual-v1 (falls back to baseline if untrained)"
     },
     "evidence_sufficiency": {
-      "accuracy": 0.3,
+      "accuracy": 0.6,
       "conclusive_clauses": 10,
       "inconclusive_clauses": 0,
       "note": "Measures whether the sufficiency gate's SUFFICIENT/INSUFFICIENT decision matches human judgment of real corpus coverage (data/benchmark/end_to_end/ground_truth.json). This is the Milestone 10 finding, now a real measured number."
@@ -22,7 +22,7 @@
     "reasoning": {
       "status": "NOT_MEASURED",
       "reason": "No ANTHROPIC_API_KEY configured in this environment - the LLM was never called. See reports/reasoning/report.md.",
-      "clauses_that_would_have_reached_llm": 9
+      "clauses_that_would_have_reached_llm": 4
     },
     "citation_verification": {
       "status": "NOT_MEASURED",
@@ -45,9 +45,9 @@
       "predicted_clause_type": "PAYMENT",
       "classification_correct": false,
       "expected_corpus_covered": false,
-      "actual_sufficient": true,
-      "reasoning_status": null,
-      "reasoning_error": "Set LLM_PROVIDER=anthropic and ANTHROPIC_API_KEY to enable the reasoning stage. Evidence sufficiency and retrieval work without it; this clause has sufficient evidence but no configured LLM to reason with it."
+      "actual_sufficient": false,
+      "reasoning_status": "INSUFFICIENT_EVIDENCE",
+      "reasoning_error": null
     },
     {
       "position": 2,
@@ -56,9 +56,9 @@
       "predicted_clause_type": "PAYMENT",
       "classification_correct": true,
       "expected_corpus_covered": false,
-      "actual_sufficient": true,
-      "reasoning_status": null,
-      "reasoning_error": "Set LLM_PROVIDER=anthropic and ANTHROPIC_API_KEY to enable the reasoning stage. Evidence sufficiency and retrieval work without it; this clause has sufficient evidence but no configured LLM to reason with it."
+      "actual_sufficient": false,
+      "reasoning_status": "INSUFFICIENT_EVIDENCE",
+      "reasoning_error": null
     },
     {
       "position": 3,
@@ -67,9 +67,9 @@
       "predicted_clause_type": "TERMINATION",
       "classification_correct": true,
       "expected_corpus_covered": true,
-      "actual_sufficient": true,
-      "reasoning_status": null,
-      "reasoning_error": "Set LLM_PROVIDER=anthropic and ANTHROPIC_API_KEY to enable the reasoning stage. Evidence sufficiency and retrieval work without it; this clause has sufficient evidence but no configured LLM to reason with it."
+      "actual_sufficient": false,
+      "reasoning_status": "INSUFFICIENT_EVIDENCE",
+      "reasoning_error": null
     },
     {
       "position": 4,
@@ -122,9 +122,9 @@
       "predicted_clause_type": "NON_COMPETE",
       "classification_correct": true,
       "expected_corpus_covered": false,
-      "actual_sufficient": true,
-      "reasoning_status": null,
-      "reasoning_error": "Set LLM_PROVIDER=anthropic and ANTHROPIC_API_KEY to enable the reasoning stage. Evidence sufficiency and retrieval work without it; this clause has sufficient evidence but no configured LLM to reason with it."
+      "actual_sufficient": false,
+      "reasoning_status": "INSUFFICIENT_EVIDENCE",
+      "reasoning_error": null
     },
     {
       "position": 9,
@@ -133,9 +133,9 @@
       "predicted_clause_type": "INTELLECTUAL_PROPERTY",
       "classification_correct": true,
       "expected_corpus_covered": false,
-      "actual_sufficient": true,
-      "reasoning_status": null,
-      "reasoning_error": "Set LLM_PROVIDER=anthropic and ANTHROPIC_API_KEY to enable the reasoning stage. Evidence sufficiency and retrieval work without it; this clause has sufficient evidence but no configured LLM to reason with it."
+      "actual_sufficient": false,
+      "reasoning_status": "INSUFFICIENT_EVIDENCE",
+      "reasoning_error": null
     },
     {
       "position": 10,

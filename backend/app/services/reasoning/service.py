@@ -21,7 +21,7 @@ def assess_clause(
     basis - the system decides this deterministically instead).
     """
     candidates = retrieve_and_rerank(client, clause_text)
-    sufficiency = check_evidence_sufficiency(candidates)
+    sufficiency = check_evidence_sufficiency(candidates, clause_length=len(clause_text))
 
     if sufficiency.status == "INSUFFICIENT_EVIDENCE":
         return ReasoningResult(
