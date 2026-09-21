@@ -20,7 +20,7 @@ Build in progress. See commit history / project memory for milestone-by-mileston
 - [x] Milestone 7 — Cross-encoder reranking
 - [x] Milestone 8 — Evidence sufficiency + citation verification
 - [x] Milestone 9 — LLM structured reasoning
-- [ ] Milestone 10 — End-to-end pipeline
+- [x] Milestone 10 — End-to-end pipeline
 - [ ] Milestone 11 — Evaluation suite
 - [ ] Milestone 12 — Frontend
 - [ ] Milestone 13 — PDF report
@@ -164,6 +164,49 @@ citation verification (Milestone 8) → `ReasoningResult`.
 - A live-call test (`test_reasoning_client.py`) is written and ready,
   gated on `ANTHROPIC_API_KEY` being set — `SKIPPED` today, not deleted or faked.
 
+## End-to-end pipeline (Milestone 10)
+
+[`analyze_document()`](backend/app/services/pipeline/document_analysis.py)
+wires every stage together: ingest → normalize → segment → *(per clause)*
+classify (LoRA, falling back to the baseline if untrained) → retrieve +
+rerank → evidence sufficiency → LLM reasoning → citation verification. A
+clause-level failure (no configured LLM, no trained classifier) is recorded
+on that clause and does not abort the rest of the document — pipeline
+failures retain partial progress rather than losing everything to one
+stage's failure.
+
+**A real finding from running this on the full benchmark contract (10
+clauses, [data/benchmark/segmentation](data/benchmark/segmentation)),
+worth stating plainly rather than glossing over:** the evidence-sufficiency
+threshold (Milestone 8) was calibrated on short natural-language queries,
+where it cleanly separated relevant from off-topic. On realistic
+full-paragraph clause text it is measurably more permissive — **9 of 10
+clauses in the benchmark contract pass the sufficiency check**, even though
+manual inspection shows the corpus has direct legal coverage for only
+**4 of 10** of this contract's clause categories (LIABILITY, TERMINATION,
+DATA_PROCESSING, and partially GENERAL_TERMS). For example, the genuine
+`§ 8 Wettbewerbsverbot` (non-compete) clause — a category the corpus does
+not cover at all — scored **0.88** against `DSGVO Art. 6`, comfortably
+above the `0.0` threshold, despite Art. 6 (lawfulness of data processing)
+having no real bearing on a non-compete clause. `§ 10` (general terms) was
+the one clause correctly gated to `INSUFFICIENT_EVIDENCE`.
+
+This is **not silently patched** by picking a new threshold that happens to
+fit these 10 examples — that would be overfitting to a tiny sample, the
+same mistake the anti-fabrication policy exists to prevent. It's recorded
+here as a real, measured limitation and a concrete next step: the
+sufficiency threshold needs its own calibration benchmark built from
+full-length clause text (not short queries), with a proper held-out split —
+see "Recommended next engineering step" at the bottom of this README.
+
+Reproduce (from the host): `docker compose up -d qdrant &&
+QDRANT_URL=http://localhost:6339 python -c "from pathlib import Path; from
+qdrant_client import QdrantClient; from
+app.services.pipeline.document_analysis import analyze_document;
+print(analyze_document(Path('data/benchmark/segmentation/sample_contract_de.pdf'),
+QdrantClient(url='http://localhost:6339')))"` (run from `backend/` or with
+`PYTHONPATH=backend`).
+
 ## Clause classification (Milestone 3: baseline)
 
 - 10-label taxonomy: LIABILITY, TERMINATION, PAYMENT, DATA_PROCESSING,
@@ -247,3 +290,32 @@ a real legal basis, until the corpus is extended.
 Contract text is never sent to an external LLM API unless `LLM_PROVIDER=anthropic` and
 `ANTHROPIC_API_KEY` are explicitly set. With no key configured, the reasoning stage
 reports itself as `NOT_CONFIGURED` rather than fabricating output.
+
+## Known limitations & recommended next engineering step
+
+This section will grow as more milestones land (full structure per spec is
+Milestone 15). Current honest limitations, most actionable first:
+
+1. **Evidence-sufficiency threshold needs a clause-length calibration
+   benchmark.** Documented in detail in "End-to-end pipeline" above: the
+   current threshold (calibrated on short queries) is measurably too
+   permissive on full-paragraph clause text. Next step: build a benchmark
+   of full-length clause examples (covered and deliberately uncovered
+   categories) with a proper held-out split, and recalibrate against that
+   instead of short queries.
+2. **Legal corpus has gaps.** No BGB provisions fetched yet for
+   confidentiality or payment-term-specific clauses (Milestone 5). Clauses
+   in those categories should mostly hit `INSUFFICIENT_EVIDENCE` today, but
+   see limitation 1 - the threshold gap means some will not.
+3. **No `ANTHROPIC_API_KEY` configured in this environment** - the
+   reasoning stage is fully built and tested for its gating behavior, but
+   has not produced a single real reasoning result yet. Milestones 11
+   (evaluation suite) and 16 (hallucination/faithfulness testing) cannot
+   produce real reasoning/citation-accuracy numbers without one - they will
+   report `NOT MEASURED` rather than fabricate results.
+4. **LoRA classifier is imperfect** (macro F1 0.59 on a 20-example test
+   set) - observed in practice during the Milestone 10 end-to-end run: a
+   genuine `§ 4 Haftung` (LIABILITY) clause was misclassified as
+   NON_COMPETE. This did not affect evidence retrieval (which operates on
+   the clause text, not the classification label), but would affect the
+   classification label reported to a user.
