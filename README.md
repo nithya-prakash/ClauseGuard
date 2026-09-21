@@ -1,5 +1,7 @@
 # ClauseGuard
 
+[![CI](https://github.com/nithya-prakash/ClauseGuard/actions/workflows/ci.yml/badge.svg)](https://github.com/nithya-prakash/ClauseGuard/actions/workflows/ci.yml)
+
 AI-assisted first-pass compliance/risk analysis for German contracts.
 
 ![ClauseGuard demo](docs/demo.gif)
@@ -135,8 +137,7 @@ Real problems found by actually running the system, not glossed over:
 - The async job path is real and tested but the frontend doesn't use it yet
   (still calls the synchronous endpoint).
 - No Playwright end-to-end suite (Vitest tests mock the API layer); rate limiting is
-  per-process only; CI is authored and locally verified but has not run on a real
-  GitHub Actions runner.
+  per-process only (not shared across replicas).
 
 Full detail on all of the above — architecture rationale, security hardening,
 environment variables, fine-tuning/retrieval methodology, and the complete
