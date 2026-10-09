@@ -1,0 +1,692 @@
+{
+  "evaluated_at": "2026-10-09T10:27:23.806250+00:00",
+  "summary": {
+    "contracts": 5,
+    "clauses": 63,
+    "labelled_clauses_not_found_by_segmenter": 0,
+    "lora": {
+      "accuracy": 0.556,
+      "accuracy_ci95": [
+        0.433,
+        0.672
+      ],
+      "macro_f1": 0.546,
+      "per_class_f1": {
+        "LIABILITY": 0.533,
+        "TERMINATION": 0.667,
+        "PAYMENT": 0.75,
+        "DATA_PROCESSING": 0.571,
+        "CONFIDENTIALITY": 0.4,
+        "NON_COMPETE": 0.769,
+        "INTELLECTUAL_PROPERTY": 0.75,
+        "WARRANTY": 0.667,
+        "GENERAL_TERMS": 0.353,
+        "OTHER": 0.0
+      }
+    },
+    "baseline": {
+      "accuracy": 0.619,
+      "accuracy_ci95": [
+        0.496,
+        0.729
+      ],
+      "macro_f1": 0.632,
+      "per_class_f1": {
+        "LIABILITY": 0.769,
+        "TERMINATION": 0.615,
+        "PAYMENT": 0.714,
+        "DATA_PROCESSING": 0.923,
+        "CONFIDENTIALITY": 0.8,
+        "NON_COMPETE": 0.667,
+        "INTELLECTUAL_PROPERTY": 0.545,
+        "WARRANTY": 0.545,
+        "GENERAL_TERMS": 0.471,
+        "OTHER": 0.267
+      }
+    },
+    "evidence_sufficiency": {
+      "accuracy": 0.794,
+      "accuracy_ci95": [
+        0.678,
+        0.875
+      ],
+      "conclusive": 63,
+      "inconclusive": 0,
+      "covered_clauses": 22
+    },
+    "segmentation": {
+      "contracts_exact": 4,
+      "of": 5
+    },
+    "training_overlap": {
+      "method": "max cosine similarity of char 3-5-gram TF-IDF vs the 120 training clauses",
+      "threshold": 0.6,
+      "clauses_over_threshold": 10,
+      "max_similarity": 0.888,
+      "mean_max_similarity": 0.407
+    },
+    "excluding_high_overlap_clauses": {
+      "clauses": 53,
+      "lora_accuracy": 0.528,
+      "baseline_accuracy": 0.566
+    },
+    "label_counts": {
+      "LIABILITY": 5,
+      "TERMINATION": 5,
+      "PAYMENT": 8,
+      "DATA_PROCESSING": 6,
+      "CONFIDENTIALITY": 5,
+      "NON_COMPETE": 6,
+      "INTELLECTUAL_PROPERTY": 5,
+      "WARRANTY": 4,
+      "GENERAL_TERMS": 11,
+      "OTHER": 8
+    }
+  },
+  "segmentation": [
+    {
+      "contract": "original_dienstleistungsvertrag",
+      "expected": 10,
+      "predicted": 10,
+      "sections_match": true
+    },
+    {
+      "contract": "kaufvertrag_maschine",
+      "expected": 13,
+      "predicted": 14,
+      "sections_match": false
+    },
+    {
+      "contract": "arbeitsvertrag_entwickler",
+      "expected": 13,
+      "predicted": 13,
+      "sections_match": true
+    },
+    {
+      "contract": "saas_nutzungsvertrag",
+      "expected": 13,
+      "predicted": 13,
+      "sections_match": true
+    },
+    {
+      "contract": "agenturvertrag_marketing",
+      "expected": 14,
+      "predicted": 14,
+      "sections_match": true
+    }
+  ],
+  "per_clause": [
+    {
+      "contract": "original_dienstleistungsvertrag",
+      "section": "§ 1",
+      "expected_type": "GENERAL_TERMS",
+      "lora_type": "PAYMENT",
+      "baseline_type": "DATA_PROCESSING",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "original_dienstleistungsvertrag",
+      "section": "§ 2",
+      "expected_type": "PAYMENT",
+      "lora_type": "PAYMENT",
+      "baseline_type": "PAYMENT",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "original_dienstleistungsvertrag",
+      "section": "§ 3",
+      "expected_type": "TERMINATION",
+      "lora_type": "TERMINATION",
+      "baseline_type": "TERMINATION",
+      "expected_covered": true,
+      "sufficient": false
+    },
+    {
+      "contract": "original_dienstleistungsvertrag",
+      "section": "§ 4",
+      "expected_type": "LIABILITY",
+      "lora_type": "NON_COMPETE",
+      "baseline_type": "LIABILITY",
+      "expected_covered": true,
+      "sufficient": true
+    },
+    {
+      "contract": "original_dienstleistungsvertrag",
+      "section": "§ 5",
+      "expected_type": "WARRANTY",
+      "lora_type": "WARRANTY",
+      "baseline_type": "WARRANTY",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "original_dienstleistungsvertrag",
+      "section": "§ 6",
+      "expected_type": "CONFIDENTIALITY",
+      "lora_type": "CONFIDENTIALITY",
+      "baseline_type": "CONFIDENTIALITY",
+      "expected_covered": false,
+      "sufficient": true
+    },
+    {
+      "contract": "original_dienstleistungsvertrag",
+      "section": "§ 7",
+      "expected_type": "DATA_PROCESSING",
+      "lora_type": "DATA_PROCESSING",
+      "baseline_type": "DATA_PROCESSING",
+      "expected_covered": true,
+      "sufficient": true
+    },
+    {
+      "contract": "original_dienstleistungsvertrag",
+      "section": "§ 8",
+      "expected_type": "NON_COMPETE",
+      "lora_type": "NON_COMPETE",
+      "baseline_type": "OTHER",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "original_dienstleistungsvertrag",
+      "section": "§ 9",
+      "expected_type": "INTELLECTUAL_PROPERTY",
+      "lora_type": "INTELLECTUAL_PROPERTY",
+      "baseline_type": "INTELLECTUAL_PROPERTY",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "original_dienstleistungsvertrag",
+      "section": "§ 10",
+      "expected_type": "GENERAL_TERMS",
+      "lora_type": "GENERAL_TERMS",
+      "baseline_type": "GENERAL_TERMS",
+      "expected_covered": true,
+      "sufficient": false
+    },
+    {
+      "contract": "kaufvertrag_maschine",
+      "section": "§ 1",
+      "expected_type": "GENERAL_TERMS",
+      "lora_type": "WARRANTY",
+      "baseline_type": "WARRANTY",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "kaufvertrag_maschine",
+      "section": "§ 2",
+      "expected_type": "PAYMENT",
+      "lora_type": "PAYMENT",
+      "baseline_type": "WARRANTY",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "kaufvertrag_maschine",
+      "section": "§ 3",
+      "expected_type": "OTHER",
+      "lora_type": "WARRANTY",
+      "baseline_type": "WARRANTY",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "kaufvertrag_maschine",
+      "section": "§ 4",
+      "expected_type": "OTHER",
+      "lora_type": "LIABILITY",
+      "baseline_type": "INTELLECTUAL_PROPERTY",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "kaufvertrag_maschine",
+      "section": "§ 5",
+      "expected_type": "WARRANTY",
+      "lora_type": "WARRANTY",
+      "baseline_type": "WARRANTY",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "kaufvertrag_maschine",
+      "section": "§ 6",
+      "expected_type": "LIABILITY",
+      "lora_type": "LIABILITY",
+      "baseline_type": "LIABILITY",
+      "expected_covered": true,
+      "sufficient": true
+    },
+    {
+      "contract": "kaufvertrag_maschine",
+      "section": "§ 7",
+      "expected_type": "PAYMENT",
+      "lora_type": "LIABILITY",
+      "baseline_type": "PAYMENT",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "kaufvertrag_maschine",
+      "section": "§ 8",
+      "expected_type": "TERMINATION",
+      "lora_type": "NON_COMPETE",
+      "baseline_type": "GENERAL_TERMS",
+      "expected_covered": true,
+      "sufficient": true
+    },
+    {
+      "contract": "kaufvertrag_maschine",
+      "section": "§ 9",
+      "expected_type": "CONFIDENTIALITY",
+      "lora_type": "CONFIDENTIALITY",
+      "baseline_type": "CONFIDENTIALITY",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "kaufvertrag_maschine",
+      "section": "§ 10",
+      "expected_type": "DATA_PROCESSING",
+      "lora_type": "DATA_PROCESSING",
+      "baseline_type": "DATA_PROCESSING",
+      "expected_covered": true,
+      "sufficient": false
+    },
+    {
+      "contract": "kaufvertrag_maschine",
+      "section": "§ 11",
+      "expected_type": "NON_COMPETE",
+      "lora_type": "NON_COMPETE",
+      "baseline_type": "OTHER",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "kaufvertrag_maschine",
+      "section": "§ 12",
+      "expected_type": "GENERAL_TERMS",
+      "lora_type": "GENERAL_TERMS",
+      "baseline_type": "GENERAL_TERMS",
+      "expected_covered": true,
+      "sufficient": false
+    },
+    {
+      "contract": "kaufvertrag_maschine",
+      "section": "§ 13",
+      "expected_type": "OTHER",
+      "lora_type": "GENERAL_TERMS",
+      "baseline_type": "GENERAL_TERMS",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "arbeitsvertrag_entwickler",
+      "section": "§ 1",
+      "expected_type": "GENERAL_TERMS",
+      "lora_type": "DATA_PROCESSING",
+      "baseline_type": "TERMINATION",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "arbeitsvertrag_entwickler",
+      "section": "§ 2",
+      "expected_type": "PAYMENT",
+      "lora_type": "PAYMENT",
+      "baseline_type": "PAYMENT",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "arbeitsvertrag_entwickler",
+      "section": "§ 3",
+      "expected_type": "TERMINATION",
+      "lora_type": "TERMINATION",
+      "baseline_type": "TERMINATION",
+      "expected_covered": true,
+      "sufficient": false
+    },
+    {
+      "contract": "arbeitsvertrag_entwickler",
+      "section": "§ 4",
+      "expected_type": "OTHER",
+      "lora_type": "LIABILITY",
+      "baseline_type": "LIABILITY",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "arbeitsvertrag_entwickler",
+      "section": "§ 5",
+      "expected_type": "CONFIDENTIALITY",
+      "lora_type": "LIABILITY",
+      "baseline_type": "CONFIDENTIALITY",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "arbeitsvertrag_entwickler",
+      "section": "§ 6",
+      "expected_type": "NON_COMPETE",
+      "lora_type": "NON_COMPETE",
+      "baseline_type": "INTELLECTUAL_PROPERTY",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "arbeitsvertrag_entwickler",
+      "section": "§ 7",
+      "expected_type": "NON_COMPETE",
+      "lora_type": "NON_COMPETE",
+      "baseline_type": "NON_COMPETE",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "arbeitsvertrag_entwickler",
+      "section": "§ 8",
+      "expected_type": "INTELLECTUAL_PROPERTY",
+      "lora_type": "INTELLECTUAL_PROPERTY",
+      "baseline_type": "INTELLECTUAL_PROPERTY",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "arbeitsvertrag_entwickler",
+      "section": "§ 9",
+      "expected_type": "DATA_PROCESSING",
+      "lora_type": "DATA_PROCESSING",
+      "baseline_type": "DATA_PROCESSING",
+      "expected_covered": true,
+      "sufficient": true
+    },
+    {
+      "contract": "arbeitsvertrag_entwickler",
+      "section": "§ 10",
+      "expected_type": "LIABILITY",
+      "lora_type": "LIABILITY",
+      "baseline_type": "LIABILITY",
+      "expected_covered": true,
+      "sufficient": false
+    },
+    {
+      "contract": "arbeitsvertrag_entwickler",
+      "section": "§ 11",
+      "expected_type": "OTHER",
+      "lora_type": "DATA_PROCESSING",
+      "baseline_type": "OTHER",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "arbeitsvertrag_entwickler",
+      "section": "§ 12",
+      "expected_type": "GENERAL_TERMS",
+      "lora_type": "CONFIDENTIALITY",
+      "baseline_type": "GENERAL_TERMS",
+      "expected_covered": true,
+      "sufficient": false
+    },
+    {
+      "contract": "arbeitsvertrag_entwickler",
+      "section": "§ 13",
+      "expected_type": "GENERAL_TERMS",
+      "lora_type": "GENERAL_TERMS",
+      "baseline_type": "GENERAL_TERMS",
+      "expected_covered": true,
+      "sufficient": true
+    },
+    {
+      "contract": "saas_nutzungsvertrag",
+      "section": "§ 1",
+      "expected_type": "GENERAL_TERMS",
+      "lora_type": "DATA_PROCESSING",
+      "baseline_type": "OTHER",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "saas_nutzungsvertrag",
+      "section": "§ 2",
+      "expected_type": "PAYMENT",
+      "lora_type": "PAYMENT",
+      "baseline_type": "PAYMENT",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "saas_nutzungsvertrag",
+      "section": "§ 3",
+      "expected_type": "PAYMENT",
+      "lora_type": "PAYMENT",
+      "baseline_type": "TERMINATION",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "saas_nutzungsvertrag",
+      "section": "§ 4",
+      "expected_type": "TERMINATION",
+      "lora_type": "TERMINATION",
+      "baseline_type": "TERMINATION",
+      "expected_covered": true,
+      "sufficient": false
+    },
+    {
+      "contract": "saas_nutzungsvertrag",
+      "section": "§ 5",
+      "expected_type": "WARRANTY",
+      "lora_type": "WARRANTY",
+      "baseline_type": "LIABILITY",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "saas_nutzungsvertrag",
+      "section": "§ 6",
+      "expected_type": "LIABILITY",
+      "lora_type": "LIABILITY",
+      "baseline_type": "LIABILITY",
+      "expected_covered": true,
+      "sufficient": false
+    },
+    {
+      "contract": "saas_nutzungsvertrag",
+      "section": "§ 7",
+      "expected_type": "INTELLECTUAL_PROPERTY",
+      "lora_type": "INTELLECTUAL_PROPERTY",
+      "baseline_type": "LIABILITY",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "saas_nutzungsvertrag",
+      "section": "§ 8",
+      "expected_type": "DATA_PROCESSING",
+      "lora_type": "DATA_PROCESSING",
+      "baseline_type": "DATA_PROCESSING",
+      "expected_covered": true,
+      "sufficient": true
+    },
+    {
+      "contract": "saas_nutzungsvertrag",
+      "section": "§ 9",
+      "expected_type": "DATA_PROCESSING",
+      "lora_type": "DATA_PROCESSING",
+      "baseline_type": "DATA_PROCESSING",
+      "expected_covered": true,
+      "sufficient": true
+    },
+    {
+      "contract": "saas_nutzungsvertrag",
+      "section": "§ 10",
+      "expected_type": "CONFIDENTIALITY",
+      "lora_type": "TERMINATION",
+      "baseline_type": "OTHER",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "saas_nutzungsvertrag",
+      "section": "§ 11",
+      "expected_type": "GENERAL_TERMS",
+      "lora_type": "DATA_PROCESSING",
+      "baseline_type": "TERMINATION",
+      "expected_covered": true,
+      "sufficient": false
+    },
+    {
+      "contract": "saas_nutzungsvertrag",
+      "section": "§ 12",
+      "expected_type": "NON_COMPETE",
+      "lora_type": "NON_COMPETE",
+      "baseline_type": "NON_COMPETE",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "saas_nutzungsvertrag",
+      "section": "§ 13",
+      "expected_type": "OTHER",
+      "lora_type": "GENERAL_TERMS",
+      "baseline_type": "TERMINATION",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "agenturvertrag_marketing",
+      "section": "§ 1",
+      "expected_type": "GENERAL_TERMS",
+      "lora_type": "PAYMENT",
+      "baseline_type": "CONFIDENTIALITY",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "agenturvertrag_marketing",
+      "section": "§ 2",
+      "expected_type": "PAYMENT",
+      "lora_type": "LIABILITY",
+      "baseline_type": "PAYMENT",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "agenturvertrag_marketing",
+      "section": "§ 3",
+      "expected_type": "PAYMENT",
+      "lora_type": "PAYMENT",
+      "baseline_type": "INTELLECTUAL_PROPERTY",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "agenturvertrag_marketing",
+      "section": "§ 4",
+      "expected_type": "OTHER",
+      "lora_type": "DATA_PROCESSING",
+      "baseline_type": "WARRANTY",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "agenturvertrag_marketing",
+      "section": "§ 5",
+      "expected_type": "WARRANTY",
+      "lora_type": "LIABILITY",
+      "baseline_type": "WARRANTY",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "agenturvertrag_marketing",
+      "section": "§ 6",
+      "expected_type": "LIABILITY",
+      "lora_type": "LIABILITY",
+      "baseline_type": "LIABILITY",
+      "expected_covered": true,
+      "sufficient": false
+    },
+    {
+      "contract": "agenturvertrag_marketing",
+      "section": "§ 7",
+      "expected_type": "TERMINATION",
+      "lora_type": "GENERAL_TERMS",
+      "baseline_type": "TERMINATION",
+      "expected_covered": true,
+      "sufficient": true
+    },
+    {
+      "contract": "agenturvertrag_marketing",
+      "section": "§ 8",
+      "expected_type": "INTELLECTUAL_PROPERTY",
+      "lora_type": "DATA_PROCESSING",
+      "baseline_type": "INTELLECTUAL_PROPERTY",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "agenturvertrag_marketing",
+      "section": "§ 9",
+      "expected_type": "INTELLECTUAL_PROPERTY",
+      "lora_type": "DATA_PROCESSING",
+      "baseline_type": "PAYMENT",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "agenturvertrag_marketing",
+      "section": "§ 10",
+      "expected_type": "CONFIDENTIALITY",
+      "lora_type": "DATA_PROCESSING",
+      "baseline_type": "CONFIDENTIALITY",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "agenturvertrag_marketing",
+      "section": "§ 11",
+      "expected_type": "NON_COMPETE",
+      "lora_type": "DATA_PROCESSING",
+      "baseline_type": "NON_COMPETE",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "agenturvertrag_marketing",
+      "section": "§ 12",
+      "expected_type": "DATA_PROCESSING",
+      "lora_type": "DATA_PROCESSING",
+      "baseline_type": "DATA_PROCESSING",
+      "expected_covered": true,
+      "sufficient": false
+    },
+    {
+      "contract": "agenturvertrag_marketing",
+      "section": "§ 13",
+      "expected_type": "OTHER",
+      "lora_type": "CONFIDENTIALITY",
+      "baseline_type": "OTHER",
+      "expected_covered": false,
+      "sufficient": false
+    },
+    {
+      "contract": "agenturvertrag_marketing",
+      "section": "§ 14",
+      "expected_type": "GENERAL_TERMS",
+      "lora_type": "CONFIDENTIALITY",
+      "baseline_type": "OTHER",
+      "expected_covered": true,
+      "sufficient": true
+    }
+  ],
+  "limitations": [
+    "Contracts and labels were written by the same person who built the system, after seeing the 10 classes; they are not independently reviewed.",
+    "63 clauses is still small: confidence intervals above are wide.",
+    "corpus_covered is a judgment against 15 passages; reasoning quality is not measured (no Anthropic key)."
+  ]
+}

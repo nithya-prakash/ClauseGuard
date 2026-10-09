@@ -1,0 +1,457 @@
+{
+ "_provenance": "Synthetic benchmark contracts authored by hand by the project author for ClauseGuard evaluation. NOT real contracts or legal templates. clause_type and corpus_covered are labels assigned by the same author who built the system (not independently reviewed); corpus_covered records a judgment against the 15 passages in legal_corpus/metadata/corpus.json. Written after, and separately from, the 120-example classifier training set; overlap is checked by eval/benchmark/check_overlap.py.",
+ "contracts": [
+  {
+   "id": "kaufvertrag_maschine",
+   "title": "Kaufvertrag über eine gebrauchte Produktionsmaschine",
+   "parties_preamble": "zwischen der Fertigung Nordwerk GmbH, Hafenallee 8, 20457 Hamburg (nachfolgend \"Verkäufer\") und der Präzisionsteile Stein KG, Gewerbering 3, 90402 Nürnberg (nachfolgend \"Käufer\")",
+   "clauses": [
+    {
+     "section": "§ 1",
+     "heading": "Kaufgegenstand",
+     "clause_type": "GENERAL_TERMS",
+     "corpus_covered": false,
+     "coverage_note": "Scope/definition or jurisdiction clause; no corpus passage addresses it.",
+     "body": "Der Verkäufer verkauft dem Käufer die in Anlage 1 näher bezeichnete gebrauchte Fräsmaschine einschließlich der dort aufgeführten Zubehörteile in dem Zustand, in dem sie sich bei Vertragsschluss befindet."
+    },
+    {
+     "section": "§ 2",
+     "heading": "Kaufpreis",
+     "clause_type": "PAYMENT",
+     "corpus_covered": false,
+     "coverage_note": "No payment-terms section in the corpus (documented gap).",
+     "body": "Der Kaufpreis beträgt 84.500,00 EUR zuzüglich gesetzlicher Umsatzsteuer. Er ist in zwei Raten zu zahlen: 50 Prozent innerhalb von zehn Tagen nach Vertragsschluss, der Rest bei Übergabe der Maschine."
+    },
+    {
+     "section": "§ 3",
+     "heading": "Lieferung und Gefahrübergang",
+     "clause_type": "OTHER",
+     "corpus_covered": false,
+     "coverage_note": "Not addressed by any of the 15 corpus passages.",
+     "body": "Die Maschine wird am 15. März ab Werk des Verkäufers bereitgestellt. Mit der Verladung geht die Gefahr des zufälligen Untergangs auf den Käufer über; der Transport erfolgt auf dessen Kosten."
+    },
+    {
+     "section": "§ 4",
+     "heading": "Eigentumsvorbehalt",
+     "clause_type": "OTHER",
+     "corpus_covered": false,
+     "coverage_note": "Not addressed by any of the 15 corpus passages.",
+     "body": "Bis zur vollständigen Zahlung des Kaufpreises bleibt die Maschine Eigentum des Verkäufers. Der Käufer darf sie bis dahin weder verpfänden noch zur Sicherheit übereignen."
+    },
+    {
+     "section": "§ 5",
+     "heading": "Sachmängel",
+     "clause_type": "WARRANTY",
+     "corpus_covered": false,
+     "coverage_note": "No Gewährleistungsrecht (BGB §§ 434 ff.) section in the corpus.",
+     "body": "Der Verkäufer übernimmt für den Zustand der Maschine eine Gewährleistung von sechs Monaten ab Übergabe. Offensichtliche Mängel hat der Käufer innerhalb von fünf Werktagen schriftlich anzuzeigen."
+    },
+    {
+     "section": "§ 6",
+     "heading": "Haftung des Verkäufers",
+     "clause_type": "LIABILITY",
+     "corpus_covered": true,
+     "coverage_note": "BGB § 276 and § 280 are directly relevant.",
+     "body": "Der Verkäufer haftet unbeschränkt für Vorsatz und grobe Fahrlässigkeit. Bei leichter Fahrlässigkeit haftet er nur für die Verletzung wesentlicher Vertragspflichten und der Höhe nach beschränkt auf den vorhersehbaren, typischen Schaden."
+    },
+    {
+     "section": "§ 7",
+     "heading": "Verzug",
+     "clause_type": "PAYMENT",
+     "corpus_covered": false,
+     "coverage_note": "No payment-terms section in the corpus (documented gap).",
+     "body": "Kommt der Käufer mit einer Zahlung in Verzug, schuldet er Verzugszinsen in Höhe von neun Prozentpunkten über dem Basiszinssatz. Die Geltendmachung eines weiteren Schadens bleibt vorbehalten."
+    },
+    {
+     "section": "§ 8",
+     "heading": "Rücktritt aus wichtigem Grund",
+     "clause_type": "TERMINATION",
+     "corpus_covered": true,
+     "coverage_note": "BGB § 314 (Kündigung aus wichtigem Grund) is directly relevant.",
+     "body": "Jede Partei kann vom Vertrag zurücktreten, wenn der anderen Partei die Fortsetzung aus einem wichtigen Grund nicht zumutbar ist. Ein wichtiger Grund liegt insbesondere bei Zahlungseinstellung oder Insolvenzantrag vor."
+    },
+    {
+     "section": "§ 9",
+     "heading": "Geheimhaltung",
+     "clause_type": "CONFIDENTIALITY",
+     "corpus_covered": false,
+     "coverage_note": "No confidentiality-specific section in the corpus (documented gap).",
+     "body": "Die Parteien behandeln Preis und Vertragsinhalt sowie sämtliche im Rahmen der Besichtigung erlangten technischen Informationen vertraulich und geben sie nicht an Dritte weiter."
+    },
+    {
+     "section": "§ 10",
+     "heading": "Betriebsdaten der Maschine",
+     "clause_type": "DATA_PROCESSING",
+     "corpus_covered": true,
+     "coverage_note": "DSGVO Art. 28 and Art. 32 are directly relevant.",
+     "body": "Soweit die Steuerung der Maschine personenbezogene Bedienerdaten gespeichert hat, löscht der Verkäufer diese vor der Übergabe. Der Käufer verpflichtet sich, die Daten nach Art. 32 DSGVO mit angemessenen technischen Maßnahmen zu schützen."
+    },
+    {
+     "section": "§ 11",
+     "heading": "Konkurrenzschutz",
+     "clause_type": "NON_COMPETE",
+     "corpus_covered": false,
+     "coverage_note": "No non-compete or Wettbewerbsverbot section in the corpus.",
+     "body": "Der Verkäufer verpflichtet sich, für die Dauer von zwei Jahren keine baugleichen Maschinen an direkte Wettbewerber des Käufers im Raum Nürnberg zu verkaufen."
+    },
+    {
+     "section": "§ 12",
+     "heading": "Schriftform und Salvatorik",
+     "clause_type": "GENERAL_TERMS",
+     "corpus_covered": true,
+     "coverage_note": "BGB §§ 305-310 (AGB law) are directly relevant.",
+     "body": "Änderungen und Ergänzungen dieses Vertrages bedürfen der Schriftform; individuelle Abreden haben Vorrang. Ist eine Bestimmung unwirksam, bleibt der Vertrag im Übrigen wirksam."
+    },
+    {
+     "section": "§ 13",
+     "heading": "Gerichtsstand",
+     "clause_type": "OTHER",
+     "corpus_covered": false,
+     "coverage_note": "Not addressed by any of the 15 corpus passages.",
+     "body": "Für alle Streitigkeiten aus diesem Vertrag ist das Landgericht Hamburg ausschließlich zuständig. Es gilt deutsches Recht unter Ausschluss des UN-Kaufrechts."
+    }
+   ]
+  },
+  {
+   "id": "arbeitsvertrag_entwickler",
+   "title": "Arbeitsvertrag",
+   "parties_preamble": "zwischen der Datenwerk Software AG, Lindenstraße 21, 50667 Köln (nachfolgend \"Arbeitgeber\") und Frau Mara Beispiel, Ringstraße 5, 53111 Bonn (nachfolgend \"Arbeitnehmerin\")",
+   "clauses": [
+    {
+     "section": "§ 1",
+     "heading": "Tätigkeit und Arbeitsort",
+     "clause_type": "GENERAL_TERMS",
+     "corpus_covered": false,
+     "coverage_note": "Scope/definition or jurisdiction clause; no corpus passage addresses it.",
+     "body": "Die Arbeitnehmerin wird als Softwareentwicklerin im Bereich Backend-Entwicklung eingestellt. Arbeitsort ist Köln; mobiles Arbeiten ist nach Absprache mit der Teamleitung möglich."
+    },
+    {
+     "section": "§ 2",
+     "heading": "Vergütung",
+     "clause_type": "PAYMENT",
+     "corpus_covered": false,
+     "coverage_note": "No payment-terms section in the corpus (documented gap).",
+     "body": "Die Arbeitnehmerin erhält ein Bruttojahresgehalt von 68.000 EUR, zahlbar in zwölf gleichen Monatsraten jeweils zum Monatsende. Überstunden sind mit dem Gehalt abgegolten, soweit sie zehn Stunden im Monat nicht überschreiten."
+    },
+    {
+     "section": "§ 3",
+     "heading": "Probezeit und Kündigung",
+     "clause_type": "TERMINATION",
+     "corpus_covered": true,
+     "coverage_note": "BGB § 314 (Kündigung aus wichtigem Grund) is directly relevant.",
+     "body": "Die ersten sechs Monate gelten als Probezeit, in der mit einer Frist von zwei Wochen gekündigt werden kann. Danach gelten die gesetzlichen Kündigungsfristen; das Recht zur Kündigung aus wichtigem Grund bleibt unberührt."
+    },
+    {
+     "section": "§ 4",
+     "heading": "Urlaub",
+     "clause_type": "OTHER",
+     "corpus_covered": false,
+     "coverage_note": "Not addressed by any of the 15 corpus passages.",
+     "body": "Die Arbeitnehmerin hat Anspruch auf 30 Arbeitstage Urlaub pro Kalenderjahr. Nicht genommener Urlaub verfällt am 31. März des Folgejahres, sofern der Arbeitgeber rechtzeitig auf den Verfall hingewiesen hat."
+    },
+    {
+     "section": "§ 5",
+     "heading": "Verschwiegenheit",
+     "clause_type": "CONFIDENTIALITY",
+     "corpus_covered": false,
+     "coverage_note": "No confidentiality-specific section in the corpus (documented gap).",
+     "body": "Die Arbeitnehmerin verpflichtet sich, über alle Betriebs- und Geschäftsgeheimnisse des Arbeitgebers auch nach Beendigung des Arbeitsverhältnisses Stillschweigen zu bewahren."
+    },
+    {
+     "section": "§ 6",
+     "heading": "Nebentätigkeiten",
+     "clause_type": "NON_COMPETE",
+     "corpus_covered": false,
+     "coverage_note": "No non-compete or Wettbewerbsverbot section in the corpus.",
+     "body": "Jede entgeltliche Nebentätigkeit bedarf der vorherigen Zustimmung des Arbeitgebers. Während der Dauer des Arbeitsverhältnisses darf die Arbeitnehmerin nicht für ein Konkurrenzunternehmen tätig werden."
+    },
+    {
+     "section": "§ 7",
+     "heading": "Nachvertragliches Wettbewerbsverbot",
+     "clause_type": "NON_COMPETE",
+     "corpus_covered": false,
+     "coverage_note": "No non-compete or Wettbewerbsverbot section in the corpus.",
+     "body": "Für die Dauer von zwölf Monaten nach Beendigung des Arbeitsverhältnisses unterlässt die Arbeitnehmerin jede Tätigkeit für Unternehmen, die mit dem Arbeitgeber im Bereich Logistiksoftware im Wettbewerb stehen. Der Arbeitgeber zahlt dafür eine Karenzentschädigung."
+    },
+    {
+     "section": "§ 8",
+     "heading": "Arbeitsergebnisse",
+     "clause_type": "INTELLECTUAL_PROPERTY",
+     "corpus_covered": false,
+     "coverage_note": "No intellectual-property section in the corpus.",
+     "body": "Sämtliche im Rahmen der Tätigkeit entstehenden Programme, Dokumentationen und Erfindungen stehen ausschließlich dem Arbeitgeber zu. Die Arbeitnehmerin überträgt ihm hieran alle Nutzungs- und Verwertungsrechte."
+    },
+    {
+     "section": "§ 9",
+     "heading": "Datenschutz",
+     "clause_type": "DATA_PROCESSING",
+     "corpus_covered": true,
+     "coverage_note": "DSGVO Art. 28 and Art. 32 are directly relevant.",
+     "body": "Die Arbeitnehmerin verarbeitet personenbezogene Daten von Kunden nur auf Weisung des Arbeitgebers und im Rahmen der Datenschutzrichtlinie. Sie ist auf das Datengeheimnis und die Grundsätze des Art. 5 DSGVO verpflichtet."
+    },
+    {
+     "section": "§ 10",
+     "heading": "Haftung der Arbeitnehmerin",
+     "clause_type": "LIABILITY",
+     "corpus_covered": true,
+     "coverage_note": "BGB § 276 and § 280 are directly relevant.",
+     "body": "Für Schäden, die die Arbeitnehmerin bei betrieblich veranlasster Tätigkeit verursacht, haftet sie nach den Grundsätzen der beschränkten Arbeitnehmerhaftung. Bei Vorsatz haftet sie in voller Höhe."
+    },
+    {
+     "section": "§ 11",
+     "heading": "Dienstwagen und Arbeitsmittel",
+     "clause_type": "OTHER",
+     "corpus_covered": false,
+     "coverage_note": "Not addressed by any of the 15 corpus passages.",
+     "body": "Der Arbeitgeber stellt einen Laptop und ein Mobiltelefon zur dienstlichen und eingeschränkt privaten Nutzung zur Verfügung. Bei Beendigung des Arbeitsverhältnisses sind alle Geräte unverzüglich zurückzugeben."
+    },
+    {
+     "section": "§ 12",
+     "heading": "Anwendbare Tarifregelungen und AGB",
+     "clause_type": "GENERAL_TERMS",
+     "corpus_covered": true,
+     "coverage_note": "BGB §§ 305-310 (AGB law) are directly relevant.",
+     "body": "Dieser Vertrag verwendet vorformulierte Bedingungen des Arbeitgebers. Individuelle Vereinbarungen gehen den Bedingungen dieses Vertrages vor und sind schriftlich festzuhalten."
+    },
+    {
+     "section": "§ 13",
+     "heading": "Schlussbestimmungen",
+     "clause_type": "GENERAL_TERMS",
+     "corpus_covered": true,
+     "coverage_note": "BGB §§ 305-310 (AGB law) are directly relevant.",
+     "body": "Sollte eine Bestimmung dieses Vertrages unwirksam sein, so bleibt der Vertrag im Übrigen bestehen. An die Stelle der unwirksamen Regelung tritt die gesetzliche Regelung."
+    }
+   ]
+  },
+  {
+   "id": "saas_nutzungsvertrag",
+   "title": "Software-as-a-Service-Nutzungsvertrag",
+   "parties_preamble": "zwischen der CloudBlatt GmbH, Technologiepark 2, 70565 Stuttgart (nachfolgend \"Anbieter\") und der Handelshaus Brandt GmbH, Marktplatz 9, 04109 Leipzig (nachfolgend \"Kunde\")",
+   "clauses": [
+    {
+     "section": "§ 1",
+     "heading": "Leistungsgegenstand",
+     "clause_type": "GENERAL_TERMS",
+     "corpus_covered": false,
+     "coverage_note": "Scope/definition or jurisdiction clause; no corpus passage addresses it.",
+     "body": "Der Anbieter stellt dem Kunden die cloudbasierte Software zur Rechnungsverwaltung über das Internet zur Nutzung bereit. Der Funktionsumfang ergibt sich aus der aktuellen Produktbeschreibung."
+    },
+    {
+     "section": "§ 2",
+     "heading": "Entgelt",
+     "clause_type": "PAYMENT",
+     "corpus_covered": false,
+     "coverage_note": "No payment-terms section in the corpus (documented gap).",
+     "body": "Der Kunde zahlt eine monatliche Nutzungsgebühr von 12 EUR je Nutzer. Die Rechnungsstellung erfolgt monatlich im Voraus; Rechnungen sind innerhalb von 14 Tagen ohne Abzug zu begleichen."
+    },
+    {
+     "section": "§ 3",
+     "heading": "Preisanpassung",
+     "clause_type": "PAYMENT",
+     "corpus_covered": false,
+     "coverage_note": "No payment-terms section in the corpus (documented gap).",
+     "body": "Der Anbieter darf die Nutzungsgebühr einmal pro Jahr um bis zu fünf Prozent erhöhen. Die Erhöhung ist dem Kunden mindestens sechs Wochen vorher in Textform mitzuteilen."
+    },
+    {
+     "section": "§ 4",
+     "heading": "Laufzeit und Kündigung",
+     "clause_type": "TERMINATION",
+     "corpus_covered": true,
+     "coverage_note": "BGB § 314 (Kündigung aus wichtigem Grund) is directly relevant.",
+     "body": "Der Vertrag läuft zunächst zwölf Monate und verlängert sich jeweils um ein Jahr, wenn er nicht mit einer Frist von drei Monaten gekündigt wird. Das Recht zur außerordentlichen Kündigung aus wichtigem Grund bleibt unberührt."
+    },
+    {
+     "section": "§ 5",
+     "heading": "Verfügbarkeit und Mängel",
+     "clause_type": "WARRANTY",
+     "corpus_covered": false,
+     "coverage_note": "No Gewährleistungsrecht (BGB §§ 434 ff.) section in the corpus.",
+     "body": "Der Anbieter gewährleistet eine Verfügbarkeit der Software von 99,5 Prozent im Jahresmittel. Mängel meldet der Kunde unverzüglich; der Anbieter beseitigt sie innerhalb angemessener Frist."
+    },
+    {
+     "section": "§ 6",
+     "heading": "Haftungsbeschränkung",
+     "clause_type": "LIABILITY",
+     "corpus_covered": true,
+     "coverage_note": "BGB § 276 and § 280 are directly relevant.",
+     "body": "Der Anbieter haftet für Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit unbeschränkt. Im Übrigen ist die Haftung bei einfacher Fahrlässigkeit auf die Höhe der im letzten Vertragsjahr gezahlten Entgelte begrenzt."
+    },
+    {
+     "section": "§ 7",
+     "heading": "Nutzungsrechte",
+     "clause_type": "INTELLECTUAL_PROPERTY",
+     "corpus_covered": false,
+     "coverage_note": "No intellectual-property section in the corpus.",
+     "body": "Der Anbieter räumt dem Kunden für die Vertragsdauer ein einfaches, nicht übertragbares Recht ein, die Software für eigene interne Zwecke zu nutzen. Alle Rechte an der Software verbleiben beim Anbieter."
+    },
+    {
+     "section": "§ 8",
+     "heading": "Auftragsverarbeitung",
+     "clause_type": "DATA_PROCESSING",
+     "corpus_covered": true,
+     "coverage_note": "DSGVO Art. 28 and Art. 32 are directly relevant.",
+     "body": "Soweit der Anbieter im Auftrag des Kunden personenbezogene Daten verarbeitet, schließen die Parteien eine Vereinbarung nach Art. 28 DSGVO. Der Anbieter verarbeitet die Daten ausschließlich auf dokumentierte Weisung des Kunden."
+    },
+    {
+     "section": "§ 9",
+     "heading": "Technische und organisatorische Maßnahmen",
+     "clause_type": "DATA_PROCESSING",
+     "corpus_covered": true,
+     "coverage_note": "DSGVO Art. 28 and Art. 32 are directly relevant.",
+     "body": "Der Anbieter trifft angemessene Maßnahmen zur Sicherheit der Verarbeitung nach Art. 32 DSGVO, insbesondere Verschlüsselung, Zugriffsbeschränkung und regelmäßige Datensicherung."
+    },
+    {
+     "section": "§ 10",
+     "heading": "Vertraulichkeit",
+     "clause_type": "CONFIDENTIALITY",
+     "corpus_covered": false,
+     "coverage_note": "No confidentiality-specific section in the corpus (documented gap).",
+     "body": "Beide Parteien verpflichten sich, vertrauliche Informationen der jeweils anderen Partei geheim zu halten und nur zur Vertragserfüllung zu verwenden. Die Pflicht besteht drei Jahre über das Vertragsende hinaus fort."
+    },
+    {
+     "section": "§ 11",
+     "heading": "Änderung dieser Bedingungen",
+     "clause_type": "GENERAL_TERMS",
+     "corpus_covered": true,
+     "coverage_note": "BGB §§ 305-310 (AGB law) are directly relevant.",
+     "body": "Der Anbieter kann diese Geschäftsbedingungen mit Wirkung für die Zukunft ändern, wenn dies dem Kunden zumutbar ist. Der Kunde wird über Änderungen informiert und kann ihnen innerhalb von vier Wochen widersprechen."
+    },
+    {
+     "section": "§ 12",
+     "heading": "Exklusivität",
+     "clause_type": "NON_COMPETE",
+     "corpus_covered": false,
+     "coverage_note": "No non-compete or Wettbewerbsverbot section in the corpus.",
+     "body": "Der Kunde darf für die Dauer des Vertrages keine vergleichbare Rechnungssoftware eines anderen Anbieters im Unternehmen produktiv einsetzen. Verstößt er dagegen, schuldet er eine Vertragsstrafe."
+    },
+    {
+     "section": "§ 13",
+     "heading": "Gerichtsstand",
+     "clause_type": "OTHER",
+     "corpus_covered": false,
+     "coverage_note": "Not addressed by any of the 15 corpus passages.",
+     "body": "Gerichtsstand für alle Streitigkeiten ist Stuttgart, sofern der Kunde Kaufmann ist. Auf den Vertrag findet das Recht der Bundesrepublik Deutschland Anwendung."
+    }
+   ]
+  },
+  {
+   "id": "agenturvertrag_marketing",
+   "title": "Agenturvertrag über Marketingleistungen",
+   "parties_preamble": "zwischen der Gartenfreund Versand GmbH, Obstweg 14, 28195 Bremen (nachfolgend \"Auftraggeber\") und der Kreativbüro Lenz GbR, Wallstraße 30, 40213 Düsseldorf (nachfolgend \"Agentur\")",
+   "clauses": [
+    {
+     "section": "§ 1",
+     "heading": "Leistungen der Agentur",
+     "clause_type": "GENERAL_TERMS",
+     "corpus_covered": false,
+     "coverage_note": "Scope/definition or jurisdiction clause; no corpus passage addresses it.",
+     "body": "Die Agentur konzipiert und erstellt für den Auftraggeber eine Online-Werbekampagne einschließlich Texten, Grafiken und Anzeigenmotiven. Die einzelnen Leistungen sind im Angebot vom 2. Februar aufgeführt."
+    },
+    {
+     "section": "§ 2",
+     "heading": "Honorar",
+     "clause_type": "PAYMENT",
+     "corpus_covered": false,
+     "coverage_note": "No payment-terms section in the corpus (documented gap).",
+     "body": "Die Agentur erhält ein Pauschalhonorar von 18.000 EUR netto. Das Honorar wird zu je einem Drittel bei Beauftragung, bei Vorlage der Entwürfe und nach Abnahme fällig."
+    },
+    {
+     "section": "§ 3",
+     "heading": "Fremdkosten",
+     "clause_type": "PAYMENT",
+     "corpus_covered": false,
+     "coverage_note": "No payment-terms section in the corpus (documented gap).",
+     "body": "Kosten für Mediabuchungen und Fotolizenzen trägt der Auftraggeber zusätzlich. Die Agentur holt dafür vorab die schriftliche Freigabe des Auftraggebers ein."
+    },
+    {
+     "section": "§ 4",
+     "heading": "Abnahme",
+     "clause_type": "OTHER",
+     "corpus_covered": false,
+     "coverage_note": "Not addressed by any of the 15 corpus passages.",
+     "body": "Nach Fertigstellung legt die Agentur die Arbeitsergebnisse zur Abnahme vor. Die Abnahme gilt als erfolgt, wenn der Auftraggeber nicht innerhalb von zehn Werktagen begründete Mängel rügt."
+    },
+    {
+     "section": "§ 5",
+     "heading": "Mängelrechte",
+     "clause_type": "WARRANTY",
+     "corpus_covered": false,
+     "coverage_note": "No Gewährleistungsrecht (BGB §§ 434 ff.) section in the corpus.",
+     "body": "Bei mangelhaften Leistungen hat der Auftraggeber zunächst Anspruch auf Nacherfüllung. Schlägt diese zweimal fehl, kann er die Vergütung mindern oder vom Vertrag zurücktreten."
+    },
+    {
+     "section": "§ 6",
+     "heading": "Haftung",
+     "clause_type": "LIABILITY",
+     "corpus_covered": true,
+     "coverage_note": "BGB § 276 and § 280 are directly relevant.",
+     "body": "Die Agentur haftet nach den gesetzlichen Vorschriften für Vorsatz und Fahrlässigkeit. Für leicht fahrlässig verursachte Vermögensschäden ist die Haftung auf 25.000 EUR je Schadensfall begrenzt."
+    },
+    {
+     "section": "§ 7",
+     "heading": "Kündigung aus wichtigem Grund",
+     "clause_type": "TERMINATION",
+     "corpus_covered": true,
+     "coverage_note": "BGB § 314 (Kündigung aus wichtigem Grund) is directly relevant.",
+     "body": "Beide Parteien können den Vertrag aus wichtigem Grund fristlos kündigen. Ein wichtiger Grund liegt vor, wenn die Fortsetzung des Vertrages unter Berücksichtigung aller Umstände unzumutbar ist."
+    },
+    {
+     "section": "§ 8",
+     "heading": "Rechteübertragung",
+     "clause_type": "INTELLECTUAL_PROPERTY",
+     "corpus_covered": false,
+     "coverage_note": "No intellectual-property section in the corpus.",
+     "body": "Mit vollständiger Zahlung des Honorars überträgt die Agentur dem Auftraggeber das ausschließliche, zeitlich und räumlich unbeschränkte Nutzungsrecht an allen erstellten Werbemitteln. Entwürfe, die nicht verwendet werden, verbleiben bei der Agentur."
+    },
+    {
+     "section": "§ 9",
+     "heading": "Urheberbenennung",
+     "clause_type": "INTELLECTUAL_PROPERTY",
+     "corpus_covered": false,
+     "coverage_note": "No intellectual-property section in the corpus.",
+     "body": "Eine Nennung der Agentur als Urheberin auf den Werbemitteln erfolgt nur, wenn dies ausdrücklich vereinbart wurde. Die Agentur darf die Kampagne in ihrem Portfolio als Referenz zeigen."
+    },
+    {
+     "section": "§ 10",
+     "heading": "Geheimhaltung",
+     "clause_type": "CONFIDENTIALITY",
+     "corpus_covered": false,
+     "coverage_note": "No confidentiality-specific section in the corpus (documented gap).",
+     "body": "Die Agentur behandelt Produktplanungen, Preise und Kundendaten des Auftraggebers streng vertraulich. Die Pflicht gilt auch für ihre Mitarbeiter und Subunternehmer."
+    },
+    {
+     "section": "§ 11",
+     "heading": "Kundenschutz",
+     "clause_type": "NON_COMPETE",
+     "corpus_covered": false,
+     "coverage_note": "No non-compete or Wettbewerbsverbot section in the corpus.",
+     "body": "Die Agentur verpflichtet sich, während der Vertragslaufzeit und für sechs Monate danach keine Kampagnen für Direktwettbewerber des Auftraggebers im Bereich Gartenbedarf zu betreuen."
+    },
+    {
+     "section": "§ 12",
+     "heading": "Verarbeitung von Kundendaten",
+     "clause_type": "DATA_PROCESSING",
+     "corpus_covered": true,
+     "coverage_note": "DSGVO Art. 28 and Art. 32 are directly relevant.",
+     "body": "Soweit die Agentur für Newsletter-Aktionen personenbezogene Daten von Kunden des Auftraggebers verarbeitet, geschieht dies nur nach Art. 28 DSGVO auf dessen Weisung. Die Rechtmäßigkeit der Verarbeitung nach Art. 6 DSGVO liegt beim Auftraggeber."
+    },
+    {
+     "section": "§ 13",
+     "heading": "Höhere Gewalt",
+     "clause_type": "OTHER",
+     "corpus_covered": false,
+     "coverage_note": "Not addressed by any of the 15 corpus passages.",
+     "body": "Ereignisse höherer Gewalt, die die Leistungserbringung wesentlich erschweren, befreien die betroffene Partei für die Dauer der Störung von ihren Pflichten. Die Parteien informieren sich unverzüglich über solche Ereignisse."
+    },
+    {
+     "section": "§ 14",
+     "heading": "Schlussbestimmungen",
+     "clause_type": "GENERAL_TERMS",
+     "corpus_covered": true,
+     "coverage_note": "BGB §§ 305-310 (AGB law) are directly relevant.",
+     "body": "Sollte eine Regelung dieses Vertrages unwirksam sein, bleibt die Wirksamkeit der übrigen Regelungen unberührt. Vorformulierte Bedingungen der Agentur werden nur Vertragsbestandteil, wenn der Auftraggeber ihrer Geltung ausdrücklich zugestimmt hat."
+    }
+   ]
+  }
+ ]
+}
