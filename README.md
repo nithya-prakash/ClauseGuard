@@ -1,76 +1,72 @@
 # ClauseGuard
 
-[![CI](https://github.com/nithya-prakash/ClauseGuard/actions/workflows/ci.yml/badge.svg)](https://github.com/nithya-prakash/ClauseGuard/actions/workflows/ci.yml)
+First-pass risk screening for German contracts: clause segmentation, LoRA classification, hybrid legal retrieval with an evidence gate, and citation-checked LLM reasoning. **Not legal advice.**
 
-AI-assisted first-pass compliance/risk analysis for German contracts.
+[![CI](https://github.com/nithya-prakash/ClauseGuard/actions/workflows/ci.yml/badge.svg)](https://github.com/nithya-prakash/ClauseGuard/actions/workflows/ci.yml) ![Python 3.12](https://img.shields.io/badge/python-3.12-blue) ![License MIT](https://img.shields.io/badge/license-MIT-green)
 
 ![ClauseGuard demo](docs/demo.gif)
 
-> **ClauseGuard provides AI-assisted first-pass compliance analysis and does
-> not constitute legal advice.** It does not determine whether a contract is
-> legally valid. Always consult a qualified lawyer for legal decisions.
+*The recording shows upload, analysis and the PDF report. It predates the Neo4j, MCP and review additions below.*
 
-## What it does
+> ClauseGuard gives an AI-assisted screening signal. It does not decide whether a contract is legally valid. Consult a qualified lawyer.
 
-Upload a German contract (PDF/DOCX) → it's split into clauses → each clause is
-classified into one of 10 categories (liability, termination, payment, data
-processing, confidentiality, non-compete, IP, warranty, general terms, other) →
-the specific German/EU legal provisions relevant to that clause are retrieved from a
-curated corpus → an evidence-sufficiency gate checks whether real supporting evidence
-was actually found before reasoning proceeds → when an LLM is configured, a
-structured, citation-verified risk screening is produced per clause. Results show in
-a web UI and export as a PDF report.
+## Results
 
-The engineering story: LoRA fine-tuning, hybrid retrieval (dense + BM25 + RRF),
-cross-encoder reranking, an evidence-sufficiency reliability gate, structured LLM
-reasoning, citation verification — all evaluation-driven, with every claimed number
-tracing to a committed, reproducible script.
+Every number comes from a script in `eval/` that writes to `reports/`. All benchmarks are small and hand-authored, so read them as "the pipeline works", not as accuracy claims.
 
-## Architecture
+| Component | Result | Benchmark |
+|---|---|---|
+| Segmentation | 10/10 clauses, PDF and DOCX | 1 synthetic contract |
+| Classification, LoRA vs TF-IDF baseline | macro F1 **0.59** vs 0.547 (accuracy 0.60 for both) | 20 held-out examples |
+| Retrieval, dense + BM25 + RRF + reranker | Recall@1 0.87, Recall@5 **1.00**, NDCG@5 0.95 | 15 queries over a 15-passage corpus |
+| End-to-end classification | 0.80 accuracy | the same 10-clause contract |
+| Evidence-sufficiency gate | accuracy 0.30 → 0.60 → **0.70** across two recalibrations | 10-clause benchmark; 54-example calibration set |
+| Graph expansion (Neo4j) | **no measured gain**: Recall@5 1.00 with and without it | 15 queries |
+| LLM reasoning and citation verification | **not measured** | needs an Anthropic key |
+| Tests | 127 collected: 104 unit + 18 integration pass, 1 live-LLM test skipped; ruff and mypy clean | |
 
-```mermaid
-flowchart TD
-    A[Contract: PDF/DOCX] --> B[Ingestion + segmentation]
-    B --> C[Classification<br/>LoRA DistilBERT]
-    B --> D[Legal retrieval]
-    subgraph D[Legal retrieval]
-        D1[Dense: Qdrant] --> D3[RRF]
-        D2[BM25] --> D3
-        D3 --> D4[Cross-encoder rerank]
-    end
-    D --> E{Evidence sufficiency<br/>length + score-gap adjusted}
-    E -- no --> F[INSUFFICIENT_EVIDENCE<br/>no LLM call]
-    E -- yes --> G[LLM structured reasoning<br/>Claude tool-use]
-    G --> H[Citation verification]
-    C --> I[Per-clause result]
-    F --> I
-    H --> I
-    I --> J[PDF report / Web UI]
-    I --> K[(PostgreSQL)]
-    L[Async job path<br/>Celery worker] --> K
-```
-
-## Technology stack
-
-FastAPI · PostgreSQL + SQLAlchemy + Alembic · Qdrant · Redis + Celery · Next.js 16 +
-TypeScript + Tailwind · `distilbert-base-multilingual-cased` + PEFT LoRA ·
-`multilingual-e5-small` dense retrieval · `rank_bm25` · cross-encoder reranking ·
-Anthropic Claude (tool-use) · reportlab · pytest/ruff/mypy + Vitest/Testing Library ·
-Docker Compose · GitHub Actions
+The LoRA gain over the baseline (+0.04 macro F1 on 20 examples) is within noise. Retrieval is at ceiling because the corpus has only 15 passages, so the reranker's +0.07 Recall@1 is a weak signal. Details and caveats are in each report under `reports/`.
 
 ## Quickstart
 
 ```bash
-git clone <this-repo> && cd clauseguard
 cp .env.example .env
 docker compose up -d --build
 QDRANT_URL=http://localhost:6339 python legal_corpus/ingestion/index_corpus.py
 open http://localhost:3005
 ```
 
-No API key is required to run it — the LLM reasoning stage honestly reports itself as
-`NOT_CONFIGURED` rather than faking output. Set `ANTHROPIC_API_KEY` in `.env` for real
-LLM reasoning. Drive the API directly:
+No API key is needed. Without `ANTHROPIC_API_KEY` the reasoning stage returns `NOT_CONFIGURED` instead of inventing output.
+
+| Variable | Purpose |
+|---|---|
+| `ANTHROPIC_API_KEY` | enables LLM reasoning (never run live here) |
+| `DATABASE_URL`, `QDRANT_URL`, `REDIS_URL`, `CELERY_*` | service endpoints; `.env.example` uses docker-network names |
+| `GRAPH_EXPANSION_ENABLED` | optional Neo4j expansion, default `false` |
+| `NEO4J_URI`, `NEO4J_USER`, `NEO4J_PASSWORD` | Neo4j connection (compose default password `clauseguard-dev`) |
+| `CORS_ALLOWED_ORIGINS` | allowed frontend origins |
+
+## How it works
+
+```mermaid
+flowchart TD
+    A[PDF/DOCX] --> B[Segment into clauses]
+    B --> C[LoRA DistilBERT: 10 classes]
+    B --> D[Dense + BM25 + RRF + cross-encoder rerank]
+    D -.optional.-> N[Neo4j: add cited passages]
+    D --> E{Evidence sufficient?}
+    E -- no --> F[INSUFFICIENT_EVIDENCE, no LLM call]
+    E -- yes --> G[Claude tool-use reasoning]
+    G --> H[Citation verification]
+    C --> I[Per-clause result]
+    F --> I
+    H --> I
+    I --> J[Web UI, PDF report, Postgres]
+```
+
+Stack: FastAPI, Postgres, Qdrant, Redis/Celery, Next.js 16, `distilbert-base-multilingual-cased` + PEFT LoRA, `multilingual-e5-small`, `rank_bm25`, reportlab.
+
+## Usage
 
 ```bash
 curl -X POST localhost:8004/documents -F "file=@contract.pdf;type=application/pdf"
@@ -78,74 +74,63 @@ curl -X POST localhost:8004/documents/{id}/analyze
 curl localhost:8004/documents/{id}/report -o report.pdf
 ```
 
-Run the evaluation suite (each script writes real output to `reports/`):
+Also available: an optional async path through Celery, and a read-only MCP server (`cd backend && python -m app.mcp_server`) with tools `get_scope`, `search_legal_corpus`, `get_passage`, `related_passages`, tested over stdio.
+
+## Evaluation method
+
+Each `eval/<component>/` script runs the real pipeline and writes a report plus raw JSON to `reports/`. Splits are deterministic (positional, no seed). Reports mark anything unrun as `NOT_MEASURED` rather than estimating it. The evidence gate was recalibrated twice on held-out splits; a candidate that looked better on one split but had an identical confusion matrix on the full sample was discarded ([reports/evidence_sufficiency/](reports/evidence_sufficiency/)).
 
 ```bash
 python eval/segmentation/evaluate_segmentation.py
 python eval/classification/evaluate_lora.py
 QDRANT_URL=http://localhost:6339 python eval/retrieval/evaluate_retrieval.py
 QDRANT_URL=http://localhost:6339 python eval/end_to_end/evaluate_end_to_end.py
-cd frontend && npm test
+NEO4J_PASSWORD=clauseguard-dev QDRANT_URL=http://localhost:6339 python eval/graph/evaluate_graph_expansion.py
 ```
 
-## Results
+## Feature status
 
-Every number below comes from a committed, reproducible eval script — `NOT_MEASURED`
-is used explicitly wherever something genuinely hasn't been run.
-
-| Component | Metric | Result |
-|---|---|---|
-| Segmentation | clause detection | 10/10 |
-| Classification (LoRA vs. baseline) | macro F1 | 0.59 vs. 0.547 |
-| Retrieval (hybrid + reranker) | Recall@5 / NDCG@5 | 1.0 / 0.951 |
-| End-to-end classification accuracy | on the benchmark document | 0.80 |
-| Evidence-sufficiency accuracy | original → 2 recalibrations | 0.30 → 0.60 → **0.70** |
-| LLM reasoning quality | — | `NOT_MEASURED` (no API key configured) |
-
-## Notable findings
-
-Real problems found by actually running the system, not glossed over:
-
-- **Evidence sufficiency was the project's central reliability problem** — the
-  original threshold measured 0.30 accuracy on real clause text (calibrated on short
-  queries, it broke on full paragraphs). Two recalibrations later (a length penalty,
-  then a score-gap feature — each validated on a true held-out split, with a first
-  discarded candidate caught for improving a small split without reducing real error),
-  it reached 0.70. **Still not solved**: the adopted fix has a disclosed cost (two new
-  false negatives on genuinely multi-topic-covered clauses). Full methodology in
-  [reports/evidence_sufficiency/](reports/evidence_sufficiency/).
-- **A real cross-container bug**: wiring an async Celery job path, the worker
-  container couldn't see files the backend saved — separate containers, separate
-  filesystems, no shared volume. Found by actually running it against live Docker
-  containers, not by code review; fixed with a shared volume.
-- **A real, exploitable PDF-injection bug**: `reportlab`'s `Paragraph` parses markup.
-  A clause heading like `<Kundennummer>` (an ordinary German placeholder, no attacker
-  intent needed) crashed report generation; a well-formed tag injected live styling.
-  Fixed with systematic escaping.
-- 10 more real Docker/infra bugs (missing image files, broken CORS, unusable
-  healthchecks, etc.) found and fixed by actually deploying — see git history
-  (Milestones 12–14).
+| Feature | Status |
+|---|---|
+| LoRA classifier (encoder, classification head) | implemented, trained, evaluated |
+| Hybrid retrieval, reranker, evidence gate, citation verification | implemented and tested |
+| Neo4j graph expansion | implemented, tested against a real Neo4j 5.26; **no measured benefit**, off by default |
+| MCP server | implemented, tested over stdio |
+| Human-in-the-loop review (LangGraph `interrupt`) | implemented and tested as a library; **not exposed through the API or UI** |
+| LLM reasoning | implemented; **never run against the live Anthropic API** |
+| QLoRA, SFT of a generative model, quantization | **not implemented** |
+| Synthetic data generation with an LLM | **not implemented**; the 120 training clauses and all benchmarks are hand-written |
 
 ## Limitations
 
-- Evidence-sufficiency is recalibrated but not solved (see above) — the calibration
-  sample (49 examples) is still small.
-- No `ANTHROPIC_API_KEY` configured here — reasoning quality is genuinely
-  `NOT_MEASURED`, not estimated.
-- LoRA classifier is imperfect (macro F1 0.59); legal corpus has gaps (no dedicated
-  confidentiality/payment-term provisions).
-- The async job path is real and tested but the frontend doesn't use it yet
-  (still calls the synchronous endpoint).
-- No Playwright end-to-end suite (Vitest tests mock the API layer); rate limiting is
-  per-process only (not shared across replicas).
+- Benchmarks are tiny and authored by the same person who built the system. There is no independent test set.
+- Live Anthropic inference is untested, so reasoning quality, schema validity and citation accuracy under a real model are unknown.
+- The evidence gate is 0.70 accurate and the adopted fix added two false negatives on clauses covered by several topics.
+- The legal corpus is 15 BGB/DSGVO passages with gaps (no dedicated payment or confidentiality provisions). Graph edges are textual cross-references, not verified legal dependencies.
+- The frontend still calls the synchronous endpoint; rate limiting is per process; no Playwright suite; Docker Compose only, no hosted demo.
+- Frontend dev-tooling advisories remain (Tailwind 3, `eslint-config-next`) and need major upgrades. Runtime dependencies audit clean.
 
-Full detail on all of the above — architecture rationale, security hardening,
-environment variables, fine-tuning/retrieval methodology, and the complete
-milestone-by-milestone build log — is in `reports/`, `.env.example`, and git history.
+## Repository layout and checks
 
-## Legal disclaimer
+```
+backend/    FastAPI app, Alembic migrations, tests (graph/, review/, mcp_server.py)
+frontend/   Next.js UI (Vitest tests)
+eval/       evaluation scripts per component        reports/   their outputs
+training/   LoRA scripts, config, adapter           legal_corpus/  passages and indexing
+```
 
-ClauseGuard provides AI-assisted first-pass compliance analysis and does not
-constitute legal advice. It does not determine whether a contract is legally valid,
-and its risk levels are an AI-generated screening signal, not a legal conclusion.
-Always consult a qualified lawyer for legal decisions.
+```bash
+pip install -e ".[dev]" && ruff check . && mypy backend/app
+pytest -m "not integration"                      # unit tier, no services
+# integration tier needs the compose stack; from the host, point at the mapped ports:
+DATABASE_URL=postgresql+psycopg://clauseguard:clauseguard@localhost:5436/clauseguard \
+QDRANT_URL=http://localhost:6339 REDIS_URL=redis://localhost:6383/0 \
+CELERY_BROKER_URL=redis://localhost:6383/0 CELERY_RESULT_BACKEND=redis://localhost:6383/1 \
+NEO4J_PASSWORD=clauseguard-dev pytest -m "integration and not external_flaky"
+```
+
+Integration tests skip quickly when Postgres or Qdrant is unreachable (and fail when `CI` is set). CI runs lint, mypy, unit and integration tests, frontend lint/test/build, dependency audits and Docker builds.
+
+## License
+
+MIT, see [LICENSE](LICENSE).
