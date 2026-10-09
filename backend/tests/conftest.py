@@ -1,3 +1,7 @@
+import os
+import socket
+from urllib.parse import urlparse
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -5,6 +9,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from app.core import db as db_module
+from app.core.config import get_settings
 from app.core.rate_limit import reset_rate_limits
 from app.main import app
 from app.models.document import Base  # noqa: F401 - registers all models on Base.metadata
@@ -63,3 +68,33 @@ def _test_database(request: pytest.FixtureRequest):
     finally:
         db_module.engine, db_module.SessionLocal = original_engine, original_session_local
         test_engine.dispose()
+
+
+def _reachable(url: str, timeout: float = 2.0) -> bool:
+    parsed = urlparse(url.replace("postgresql+psycopg", "postgresql"))
+    try:
+        with socket.create_connection((parsed.hostname, parsed.port), timeout=timeout):
+            return True
+    except (OSError, TypeError):
+        return False
+
+
+@pytest.fixture(scope="session")
+def _integration_services_up() -> bool:
+    """Postgres and Qdrant must answer within 2s. Without this, integration tests run on a host
+    whose .env points at docker-network names (postgres, qdrant) stall on DNS/connect timeouts
+    and look like hangs."""
+    settings = get_settings()
+    return _reachable(settings.database_url) and _reachable(settings.qdrant_url)
+
+
+@pytest.fixture(autouse=True)
+def _require_services_for_integration(request: pytest.FixtureRequest, _integration_services_up):
+    """Skip integration tests quickly when the stack is unreachable. In CI (CI=true) the stack is
+    always provisioned, so an unreachable service there is a failure, not a skip."""
+    if "integration" not in request.keywords or _integration_services_up:
+        return
+    message = "Postgres/Qdrant unreachable at DATABASE_URL/QDRANT_URL (see README: running tests)"
+    if os.getenv("CI"):
+        pytest.fail(message)
+    pytest.skip(message)
