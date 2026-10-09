@@ -6,9 +6,10 @@ import type { DocumentAnalysisResult } from "@/lib/types";
 interface ResultsScreenProps {
   result: DocumentAnalysisResult;
   onViewReport: () => void;
+  onReview?: () => void;
 }
 
-export default function ResultsScreen({ result, onViewReport }: ResultsScreenProps) {
+export default function ResultsScreen({ result, onViewReport, onReview }: ResultsScreenProps) {
   return (
     <div className="mx-auto max-w-3xl">
       <div className="mb-4 flex items-center justify-between">
@@ -18,6 +19,14 @@ export default function ResultsScreen({ result, onViewReport }: ResultsScreenPro
             {result.clause_count} clauses · analyzed {new Date(result.analyzed_at).toLocaleString()}
           </p>
         </div>
+        {onReview && (
+          <button
+            onClick={onReview}
+            className="mr-2 rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+          >
+            Review flagged clauses
+          </button>
+        )}
         <button
           onClick={onViewReport}
           className="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"

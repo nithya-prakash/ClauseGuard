@@ -1,4 +1,12 @@
-import type { ApiError, Clause, DocumentAnalysisResult, UploadResponse } from "./types";
+import type {
+  AnalysisJob,
+  ApiError,
+  Clause,
+  DocumentAnalysisResult,
+  ReviewDecision,
+  ReviewedAnalysis,
+  UploadResponse,
+} from "./types";
 
 // Server-side (Docker network) vs. browser-side (host machine) need different
 // base URLs - the backend container is reachable as "backend:8000" inside
@@ -39,11 +47,43 @@ export async function uploadDocument(file: File): Promise<UploadResponse> {
   return handleResponse<UploadResponse>(response);
 }
 
+const POLL_INTERVAL_MS = 1000;
+const POLL_TIMEOUT_MS = 10 * 60 * 1000;
+
+// Analysis runs as a background job (Celery worker): create it, then poll until it finishes.
 export async function analyzeDocument(documentId: string): Promise<DocumentAnalysisResult> {
-  const response = await fetch(`${API_BASE_URL}/documents/${documentId}/analyze`, {
-    method: "POST",
+  const created = await handleResponse<AnalysisJob>(
+    await fetch(`${API_BASE_URL}/documents/${documentId}/jobs`, { method: "POST" }),
+  );
+  const deadline = Date.now() + POLL_TIMEOUT_MS;
+  for (;;) {
+    const job = await handleResponse<AnalysisJob>(
+      await fetch(`${API_BASE_URL}/documents/${documentId}/jobs/${created.job_id}`),
+    );
+    if (job.status === "COMPLETED" && job.result) return job.result;
+    if (job.status === "FAILED") {
+      throw new ApiRequestError(500, job.error ?? "Analysis failed.");
+    }
+    if (Date.now() > deadline) throw new ApiRequestError(504, "Analysis timed out.");
+    await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
+  }
+}
+
+export async function getReview(documentId: string): Promise<ReviewedAnalysis> {
+  const response = await fetch(`${API_BASE_URL}/documents/${documentId}/review`);
+  return handleResponse<ReviewedAnalysis>(response);
+}
+
+export async function submitReview(
+  documentId: string,
+  decisions: Record<string, { decision: ReviewDecision; note?: string }>,
+): Promise<ReviewedAnalysis> {
+  const response = await fetch(`${API_BASE_URL}/documents/${documentId}/review`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ decisions }),
   });
-  return handleResponse<DocumentAnalysisResult>(response);
+  return handleResponse<ReviewedAnalysis>(response);
 }
 
 export async function getFindings(documentId: string): Promise<DocumentAnalysisResult> {

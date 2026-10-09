@@ -6,10 +6,11 @@ import UploadScreen from "@/components/UploadScreen";
 import ProcessingScreen from "@/components/ProcessingScreen";
 import ResultsScreen from "@/components/ResultsScreen";
 import ReportScreen from "@/components/ReportScreen";
+import ReviewScreen from "@/components/ReviewScreen";
 import { ApiRequestError, analyzeDocument, uploadDocument } from "@/lib/api";
 import type { DocumentAnalysisResult } from "@/lib/types";
 
-type Screen = "upload" | "processing" | "results" | "report";
+type Screen = "upload" | "processing" | "results" | "report" | "review";
 
 export default function Home() {
   const [screen, setScreen] = useState<Screen>("upload");
@@ -72,7 +73,15 @@ export default function Home() {
       )}
 
       {screen === "results" && result && (
-        <ResultsScreen result={result} onViewReport={() => setScreen("report")} />
+        <ResultsScreen
+          result={result}
+          onViewReport={() => setScreen("report")}
+          onReview={() => setScreen("review")}
+        />
+      )}
+
+      {screen === "review" && documentId && (
+        <ReviewScreen documentId={documentId} onBack={() => setScreen("results")} />
       )}
 
       {screen === "report" && documentId && result && (

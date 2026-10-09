@@ -64,6 +64,32 @@ export interface UploadResponse {
   size_bytes: number;
 }
 
+export type ReviewDecision = "CONFIRM" | "DISMISS" | "ESCALATE";
+export type ReviewStatus = "AUTO_ACCEPTED" | "UNREVIEWED" | ReviewDecision;
+
+export interface ReviewedClause {
+  clause_id: string;
+  risk_level: string | null;
+  review_reasons: string[];
+  review_status: ReviewStatus;
+  reviewer_note: string | null;
+}
+
+export interface ReviewedAnalysis {
+  filename: string;
+  clauses: ReviewedClause[];
+  summary: Record<string, number>;
+  fully_reviewed: boolean;
+}
+
+export interface AnalysisJob {
+  job_id: string;
+  document_id: string;
+  status: "PENDING" | "RUNNING" | "COMPLETED" | "FAILED";
+  error: string | null;
+  result: DocumentAnalysisResult | null;
+}
+
 export interface ApiError {
   detail: string;
 }

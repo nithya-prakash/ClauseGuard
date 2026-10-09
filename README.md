@@ -20,17 +20,17 @@ Every number comes from a script in `eval/` that writes to `reports/`. All bench
 
 | Component | Result | Benchmark |
 |---|---|---|
-| Segmentation | 10/10 clauses on the original contract; exact on **4 of 5** contracts (a wrapped line starting "50 Prozent" is read as a heading) | 5 synthetic contracts |
-| Classification, LoRA vs TF-IDF baseline | accuracy **0.56** [0.43, 0.67] vs **0.62** [0.50, 0.73]; macro F1 0.55 vs 0.63 | 63 clauses, 5 contracts |
+| Segmentation | 10/10 clauses on the original contract; exact on **5 of 5** contracts (the benchmark exposed a wrapped-line bug, since fixed) | 5 synthetic contracts |
+| Classification, LoRA vs TF-IDF baseline | accuracy **0.56** [0.43, 0.67] vs **0.63** [0.51, 0.74]; macro F1 0.55 vs 0.65 | 63 clauses, 5 contracts |
 | Classification, held-out split of the training data | macro F1 0.59 vs 0.547 | 20 examples |
 | Retrieval, dense + BM25 + RRF + reranker | Recall@1 0.87, Recall@5 **1.00**, NDCG@5 0.95 | 15 queries over a 15-passage corpus |
 | End-to-end classification | 0.80 accuracy | the same 10-clause contract |
 | Evidence-sufficiency gate | accuracy 0.30 → 0.60 → **0.70** across two recalibrations (10-clause benchmark); **0.79** [0.68, 0.88] on the 63-clause set | 54-example calibration set; 63 clauses |
 | Graph expansion (Neo4j) | **no measured gain**: Recall@5 1.00 with and without it | 15 queries |
 | LLM reasoning and citation verification | **not measured** | needs an Anthropic key |
-| Tests | 138 collected; 134 pass (unit + integration, with Neo4j), 1 live-LLM test skipped, 3 live-website tests excluded; ruff and mypy clean | |
+| Tests | 139 collected; 135 pass (unit + integration, with Neo4j), 1 live-LLM test skipped, 3 live-website tests excluded; ruff and mypy clean; frontend 24 Vitest tests | |
 
-On the larger 63-clause benchmark the LoRA classifier does **not** beat the TF-IDF baseline (intervals overlap; 10 clauses resemble training clauses, and excluding them gives 0.53 vs 0.57), so the earlier LoRA gain on 20 examples did not hold up. The pipeline still uses LoRA by default. Retrieval is at ceiling because the corpus has only 15 passages, so the reranker's +0.07 Recall@1 is a weak signal. Details and caveats are in each report under `reports/`.
+On the larger 63-clause benchmark the LoRA classifier does **not** beat the TF-IDF baseline (intervals overlap; 10 clauses resemble training clauses, and excluding them gives 0.53 vs 0.59), so the earlier LoRA gain on 20 examples did not hold up. The pipeline still uses LoRA by default. Retrieval is at ceiling because the corpus has only 15 passages, so the reranker's +0.07 Recall@1 is a weak signal. Details and caveats are in each report under `reports/`.
 
 ## Quickstart
 
@@ -87,7 +87,7 @@ curl -X PUT localhost:8004/documents/{id}/review -H 'content-type: application/j
   -d '{"decisions": {"c001": {"decision": "ESCALATE", "note": "needs a lawyer"}}}'
 ```
 
-Decisions are CONFIRM, DISMISS or ESCALATE and never change the AI risk level; clauses without a decision stay `UNREVIEWED`. Also available: an optional async path through Celery, and a read-only MCP server (`cd backend && python -m app.mcp_server`) with tools `get_scope`, `search_legal_corpus`, `get_passage`, `related_passages`, tested over stdio.
+Decisions are CONFIRM, DISMISS or ESCALATE and never change the AI risk level; clauses without a decision stay `UNREVIEWED`. Also available: the async Celery job path (used by the web UI), and a read-only MCP server (`cd backend && python -m app.mcp_server`) with tools `get_scope`, `search_legal_corpus`, `get_passage`, `related_passages`, tested over stdio.
 
 ## Evaluation method
 
@@ -110,7 +110,7 @@ NEO4J_PASSWORD=clauseguard-dev QDRANT_URL=http://localhost:6339 python eval/grap
 | Hybrid retrieval, reranker, evidence gate, citation verification | implemented and tested |
 | Neo4j graph expansion | implemented, tested against a real Neo4j 5.26; **no measured benefit**, off by default |
 | MCP server | implemented, tested over stdio |
-| Human-in-the-loop review (LangGraph `interrupt`) | implemented, tested, exposed as `GET/PUT /documents/{id}/review`; decisions persist in Postgres; **no UI yet** |
+| Human-in-the-loop review (LangGraph `interrupt`) | implemented, tested, exposed as `GET/PUT /documents/{id}/review`; decisions persist in Postgres; review screen in the web UI |
 | LLM reasoning | implemented; **never run against the live Anthropic API** |
 | QLoRA, SFT of a generative model, quantization | **not implemented** |
 | Synthetic data generation with an LLM | **not implemented**; the 120 training clauses and all benchmarks are hand-written |
@@ -118,11 +118,10 @@ NEO4J_PASSWORD=clauseguard-dev QDRANT_URL=http://localhost:6339 python eval/grap
 ## Limitations
 
 - The 63-clause benchmark (4 contracts written for it plus the original) is small and authored and labelled by the same person who built the system. There is no independent test set.
-- Known bug: the segmenter splits a clause when a wrapped line starts with a number (`eval/benchmark`, `kaufvertrag_maschine`). Not fixed.
 - Live Anthropic inference is untested, so reasoning quality, schema validity and citation accuracy under a real model are unknown.
 - The evidence gate is 0.70 accurate and the adopted fix added two false negatives on clauses covered by several topics.
 - The legal corpus is 15 BGB/DSGVO passages with gaps (no dedicated payment or confidentiality provisions). Graph edges are textual cross-references, not verified legal dependencies.
-- The frontend still calls the synchronous endpoint; rate limiting is per process; no Playwright suite; Docker Compose only, no hosted demo.
+- Rate limiting is per process; no Playwright suite; Docker Compose only, no hosted demo.
 - Frontend dev-tooling advisories remain (Tailwind 3, `eslint-config-next`) and need major upgrades. Runtime dependencies audit clean.
 
 ## Repository layout and checks
