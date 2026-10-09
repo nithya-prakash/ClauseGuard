@@ -1,0 +1,178 @@
+{
+  "evaluated_at": "2026-10-09T09:58:37.308687+00:00",
+  "summary": {
+    "queries": 15,
+    "baseline_top5_recall": 1.0,
+    "expanded_recall": 1.0,
+    "baseline_same_length_recall": 1.0,
+    "queries_where_graph_added_a_relevant_passage": 0,
+    "queries_where_graph_added_anything": 14
+  },
+  "per_query": [
+    {
+      "query_id": "q1",
+      "added": [
+        "DSGVO:Art. 32"
+      ],
+      "baseline_top5_hit": true,
+      "expanded_hit": true,
+      "baseline_same_length_hit": true,
+      "relevant_found_only_via_graph": []
+    },
+    {
+      "query_id": "q2",
+      "added": [
+        "BGB:§ 307",
+        "BGB:§ 310"
+      ],
+      "baseline_top5_hit": true,
+      "expanded_hit": true,
+      "baseline_same_length_hit": true,
+      "relevant_found_only_via_graph": []
+    },
+    {
+      "query_id": "q3",
+      "added": [
+        "BGB:§ 310"
+      ],
+      "baseline_top5_hit": true,
+      "expanded_hit": true,
+      "baseline_same_length_hit": true,
+      "relevant_found_only_via_graph": []
+    },
+    {
+      "query_id": "q4",
+      "added": [
+        "BGB:§ 305c",
+        "BGB:§ 306",
+        "BGB:§ 307"
+      ],
+      "baseline_top5_hit": true,
+      "expanded_hit": true,
+      "baseline_same_length_hit": true,
+      "relevant_found_only_via_graph": []
+    },
+    {
+      "query_id": "q5",
+      "added": [
+        "BGB:§ 308",
+        "BGB:§ 305c"
+      ],
+      "baseline_top5_hit": true,
+      "expanded_hit": true,
+      "baseline_same_length_hit": true,
+      "relevant_found_only_via_graph": []
+    },
+    {
+      "query_id": "q6",
+      "added": [
+        "BGB:§ 308",
+        "BGB:§ 305c"
+      ],
+      "baseline_top5_hit": true,
+      "expanded_hit": true,
+      "baseline_same_length_hit": true,
+      "relevant_found_only_via_graph": []
+    },
+    {
+      "query_id": "q7",
+      "added": [
+        "BGB:§ 310"
+      ],
+      "baseline_top5_hit": true,
+      "expanded_hit": true,
+      "baseline_same_length_hit": true,
+      "relevant_found_only_via_graph": []
+    },
+    {
+      "query_id": "q8",
+      "added": [
+        "BGB:§ 305",
+        "BGB:§ 306"
+      ],
+      "baseline_top5_hit": true,
+      "expanded_hit": true,
+      "baseline_same_length_hit": true,
+      "relevant_found_only_via_graph": []
+    },
+    {
+      "query_id": "q9",
+      "added": [
+        "BGB:§ 305c",
+        "BGB:§ 306"
+      ],
+      "baseline_top5_hit": true,
+      "expanded_hit": true,
+      "baseline_same_length_hit": true,
+      "relevant_found_only_via_graph": []
+    },
+    {
+      "query_id": "q10",
+      "added": [
+        "BGB:§ 308",
+        "BGB:§ 309",
+        "BGB:§ 305c"
+      ],
+      "baseline_top5_hit": true,
+      "expanded_hit": true,
+      "baseline_same_length_hit": true,
+      "relevant_found_only_via_graph": []
+    },
+    {
+      "query_id": "q11",
+      "added": [
+        "BGB:§ 307",
+        "BGB:§ 310",
+        "DSGVO:Art. 32"
+      ],
+      "baseline_top5_hit": true,
+      "expanded_hit": true,
+      "baseline_same_length_hit": true,
+      "relevant_found_only_via_graph": []
+    },
+    {
+      "query_id": "q12",
+      "added": [
+        "BGB:§ 307",
+        "BGB:§ 310"
+      ],
+      "baseline_top5_hit": true,
+      "expanded_hit": true,
+      "baseline_same_length_hit": true,
+      "relevant_found_only_via_graph": []
+    },
+    {
+      "query_id": "q13",
+      "added": [
+        "BGB:§ 307",
+        "BGB:§ 310"
+      ],
+      "baseline_top5_hit": true,
+      "expanded_hit": true,
+      "baseline_same_length_hit": true,
+      "relevant_found_only_via_graph": []
+    },
+    {
+      "query_id": "q14",
+      "added": [],
+      "baseline_top5_hit": true,
+      "expanded_hit": true,
+      "baseline_same_length_hit": true,
+      "relevant_found_only_via_graph": []
+    },
+    {
+      "query_id": "q15",
+      "added": [
+        "BGB:§ 310"
+      ],
+      "baseline_top5_hit": true,
+      "expanded_hit": true,
+      "baseline_same_length_hit": true,
+      "relevant_found_only_via_graph": []
+    }
+  ],
+  "limitations": [
+    "15-passage corpus and 15 hand-authored queries: baseline recall is likely already at ceiling, so this can show 'no harm' but cannot show gains at scale.",
+    "Edges are textual cross-references, not verified legal dependencies."
+  ]
+}

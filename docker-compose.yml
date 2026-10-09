@@ -38,6 +38,21 @@ services:
       timeout: 5s
       retries: 10
 
+  neo4j:
+    image: neo4j:5.26-community
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:-clauseguard-dev}
+    ports:
+      - "127.0.0.1:7474:7474"
+      - "127.0.0.1:7687:7687"
+    volumes:
+      - clauseguard_neo4j:/data
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:7474 >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
   backend:
     build:
       context: .
@@ -130,6 +145,7 @@ services:
         condition: service_healthy
 
 volumes:
+  clauseguard_neo4j:
   clauseguard_pgdata:
   clauseguard_qdrant:
   clauseguard_hf_cache:

@@ -24,6 +24,13 @@ class Settings(BaseSettings):
     qdrant_url: str = "http://localhost:6339"
     qdrant_collection: str = "legal_corpus_de"
 
+    # Neo4j GraphRAG: pulls in passages that retrieved passages explicitly
+    # cite. Off by default; retrieval works unchanged without it.
+    graph_expansion_enabled: bool = False
+    neo4j_uri: str = "bolt://localhost:7687"
+    neo4j_user: str = "neo4j"
+    neo4j_password: str = ""
+
     # Redis / Celery
     redis_url: str = "redis://localhost:6383/0"
     celery_broker_url: str = "redis://localhost:6383/0"
