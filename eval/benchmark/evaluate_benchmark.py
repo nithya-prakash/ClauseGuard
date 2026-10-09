@@ -235,8 +235,8 @@ def main() -> None:
         "",
         "The LoRA classifier does not beat the TF-IDF baseline here; the earlier 0.59 vs 0.547 "
         "macro-F1 gap on 20 examples does not hold on 63 clauses, and the intervals overlap "
-        "heavily. Segmentation fails on `kaufvertrag_maschine`: a wrapped line beginning "
-        "'50 Prozent ...' is read as a numbered heading and splits clause § 2.",
+        "heavily. This benchmark exposed a segmenter bug (a wrapped line beginning "
+        "'50 Prozent ...' was read as a heading and split clause § 2), since fixed.",
         "",
         "## Limitations",
         "",

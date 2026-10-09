@@ -60,3 +60,15 @@ def test_paragraph_fallback_when_no_numbering_present():
     assert clauses[0].section is None
     assert "Erster Absatz" in clauses[0].text
     assert "Zweiter Absatz" in clauses[1].text
+
+
+def test_wrapped_quantity_line_is_not_a_clause_boundary():
+    from app.services.segmentation.patterns import CLAUSE_START_PATTERNS
+
+    def starts_clause(line: str) -> bool:
+        return any(p.match(line) for p in CLAUSE_START_PATTERNS)
+
+    assert not starts_clause("50 Prozent innerhalb von zehn Tagen nach Vertragsschluss")
+    assert not starts_clause("14 Tage nach Zugang der Rechnung")
+    assert starts_clause("3.1 Laufzeit")
+    assert starts_clause("2. Zahlung")

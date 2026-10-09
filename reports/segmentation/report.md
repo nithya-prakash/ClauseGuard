@@ -1,6 +1,6 @@
 # Segmentation evaluation report
 
-Generated: 2026-09-20T13:56:19.851049+00:00
+Generated: 2026-10-09T10:40:07.868491+00:00
 Benchmark: data/benchmark/segmentation/contract_source.json (1 synthetic contract, hand-authored ground truth)
 
 | File | Expected | Predicted | Exact match | Section accuracy | Heading accuracy |

@@ -1,5 +1,5 @@
 {
-  "evaluated_at": "2026-09-20T13:56:19.851049+00:00",
+  "evaluated_at": "2026-10-09T10:40:07.868491+00:00",
   "benchmark": "data/benchmark/segmentation/contract_source.json (1 synthetic contract, hand-authored ground truth)",
   "script": "eval/segmentation/evaluate_segmentation.py",
   "limitations": [

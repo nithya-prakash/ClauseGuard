@@ -1,5 +1,5 @@
 {
-  "evaluated_at": "2026-10-09T10:27:23.806250+00:00",
+  "evaluated_at": "2026-10-09T10:41:24.797182+00:00",
   "summary": {
     "contracts": 5,
     "clauses": 63,
@@ -25,21 +25,21 @@
       }
     },
     "baseline": {
-      "accuracy": 0.619,
+      "accuracy": 0.635,
       "accuracy_ci95": [
-        0.496,
-        0.729
+        0.511,
+        0.743
       ],
-      "macro_f1": 0.632,
+      "macro_f1": 0.646,
       "per_class_f1": {
         "LIABILITY": 0.769,
         "TERMINATION": 0.615,
-        "PAYMENT": 0.714,
+        "PAYMENT": 0.8,
         "DATA_PROCESSING": 0.923,
         "CONFIDENTIALITY": 0.8,
         "NON_COMPETE": 0.667,
         "INTELLECTUAL_PROPERTY": 0.545,
-        "WARRANTY": 0.545,
+        "WARRANTY": 0.6,
         "GENERAL_TERMS": 0.471,
         "OTHER": 0.267
       }
@@ -55,7 +55,7 @@
       "covered_clauses": 22
     },
     "segmentation": {
-      "contracts_exact": 4,
+      "contracts_exact": 5,
       "of": 5
     },
     "training_overlap": {
@@ -63,12 +63,12 @@
       "threshold": 0.6,
       "clauses_over_threshold": 10,
       "max_similarity": 0.888,
-      "mean_max_similarity": 0.407
+      "mean_max_similarity": 0.406
     },
     "excluding_high_overlap_clauses": {
       "clauses": 53,
       "lora_accuracy": 0.528,
-      "baseline_accuracy": 0.566
+      "baseline_accuracy": 0.585
     },
     "label_counts": {
       "LIABILITY": 5,
@@ -93,8 +93,8 @@
     {
       "contract": "kaufvertrag_maschine",
       "expected": 13,
-      "predicted": 14,
-      "sections_match": false
+      "predicted": 13,
+      "sections_match": true
     },
     {
       "contract": "arbeitsvertrag_entwickler",
@@ -220,7 +220,7 @@
       "section": "§ 2",
       "expected_type": "PAYMENT",
       "lora_type": "PAYMENT",
-      "baseline_type": "WARRANTY",
+      "baseline_type": "PAYMENT",
       "expected_covered": false,
       "sufficient": false
     },

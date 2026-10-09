@@ -15,7 +15,13 @@ CLAUSE_START_PATTERNS: list[re.Pattern[str]] = [
     # "(1)", "(2a)" - parenthesized sub-clause at line start
     re.compile(r"^(\(\d+[a-zA-Z]?\))\s"),
     # "1.", "1.1", "3.2.1" numbered clause/sub-clause, followed by a space
-    re.compile(r"^(\d{1,2}(?:\.\d{1,2}){0,3})\.?\s+\S"),
+    # A number followed by a unit word ("50 Prozent", "14 Tage") is a quantity on a wrapped line,
+    # not a heading.
+    re.compile(
+        r"^(\d{1,2}(?:\.\d{1,2}){0,3})\.?\s+"
+        r"(?!(?:Prozent|%|EUR|Euro|Tage|Tagen|Werktage|Werktagen|Wochen|Monate|Monaten|Jahre|"
+        r"Jahren|Stunden)\b)\S"
+    ),
 ]
 
 # A line consisting only of a clause label with no trailing heading text
