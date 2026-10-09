@@ -59,3 +59,15 @@ class AnalysisJobModel(Base):
     error: Mapped[str | None] = mapped_column(String, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class ReviewDecisionModel(Base):
+    """Reviewer decisions for one document, keyed by clause_id. The review graph is deterministic,
+    so it is re-run from the stored analysis plus these decisions on each request; this table is
+    the only review state that needs to persist."""
+
+    __tablename__ = "review_decisions"
+
+    document_id: Mapped[str] = mapped_column(String, primary_key=True)
+    decisions_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)

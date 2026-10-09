@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.api.routes import documents, health
+from app.api.routes import documents, health, review
 from app.core.config import get_settings
 from app.core.exceptions import ClauseGuardError
 from app.core.logging import configure_logging, get_logger
@@ -57,3 +57,4 @@ async def unhandled_error_handler(request: Request, exc: Exception) -> JSONRespo
 
 app.include_router(health.router)
 app.include_router(documents.router)
+app.include_router(review.router)

@@ -138,3 +138,20 @@ def build_review_graph(checkpointer=None):
     g.add_edge("human_review", "finalize")
     g.add_edge("finalize", END)
     return g.compile(checkpointer=checkpointer or MemorySaver())
+
+
+def run_review(analysis: DocumentAnalysisResult, decisions: dict[str, dict]) -> ReviewedAnalysis:
+    """Run the graph to completion for a stored analysis and the reviewer decisions so far.
+
+    The graph is deterministic, so no checkpoint is persisted: it is replayed from the analysis,
+    pausing at the interrupt and resuming with whatever decisions exist. Clauses without a
+    decision stay UNREVIEWED."""
+    from langgraph.types import Command
+
+    graph = build_review_graph()
+    cfg = {"configurable": {"thread_id": "review"}}
+    out = graph.invoke({"analysis": analysis.model_dump()}, cfg)
+    if "__interrupt__" in out:
+        # An empty resume value is treated as "no resume", so pass a placeholder entry instead.
+        out = graph.invoke(Command(resume=decisions or {"_none": {}}), cfg)
+    return ReviewedAnalysis.model_validate(out["result"])

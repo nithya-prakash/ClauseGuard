@@ -19,7 +19,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from app.core import db as _db
-from app.models.document import AnalysisResultModel, DocumentModel
+from app.models.document import AnalysisResultModel, DocumentModel, ReviewDecisionModel
 from app.schemas.pipeline import DocumentAnalysisResult
 
 
@@ -95,6 +95,9 @@ def delete_document(document_id: str) -> DocumentRecord | None:
         result_row = session.get(AnalysisResultModel, document_id)
         if result_row is not None:
             session.delete(result_row)
+        review_row = session.get(ReviewDecisionModel, document_id)
+        if review_row is not None:
+            session.delete(review_row)
         session.delete(doc_row)
         session.commit()
         return record
