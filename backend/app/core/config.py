@@ -39,9 +39,12 @@ class Settings(BaseSettings):
     # LLM reasoning provider. "none" is a deliberate, honest default: with no
     # provider configured the reasoning stage must return NOT_CONFIGURED
     # rather than fabricate a risk assessment.
-    llm_provider: Literal["anthropic", "none"] = "none"
+    llm_provider: Literal["anthropic", "ollama", "none"] = "none"
     anthropic_api_key: str | None = Field(default=None)
     anthropic_model: str = "claude-sonnet-5"
+    # Local option: contract text stays on this machine.
+    ollama_url: str = "http://host.docker.internal:11434"
+    ollama_model: str = "qwen2.5:7b"
 
     # Uploads
     max_upload_size_mb: int = 20
@@ -66,6 +69,8 @@ class Settings(BaseSettings):
 
     @property
     def llm_configured(self) -> bool:
+        if self.llm_provider == "ollama":
+            return True
         return self.llm_provider == "anthropic" and bool(self.anthropic_api_key)
 
 

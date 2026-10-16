@@ -27,12 +27,12 @@ def test_off_topic_clause_short_circuits_to_insufficient_evidence_without_llm():
 
 
 @pytest.mark.integration
-def test_relevant_clause_without_api_key_raises_llm_not_configured():
+def test_relevant_clause_without_api_key_raises_llm_not_configured(monkeypatch, request):
+    monkeypatch.setenv("LLM_PROVIDER", "none")
+    get_settings.cache_clear()
+    request.addfinalizer(get_settings.cache_clear)
     settings = get_settings()
-    assert not settings.llm_configured, (
-        "This test asserts the honest-gating behavior for the no-key case; "
-        "it is not meaningful once a real ANTHROPIC_API_KEY is configured."
-    )
+    assert not settings.llm_configured
     client = QdrantClient(url=settings.qdrant_url)
 
     with pytest.raises(LLMNotConfiguredError):

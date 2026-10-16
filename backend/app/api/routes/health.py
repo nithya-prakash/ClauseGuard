@@ -44,7 +44,7 @@ def _check_llm() -> DependencyHealth:
         return DependencyHealth(status="ok")
     return DependencyHealth(
         status="not_configured",
-        detail="Set LLM_PROVIDER=anthropic and ANTHROPIC_API_KEY to enable the reasoning stage.",
+        detail="Set LLM_PROVIDER=ollama, or anthropic with ANTHROPIC_API_KEY, to enable it.",
     )
 
 

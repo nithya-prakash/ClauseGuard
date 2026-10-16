@@ -66,3 +66,44 @@ def test_live_llm_call_returns_schema_valid_output():
     validated = RawReasoningOutput.model_validate(raw)
     assert validated.clause_id == "c1"
     assert validated.risk_level in ("LOW", "MEDIUM", "HIGH")
+
+
+def test_call_ollama_posts_schema_constrained_request_and_parses_json(monkeypatch):
+    import json
+
+    from app.services.reasoning import client
+
+    captured = {}
+
+    class FakeResponse:
+        def raise_for_status(self):
+            pass
+
+        def json(self):
+            return {"message": {"content": json.dumps({"clause_id": "c1"})}}
+
+    def fake_post(url, json=None, timeout=None):
+        captured.update(url=url, body=json, timeout=timeout)
+        return FakeResponse()
+
+    monkeypatch.setattr(client.httpx, "post", fake_post)
+    out = client.call_ollama("http://ollama:11434/", "qwen2.5:7b", "c1", "text", "Haftung", [])
+
+    assert out == {"clause_id": "c1"}
+    assert captured["url"] == "http://ollama:11434/api/chat"
+    assert captured["body"]["format"] == TOOL_SCHEMA["input_schema"]
+    assert captured["body"]["stream"] is False
+
+
+def test_call_ollama_wraps_connection_errors(monkeypatch):
+    import httpx
+
+    from app.core.exceptions import PipelineStageError
+    from app.services.reasoning import client
+
+    def fail(*args, **kwargs):
+        raise httpx.ConnectError("refused")
+
+    monkeypatch.setattr(client.httpx, "post", fail)
+    with pytest.raises(PipelineStageError):
+        client.call_ollama("http://ollama:11434", "m", "c1", "t", "Haftung", [])

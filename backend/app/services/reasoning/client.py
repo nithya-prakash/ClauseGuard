@@ -1,5 +1,7 @@
+import json
 from typing import Any
 
+import httpx
 from anthropic import Anthropic
 
 from app.core.exceptions import PipelineStageError
@@ -87,3 +89,39 @@ def call_llm(
             return result
 
     raise PipelineStageError("reasoning", "LLM response did not include the expected tool call.")
+
+
+def call_ollama(
+    base_url: str,
+    model: str,
+    clause_id: str,
+    clause_text: str,
+    classification: str,
+    evidence: list[RetrievedPassage],
+) -> dict[str, Any]:
+    """Local provider: Ollama structured output constrained to the same schema.
+
+    The result goes through the same schema validation and citation verification
+    as the hosted provider, so an unsupported citation is still flagged.
+    """
+    user_prompt = build_user_prompt(clause_id, clause_text, classification, evidence)
+    try:
+        response = httpx.post(
+            f"{base_url.rstrip('/')}/api/chat",
+            json={
+                "model": model,
+                "stream": False,
+                "format": TOOL_SCHEMA["input_schema"],
+                "options": {"temperature": 0},
+                "messages": [
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": user_prompt},
+                ],
+            },
+            timeout=600,
+        )
+        response.raise_for_status()
+        result: dict[str, Any] = json.loads(response.json()["message"]["content"])
+    except (httpx.HTTPError, KeyError, json.JSONDecodeError) as exc:
+        raise PipelineStageError("reasoning", f"Ollama call failed: {exc}") from exc
+    return result

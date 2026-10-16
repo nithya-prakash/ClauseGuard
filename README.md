@@ -111,7 +111,7 @@ NEO4J_PASSWORD=clauseguard-dev QDRANT_URL=http://localhost:6339 python eval/grap
 | Neo4j graph expansion | implemented, tested against a real Neo4j 5.26; **no measured benefit**, off by default |
 | MCP server | implemented, tested over stdio |
 | Human-in-the-loop review (LangGraph `interrupt`) | implemented, tested, exposed as `GET/PUT /documents/{id}/review`; decisions persist in Postgres; review screen in the web UI |
-| LLM reasoning | implemented; **never run against the live Anthropic API** |
+| LLM reasoning | implemented; runs end to end on a local Ollama model (qwen2.5:7b, about 5 min for a 12-clause contract on a laptop; its citations are often flagged `CITATION_UNVERIFIED`, which is the verifier working); **never run against the live Anthropic API** |
 | QLoRA, SFT of a generative model, quantization | **not implemented** |
 | Synthetic data generation with an LLM | **not implemented**; the 120 training clauses and all benchmarks are hand-written |
 

@@ -4,7 +4,7 @@ from qdrant_client import QdrantClient
 from app.core.config import get_settings
 from app.core.exceptions import LLMNotConfiguredError, PipelineStageError
 from app.schemas.reasoning import RawReasoningOutput, ReasoningResult, VerifiedFinding
-from app.services.reasoning.client import call_llm
+from app.services.reasoning.client import call_llm, call_ollama
 from app.services.reranking.service import retrieve_and_rerank
 from app.services.verification.citation import verify_citation
 from app.services.verification.evidence_sufficiency import check_evidence_sufficiency
@@ -42,20 +42,30 @@ def assess_clause(
     settings = get_settings()
     if not settings.llm_configured:
         raise LLMNotConfiguredError(
-            "Set LLM_PROVIDER=anthropic and ANTHROPIC_API_KEY to enable the "
+            "Set LLM_PROVIDER=ollama, or anthropic with ANTHROPIC_API_KEY, to enable the "
             "reasoning stage. Evidence sufficiency and retrieval work without it; "
             "this clause has sufficient evidence but no configured LLM to reason "
             "with it."
         )
 
-    raw = call_llm(
-        api_key=settings.anthropic_api_key,  # type: ignore[arg-type]
-        model=settings.anthropic_model,
-        clause_id=clause_id,
-        clause_text=clause_text,
-        classification=classification,
-        evidence=sufficiency.evidence,
-    )
+    if settings.llm_provider == "ollama":
+        raw = call_ollama(
+            base_url=settings.ollama_url,
+            model=settings.ollama_model,
+            clause_id=clause_id,
+            clause_text=clause_text,
+            classification=classification,
+            evidence=sufficiency.evidence,
+        )
+    else:
+        raw = call_llm(
+            api_key=settings.anthropic_api_key,  # type: ignore[arg-type]
+            model=settings.anthropic_model,
+            clause_id=clause_id,
+            clause_text=clause_text,
+            classification=classification,
+            evidence=sufficiency.evidence,
+        )
 
     try:
         validated = RawReasoningOutput.model_validate(raw)
